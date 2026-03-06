@@ -1,4 +1,5 @@
 import 'package:chalthee/constants/CommonUI.dart';
+import 'package:chalthee/screens/water_drop_animation.dart';
 import 'package:flutter/material.dart';
 import 'package:table_calendar/table_calendar.dart';
 
@@ -173,13 +174,14 @@ class _CalendarPageState extends State<CalendarPage> {
         ? WeightCalculatorHelper.normalizeDate(_selectedDay!)
         : null;
 
-    return Scaffold(
-      key: _scaffoldKey, // add this
-      drawer: _buildProfileDrawer(),
-      backgroundColor: uiVariables.scaffoldBackgroundColor,
-      appBar: PreferredSize(
-        preferredSize: const Size.fromHeight(75),
-        child: AppBar(
+    return Stack(
+      children : [
+        RainLoader(),
+        Scaffold(
+        key: _scaffoldKey, // add this
+        drawer: _buildProfileDrawer(),
+        backgroundColor: Colors.transparent,
+        appBar: AppBar(
           leading: Padding(
             padding: const EdgeInsets.only(left: 8),
             child: GestureDetector(
@@ -203,7 +205,7 @@ class _CalendarPageState extends State<CalendarPage> {
           ),
           centerTitle: true,
           title: const Text('Weight Calendar',
-            style: TextStyle(fontWeight: FontWeight.bold),),
+            style: TextStyle(fontWeight: FontWeight.bold, fontSize: 25),),
           flexibleSpace: Container(
             decoration: uiVariables.bodyBoxDecorator.copyWith(
                 borderRadius: BorderRadius.circular(30)),
@@ -233,278 +235,286 @@ class _CalendarPageState extends State<CalendarPage> {
           ],
           backgroundColor: Colors.transparent,
         ),
-      ),
-      body: SingleChildScrollView(
-        child: Column(
-          children: [
-            TableCalendar(
-              firstDay: DateTime.utc(2020, 1, 1),
-              lastDay: DateTime.utc(2030, 12, 31),
-              focusedDay: _focusedDay,
-              selectedDayPredicate: (d) => isSameDay(_selectedDay, d),
-              rangeStartDay: _rangeStart,
-              rangeEndDay: _rangeEnd,
-              rangeSelectionMode: _rangeSelectionMode,
-              headerStyle: HeaderStyle(
-                formatButtonVisible: false,
-                titleTextStyle: TextStyle(
-                  fontSize: 22,        // 👈 increase size here
-                  fontWeight: FontWeight.bold,
-                  color: uiVariables.textColorDefault,
-                ),
-              ),
-              onHeaderTapped: (focusedDay) {
-                _showMonthYearPicker(context);
-              },
-              daysOfWeekStyle: DaysOfWeekStyle(
-                weekdayStyle: TextStyle(
-                  fontSize: uiVariables.subHeadingSize,          // Mon–Fri
-                  fontWeight: FontWeight.w600,
-                  color: uiVariables.textColorDefault,
-                ),
-                weekendStyle: TextStyle(
-                  fontSize: uiVariables.subHeadingSize,          // Sun
-                  fontWeight: FontWeight.w600,
-                  color: uiVariables.weightGainColor,
-                ),
-              ),
-              enabledDayPredicate: (day) {
-                return !day.isAfter(DateTime.now());
-              },
-              onDaySelected: (day, focused) {
-                setState(() {
-                  _weightController.clear();
-                  _selectedDay = day;
-                  _focusedDay = focused;
-                  _rangeStart = null;
-                  _rangeEnd = null;
-                  _rangeSelectionMode =
-                      RangeSelectionMode.toggledOff;
-                });
-              },
-              onRangeSelected: (start, end, focused) {
-                setState(() {
-                  _selectedDay = null;
-                  _rangeStart = start;
-                  _rangeEnd = end;
-                  _focusedDay = focused;
-                  _rangeSelectionMode =
-                      RangeSelectionMode.toggledOn;
-                });
-              },
-              calendarBuilders: CalendarBuilders(
-                defaultBuilder: (_, d, _) => _dayCell(d),
-                selectedBuilder: (_, d, _) =>
-                    _dayCell(d, isSelected: true),
-                todayBuilder: (_, d, _) =>
-                    _dayCell(d, isToday: true),
-                rangeStartBuilder: (_, d, _) =>
-                    _dayCell(d, isRangeStart: true),
-                rangeEndBuilder: (_, d, _) =>
-                    _dayCell(d, isRangeEnd: true),
-                withinRangeBuilder: (_, d, _) =>
-                    _dayCell(d, isWithinRange: true),
-              ),
-            ),
-
-  //---------------- selected day ---------------------
-            if (_selectedDay != null)
-              Padding(
-                padding:  EdgeInsets.all(uiVariables.subHeadingSize),
-                child: Card(
-                  elevation: 4,
-                  child: Container(
-                    decoration: uiVariables.bodyBoxDecorator,
-                    child: Padding(
-                      padding: const EdgeInsets.all(12),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            'Date: ${_selectedDay!.toLocal().toString().split(' ')[0]}',
-                            style: TextStyle(
-                                fontSize: uiVariables.mainHeadingSize,
-                                fontWeight: FontWeight.bold),
-                          ),
-                          const SizedBox(height: 6),
-                          if(_weightStorage.weights.containsKey(selectedKey))
-                          Text(
-                            _weightStorage.weights.containsKey(selectedKey)
-                                ? 'Weight: ${_weightStorage.weights[selectedKey]} kg'
-                                : 'No weight recorded',
-                            style:  TextStyle(fontSize: uiVariables.mediumHeadingSize, color: uiVariables.textColorDefault),
-                          ),
-                          if(_weightStorage.weights.containsKey(selectedKey?.subtract(const Duration(days: 1))))
-                          Text('Yesterday: ${_weightStorage.weights[selectedKey?.subtract(const Duration(days: 1))]} Kg',
-                              style:  TextStyle(fontSize: uiVariables.subHeadingSize, color: Colors.black54),
-                          ),
-                          if (dailyDiff != null)
-                            Text(
-                              dailyDiff! < 0
-                                  ? '↓ ${dailyDiff!.abs().toStringAsFixed(3)} kg'
-                                  : '↑ +${dailyDiff!.toStringAsFixed(3)} kg',
-                              style: TextStyle(
-                                fontSize: uiVariables.mainHeadingSize,
-                                fontWeight: FontWeight.bold,
-                                color: dailyDiff! < 0
-                                    ? uiVariables.weightLossColor
-                                    : uiVariables.weightGainColor,
-                              ),
-                            ),
-                          const SizedBox(height: 10),
-                          !_isEditingWeight
-                              ? ElevatedButton(
-                            onPressed: _startEditingWeight,
-                            style : uiVariables.elevatedButtonStyle,
-                            child:
-                             Text('Add / Edit Weight',
-                               style: TextStyle(
-                                   color: uiVariables.textColorDefault,
-                                   fontWeight: FontWeight.bold,
-                                   fontSize: uiVariables.subHeadingSize
-                               ),),
-                          )
-                              : Row(
-                            children: [
-                              Expanded(
-                                child: TextField(
-                                  controller: _weightController,
-                                  keyboardType: uiVariables.textEditingField,
-                                  inputFormatters: uiVariables.inputFormatter,
-                                  decoration: uiVariables.textEditingFieldDecoration,
-                                  style: TextStyle(color: uiVariables.textColorDefault)
-                                ),
-                              ),
-                              IconButton(
-                                icon: Icon(Icons.check, color: uiVariables.weightLossColor,),
-                                onPressed: _saveWeight,
-                              ),
-                              IconButton(
-                                icon:  Icon(Icons.close, color: uiVariables.weightGainColor),
-                                onPressed: () {
-                                  setState(() {
-                                    _isEditingWeight = false;
-                                    _weightController.clear();
-                                  });
-                                },
-                              )
-                            ],
-                          ),
-                        ],
+        body: SingleChildScrollView(
+          child: Column(
+            children: [
+              SizedBox(height: 50,),
+              Card(
+                child: Container(
+                  decoration: uiVariables.bodyBoxDecorator,
+                  // color: uiVariables.scaffoldBackgroundColor,
+                  child: TableCalendar(
+                    firstDay: DateTime.utc(2020, 1, 1),
+                    lastDay: DateTime.utc(2030, 12, 31),
+                    focusedDay: _focusedDay,
+                    selectedDayPredicate: (d) => isSameDay(_selectedDay, d),
+                    rangeStartDay: _rangeStart,
+                    rangeEndDay: _rangeEnd,
+                    rangeSelectionMode: _rangeSelectionMode,
+                    headerStyle: HeaderStyle(
+                      formatButtonVisible: false,
+                      titleTextStyle: TextStyle(
+                        fontSize: 22,        // 👈 increase size here
+                        fontWeight: FontWeight.bold,
+                        color: uiVariables.textColorDefault,
                       ),
+                    ),
+                    onHeaderTapped: (focusedDay) {
+                      _showMonthYearPicker(context);
+                    },
+                    daysOfWeekStyle: DaysOfWeekStyle(
+                      weekdayStyle: TextStyle(
+                        fontSize: uiVariables.subHeadingSize,          // Mon–Fri
+                        fontWeight: FontWeight.w600,
+                        color: uiVariables.textColorDefault,
+                      ),
+                      weekendStyle: TextStyle(
+                        fontSize: uiVariables.subHeadingSize,          // Sun
+                        fontWeight: FontWeight.w600,
+                        color: uiVariables.weightGainColor,
+                      ),
+                    ),
+                    enabledDayPredicate: (day) {
+                      return !day.isAfter(DateTime.now());
+                    },
+                    onDaySelected: (day, focused) {
+                      setState(() {
+                        _weightController.clear();
+                        _selectedDay = day;
+                        _focusedDay = focused;
+                        _rangeStart = null;
+                        _rangeEnd = null;
+                        _rangeSelectionMode =
+                            RangeSelectionMode.toggledOff;
+                      });
+                    },
+                    onRangeSelected: (start, end, focused) {
+                      setState(() {
+                        _selectedDay = null;
+                        _rangeStart = start;
+                        _rangeEnd = end;
+                        _focusedDay = focused;
+                        _rangeSelectionMode =
+                            RangeSelectionMode.toggledOn;
+                      });
+                    },
+                    calendarBuilders: CalendarBuilders(
+                      defaultBuilder: (_, d, _) => _dayCell(d),
+                      selectedBuilder: (_, d, _) =>
+                          _dayCell(d, isSelected: true),
+                      todayBuilder: (_, d, _) =>
+                          _dayCell(d, isToday: true),
+                      rangeStartBuilder: (_, d, _) =>
+                          _dayCell(d, isRangeStart: true),
+                      rangeEndBuilder: (_, d, _) =>
+                          _dayCell(d, isRangeEnd: true),
+                      withinRangeBuilder: (_, d, _) =>
+                          _dayCell(d, isWithinRange: true),
                     ),
                   ),
                 ),
               ),
 
-  // -----------RANGE SUMMARY CARD (unchanged UI)---------------
-            if (_rangeStart != null && _rangeEnd != null)
-              Padding(
-                padding:
-                EdgeInsets.symmetric(horizontal: uiVariables.subHeadingSize, vertical: uiVariables.subHeadingSize),
-                child: ConstrainedBox(
-                  constraints: const BoxConstraints(maxWidth: 500),
+              //-----------weekly/monthly progress---------------
+              if (progressAvg != null)
+                Padding(
+                  padding:  EdgeInsets.symmetric(horizontal: uiVariables.subHeadingSize, vertical: 6),
                   child: Card(
-                    shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(12)),
                     elevation: 4,
+                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
                     child: Container(
                       decoration: CommonUI().bodyBoxDecorator,
-                      padding: const EdgeInsets.all(12),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            smartStart != null && smartEnd != null
-                                ? 'Effective Range: ${smartStart.toLocal().toString().split(' ')[0]} → ${smartEnd.toLocal().toString().split(' ')[0]}'
-                                : 'No data in selected range',
-                            style: TextStyle(
-                              fontSize: uiVariables.mediumHeadingSize,
-                              fontWeight: FontWeight.bold,
-                              color: uiVariables.textColorDefault,
-                            ),
-                          ),
-                          const SizedBox(height: 4),
-                          if (diff != null && smartRangePercentage != null)
+                      child: Padding(
+                        padding: const EdgeInsets.all(12),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
                             Text(
-                              diff < 0
-                                  ? 'Weight Loss: ${diff.abs().toStringAsFixed(3)} kg '
-                                  '(${smartRangePercentage.abs().toStringAsFixed(2)}%)'
-                                  : 'Weight Gain: ${diff.toStringAsFixed(3)} kg '
-                                  '(+${smartRangePercentage.toStringAsFixed(2)}%)',
-                              style: TextStyle(
+                              '$label Progress',
+                              style:  TextStyle(
                                 fontSize: uiVariables.mainHeadingSize,
                                 fontWeight: FontWeight.bold,
-                                color: diff < 0
-                                    ? uiVariables.weightLossColor
-                                    : uiVariables.weightGainColor,
                               ),
-                            )
-                          else
-                             Text(
-                              'Not enough data to calculate change',
-                              style: TextStyle(color: uiVariables.textColorDefault),
                             ),
-                        ],
+                            const SizedBox(height: 6),
+                            Text(
+                              'Average Weight: ${progressAvg.toStringAsFixed(3)} kg',
+                              style:  TextStyle(fontSize: uiVariables.mediumHeadingSize),
+                            ),
+                            if (progressDiff != null && progressPercentage != null)
+                              Text(
+                                progressDiff < 0
+                                    ? 'Loss: ${progressDiff.abs().toStringAsFixed(3)} kg '
+                                    '(${progressPercentage.abs().toStringAsFixed(2)}%)'
+                                    : 'Gain: ${progressDiff.toStringAsFixed(3)} kg '
+                                    '(+${progressPercentage.toStringAsFixed(2)}%)',
+                                style: TextStyle(
+                                  fontSize: uiVariables.mainHeadingSize,
+                                  fontWeight: FontWeight.bold,
+                                  color: progressDiff < 0
+                                      ? uiVariables.weightLossColor
+                                      : uiVariables.weightGainColor,
+                                ),
+                              )
+                            else
+                              const Text('Not enough data'),
+                          ],
+                        ),
                       ),
                     ),
                   ),
                 ),
-              ),
 
-
-  //-----------weekly/monthly progress---------------
-            if (progressAvg != null)
-              Padding(
-                padding:  EdgeInsets.symmetric(horizontal: uiVariables.subHeadingSize, vertical: 6),
-                child: Card(
-                  elevation: 4,
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-                  child: Container(
-                    decoration: CommonUI().bodyBoxDecorator,
-                    child: Padding(
-                      padding: const EdgeInsets.all(12),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            '$label Progress',
-                            style:  TextStyle(
-                              fontSize: uiVariables.mainHeadingSize,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                          const SizedBox(height: 6),
-                          Text(
-                            'Average Weight: ${progressAvg.toStringAsFixed(3)} kg',
-                            style:  TextStyle(fontSize: uiVariables.mediumHeadingSize),
-                          ),
-                          if (progressDiff != null && progressPercentage != null)
+        //---------------- selected day ---------------------
+              if (_selectedDay != null)
+                Padding(
+                  padding:  EdgeInsets.all(uiVariables.subHeadingSize),
+                  child: Card(
+                    elevation: 4,
+                    child: Container(
+                      decoration: uiVariables.bodyBoxDecorator,
+                      child: Padding(
+                        padding: const EdgeInsets.all(12),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
                             Text(
-                              progressDiff < 0
-                                  ? 'Loss: ${progressDiff.abs().toStringAsFixed(3)} kg '
-                                  '(${progressPercentage.abs().toStringAsFixed(2)}%)'
-                                  : 'Gain: ${progressDiff.toStringAsFixed(3)} kg '
-                                  '(+${progressPercentage.toStringAsFixed(2)}%)',
+                              'Date: ${_selectedDay!.toLocal().toString().split(' ')[0]}',
                               style: TextStyle(
-                                fontSize: uiVariables.mainHeadingSize,
-                                fontWeight: FontWeight.bold,
-                                color: progressDiff < 0
-                                    ? uiVariables.weightLossColor
-                                    : uiVariables.weightGainColor,
+                                  fontSize: uiVariables.mainHeadingSize,
+                                  fontWeight: FontWeight.bold),
+                            ),
+                            const SizedBox(height: 6),
+                            if(_weightStorage.weights.containsKey(selectedKey))
+                            Text(
+                              _weightStorage.weights.containsKey(selectedKey)
+                                  ? 'Weight: ${_weightStorage.weights[selectedKey]} kg'
+                                  : 'No weight recorded',
+                              style:  TextStyle(fontSize: uiVariables.mediumHeadingSize, color: uiVariables.textColorDefault),
+                            ),
+                            if(_weightStorage.weights.containsKey(selectedKey?.subtract(const Duration(days: 1))))
+                            Text('Yesterday: ${_weightStorage.weights[selectedKey?.subtract(const Duration(days: 1))]} Kg',
+                                style:  TextStyle(fontSize: uiVariables.subHeadingSize, color: Colors.black54),
+                            ),
+                            if (dailyDiff != null)
+                              Text(
+                                dailyDiff! < 0
+                                    ? '↓ ${dailyDiff!.abs().toStringAsFixed(3)} kg'
+                                    : '↑ +${dailyDiff!.toStringAsFixed(3)} kg',
+                                style: TextStyle(
+                                  fontSize: uiVariables.mainHeadingSize,
+                                  fontWeight: FontWeight.bold,
+                                  color: dailyDiff! < 0
+                                      ? uiVariables.weightLossColor
+                                      : uiVariables.weightGainColor,
+                                ),
                               ),
+                            const SizedBox(height: 10),
+                            !_isEditingWeight
+                                ? ElevatedButton(
+                              onPressed: _startEditingWeight,
+                              style : uiVariables.elevatedButtonStyle,
+                              child:
+                               Text('Add / Edit Weight',
+                                 style: TextStyle(
+                                     color: uiVariables.textColorDefault,
+                                     fontWeight: FontWeight.bold,
+                                     fontSize: uiVariables.subHeadingSize
+                                 ),),
                             )
-                          else
-                            const Text('Not enough data'),
-                        ],
+                                : Row(
+                              children: [
+                                Expanded(
+                                  child: TextField(
+                                    controller: _weightController,
+                                    keyboardType: uiVariables.textEditingField,
+                                    inputFormatters: uiVariables.inputFormatter,
+                                    decoration: uiVariables.textEditingFieldDecoration,
+                                    style: TextStyle(color: uiVariables.textColorDefault)
+                                  ),
+                                ),
+                                IconButton(
+                                  icon: Icon(Icons.check, color: uiVariables.weightLossColor,),
+                                  onPressed: _saveWeight,
+                                ),
+                                IconButton(
+                                  icon:  Icon(Icons.close, color: uiVariables.weightGainColor),
+                                  onPressed: () {
+                                    setState(() {
+                                      _isEditingWeight = false;
+                                      _weightController.clear();
+                                    });
+                                  },
+                                )
+                              ],
+                            ),
+                          ],
+                        ),
                       ),
                     ),
                   ),
                 ),
-              ),
-          ],
+
+        // -----------RANGE SUMMARY CARD (unchanged UI)---------------
+              if (_rangeStart != null && _rangeEnd != null)
+                Padding(
+                  padding:
+                  EdgeInsets.symmetric(horizontal: uiVariables.subHeadingSize, vertical: uiVariables.subHeadingSize),
+                  child: ConstrainedBox(
+                    constraints: const BoxConstraints(maxWidth: 500),
+                    child: Card(
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12)),
+                      elevation: 4,
+                      child: Container(
+                        decoration: CommonUI().bodyBoxDecorator,
+                        padding: const EdgeInsets.all(12),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              smartStart != null && smartEnd != null
+                                  ? 'Effective Range: ${smartStart.toLocal().toString().split(' ')[0]} → ${smartEnd.toLocal().toString().split(' ')[0]}'
+                                  : 'No data in selected range',
+                              style: TextStyle(
+                                fontSize: uiVariables.mediumHeadingSize,
+                                fontWeight: FontWeight.bold,
+                                color: uiVariables.textColorDefault,
+                              ),
+                            ),
+                            const SizedBox(height: 4),
+                            if (diff != null && smartRangePercentage != null)
+                              Text(
+                                diff < 0
+                                    ? 'Weight Loss: ${diff.abs().toStringAsFixed(3)} kg '
+                                    '(${smartRangePercentage.abs().toStringAsFixed(2)}%)'
+                                    : 'Weight Gain: ${diff.toStringAsFixed(3)} kg '
+                                    '(+${smartRangePercentage.toStringAsFixed(2)}%)',
+                                style: TextStyle(
+                                  fontSize: uiVariables.mainHeadingSize,
+                                  fontWeight: FontWeight.bold,
+                                  color: diff < 0
+                                      ? uiVariables.weightLossColor
+                                      : uiVariables.weightGainColor,
+                                ),
+                              )
+                            else
+                               Text(
+                                'Not enough data to calculate change',
+                                style: TextStyle(color: uiVariables.textColorDefault),
+                              ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+
+            ],
+          ),
         ),
       ),
+    ],
     );
   }
 
@@ -580,46 +590,74 @@ class _CalendarPageState extends State<CalendarPage> {
     int selectedYear = _focusedDay.year;
     int selectedMonth = _focusedDay.month;
 
+    final monthController =
+    FixedExtentScrollController(initialItem: selectedMonth - 1);
+
+    final yearController =
+    FixedExtentScrollController(initialItem: selectedYear - 2020);
+
     await showDialog(
       context: context,
       builder: (context) {
         return AlertDialog(
           backgroundColor: uiVariables.scaffoldBackgroundColor,
-          title: Text('Select Month & Year',
-              style: TextStyle(color : uiVariables.textColorDefault,
-                  fontWeight: FontWeight.w400,
-                  fontSize: 25
-              )),
+          title: Text(
+            'Select Month & Year',
+            style: TextStyle(
+              color: uiVariables.textColorDefault,
+              fontWeight: FontWeight.w400,
+              fontSize: 25,
+            ),
+          ),
           content: SizedBox(
-            height: 50,
+            height: 80,
             child: Row(
               children: [
-                // Month picker
+
+                /// MONTH PICKER
                 Expanded(
                   child: Card(
                     color: Colors.lightGreenAccent[100],
                     elevation: 4,
                     child: ListWheelScrollView.useDelegate(
+                      controller: monthController,
                       itemExtent: 40,
+                      perspective: 0.003,
+                      diameterRatio: 1.8,
                       physics: const FixedExtentScrollPhysics(),
-                      controller: FixedExtentScrollController(
-                        initialItem: selectedMonth - 1,
-                      ),
                       onSelectedItemChanged: (index) {
                         selectedMonth = index + 1;
                       },
                       childDelegate: ListWheelChildBuilderDelegate(
                         childCount: 12,
                         builder: (context, index) {
-                          return Center(
-                            child: Text(
-                              DateTime(0, index + 1)
-                                  .toLocal()
-                                  .month
-                                  .toString(),
-                                style: TextStyle(color : uiVariables.textColorDefault,
-                                fontWeight: FontWeight.bold
-                                ))
+                          return AnimatedBuilder(
+                            animation: monthController,
+                            builder: (context, child) {
+                              int diff =
+                              (monthController.selectedItem - index).abs();
+
+                              double scale =
+                              (1 - (diff * 0.2)).clamp(0.7, 1.2);
+
+                              return Transform(
+                                alignment: Alignment.center,
+                                transform: Matrix4.identity()
+                                  ..scale(scale)
+                                  ..rotateX(diff * 0.2),
+                                child: child,
+                              );
+                            },
+                            child: Center(
+                              child: Text(
+                                DateTime(0, index + 1).month.toString(),
+                                style: TextStyle(
+                                  fontSize: 20,
+                                  color: uiVariables.textColorDefault,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            ),
                           );
                         },
                       ),
@@ -627,29 +665,49 @@ class _CalendarPageState extends State<CalendarPage> {
                   ),
                 ),
 
-//--------------- Year picker ------------------------------
+                /// YEAR PICKER
                 Expanded(
                   child: Card(
                     color: Colors.lightGreenAccent[100],
                     elevation: 4,
                     child: ListWheelScrollView.useDelegate(
+                      controller: yearController,
                       itemExtent: 40,
+                      perspective: 0.003,
+                      diameterRatio: 1.8,
                       physics: const FixedExtentScrollPhysics(),
-                      controller: FixedExtentScrollController(
-                        initialItem: selectedYear - 2020,
-                      ),
                       onSelectedItemChanged: (index) {
                         selectedYear = 2020 + index;
                       },
                       childDelegate: ListWheelChildBuilderDelegate(
-                        childCount: 20, // 2020–2039
+                        childCount: 20,
                         builder: (context, index) {
-                          return Center(
-                            child: Text(
-                              (2020 + index).toString(),
-                                style: TextStyle(color : uiVariables.textColorDefault,
-                                    fontWeight: FontWeight.bold
-                                )
+                          return AnimatedBuilder(
+                            animation: yearController,
+                            builder: (context, child) {
+                              int diff =
+                              (yearController.selectedItem - index).abs();
+
+                              double scale =
+                              (1 - (diff * 0.2)).clamp(0.7, 1.2);
+
+                              return Transform(
+                                alignment: Alignment.center,
+                                transform: Matrix4.identity()
+                                  ..scale(scale)
+                                  ..rotateX(diff * 0.2),
+                                child: child,
+                              );
+                            },
+                            child: Center(
+                              child: Text(
+                                (2020 + index).toString(),
+                                style: TextStyle(
+                                  fontSize: 20,
+                                  color: uiVariables.textColorDefault,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
                             ),
                           );
                         },
@@ -663,27 +721,31 @@ class _CalendarPageState extends State<CalendarPage> {
           actions: [
             TextButton(
               onPressed: () => Navigator.pop(context),
-              child: Text('Cancel',
+              child: Text(
+                'Cancel',
                 style: TextStyle(
-                    color: uiVariables.weightGainColor,
-                    fontWeight: FontWeight.bold,
-                    fontSize: uiVariables.subHeadingSize
-                ),),
+                  color: uiVariables.weightGainColor,
+                  fontWeight: FontWeight.bold,
+                  fontSize: uiVariables.subHeadingSize,
+                ),
+              ),
             ),
             ElevatedButton(
-              style : uiVariables.elevatedButtonStyle,
+              style: uiVariables.elevatedButtonStyle,
               onPressed: () {
                 setState(() {
                   _focusedDay = DateTime(selectedYear, selectedMonth, 1);
                 });
                 Navigator.pop(context);
               },
-              child: Text('OK',
+              child: Text(
+                'OK',
                 style: TextStyle(
-                    color: uiVariables.textColorDefault,
-                    fontWeight: FontWeight.bold,
-                    fontSize: uiVariables.subHeadingSize
-                ),),
+                  color: uiVariables.textColorDefault,
+                  fontWeight: FontWeight.bold,
+                  fontSize: uiVariables.subHeadingSize,
+                ),
+              ),
             ),
           ],
         );
@@ -780,9 +842,8 @@ class _CalendarPageState extends State<CalendarPage> {
     }
     return Drawer(
       child: Container(
-        color: uiVariables.scaffoldBackgroundColor,
+        decoration: uiVariables.bodyBoxDecorator,
         padding: const EdgeInsets.all(20),
-        // decoration: uiVariables.bodyBoxDecorator,
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
@@ -867,6 +928,12 @@ class _CalendarPageState extends State<CalendarPage> {
               width: double.infinity,
               child: ElevatedButton(
                 onPressed: () async {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (_) => const RainLoader(),
+                    ),
+                  );
                   await SessionManager.logout();
                   Navigator.pushAndRemoveUntil(
                     context,
