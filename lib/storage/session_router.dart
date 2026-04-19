@@ -1,186 +1,82 @@
-import 'dart:convert';
+import 'package:android_alarm_manager_plus/android_alarm_manager_plus.dart';
 import 'package:chalthee/storage/device_mapper.dart';
 import 'package:chalthee/storage/firebase_connect.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class SessionManager {
 
-  static const String sessionKey = "session";
-
-  /// Get full cache
-  static Future<Map<String, dynamic>> getSession() async {
-    final prefs = await SharedPreferences.getInstance();
-    final data = prefs.getString(sessionKey);
-    if (data == null) {
-      return {
-        "login": 0,
-        "users": []
-      };
-    }
-    print(data);
-    return jsonDecode(data);
-  }
-
-  /// Save session
-  static Future<void> saveSession(Map<String, dynamic> session) async {
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.setString(sessionKey, jsonEncode(session));
-  }
-
   /// Check login status
   static Future<bool> isLoggedIn() async {
-    final session = await getSession();
-    return session["login"] == 1;
+    final prefs = await SharedPreferences.getInstance();
+    return prefs.getBool('loginStatus') ?? false;
   }
 
-  /// Get current logged user
+  static Future<String?> getUserEmail() async {
+    final prefs = await SharedPreferences.getInstance();
+    return prefs.getString('userEmail');
+  }
+
+  static Future<String?> getUserName() async {
+    final prefs = await SharedPreferences.getInstance();
+    return prefs.getString('userName');
+  }
+
+  /// Get current logged user (stubbed structure for compatibility)
   static Future<Map<String, dynamic>?> getCurrentUser() async {
-    final session = await getSession();
-    final users = session["users"] as List;
-    for (var user in users) {
-      if (user["isloggedin"] == 1) {
-        return user;
-      }
+    final email = await getUserEmail();
+    final name = await getUserName();
+    if (email != null) {
+      return {
+        "usermail": email,
+        "username": name ?? "User",
+        "isloggedin": 1
+      };
     }
     return null;
   }
 
   /// Login user
-
-  static Future<void> loginUser(String name, String mail) async {
+  static Future<bool> loginUser(String name, String mail) async {
     final prefs = await SharedPreferences.getInstance();
-    Map<String, dynamic> session;
-    Map<String, dynamic>? userData;
-    bool found = false;
-    final sessionString = prefs.getString(sessionKey);
-    if(sessionString == null){
-      await DbConnect().getProductsByMail(mail);
-    } else {
-      List users = jsonDecode(sessionString)["users"];
-      for (var user in users) {
-        if (user["usermail"] == mail) {
-          found = true;
-        }
-      }
-      if(!found){
-        userData = await DbConnect().getProductsByMail(mail);
-      }
+    // Check if user exists in Firebase.
+    final existingUserMap = await DbConnect().getProductsByMail(mail);
+    if (existingUserMap == null) {
+       // Create new user record aligned to this unique device UUID because they aren't in Firebase
+       await DbConnect().createNewUserRecord(name, mail);
     }
-
-    final sessionData = prefs.getString(sessionKey);
-    if (sessionData == null) {
-      session = {
-        "login": 0,
-        "users": []
-      };
-      await DeviceMapper().getUuid();
-    } else {
-      session = jsonDecode(sessionData);
-    }
-    List users = session["users"];
-    found = false;
-    for (var user in users) {
-      if (user["usermail"] == mail) {
-        user["isloggedin"] = 1;
-        found = true;
-      } else {
-        user["isloggedin"] = 0;
-      }
-    }
-    if(!found && userData == null) {
-        users.add({
-          "username": name,
-          "usermail": mail,
-          "isloggedin": 1,
-          "weightMap": {}
-        });
-    }
-    session["login"] = 1;
-    await prefs.setString(sessionKey, jsonEncode(session));
+    await prefs.setBool('loginStatus', true);
+    await prefs.setString('userEmail', mail);
+    await prefs.setString('userName', name);
+    return true;
   }
 
   /// Logout current user
   static Future<void> logout() async {
-    final session = await getSession();
-    List users = session["users"];
-    for (var user in users) {
-      user["isloggedin"] = 0;
-    }
-    session["login"] = 0;
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.remove('loginStatus');
+    await prefs.remove('userEmail');
+    await prefs.remove('userName');
+    cleanLocalPreferences(prefs);
     DeviceMapper().changeSyncStatus(false);
-    //DbConnect().addProduct(session);
-    await saveSession(session);
   }
 
-  static Future<Map<String, dynamic>> getCurrentWeightMap() async {
-    final prefs = await SharedPreferences.getInstance();
-    final sessionString = prefs.getString(sessionKey);
-    if (sessionString == null) return {};
-    final session = jsonDecode(sessionString);
-    final users = session["users"];
-    for (var user in users) {
-      if (user["isloggedin"] == 1) {
-        return Map<String, dynamic>.from(
-          user["weightMap"] ?? {},
-        );
-      }
-    }
-    return {};
+  static Future<void> cleanLocalPreferences(SharedPreferences prefs) async{
+    await prefs.remove("syncHealth");
+    await prefs.remove("height");
+    await prefs.remove("isKg");
+    await prefs.remove("goalWeight");
+    await prefs.remove('alarmTime');
+    await AndroidAlarmManager.cancel(1);
   }
 
-
-  static Future<void> saveWeightMap(
-      Map<String, dynamic> weightMap) async {
-    final prefs = await SharedPreferences.getInstance();
-    final sessionString = prefs.getString(sessionKey);
-    if (sessionString == null) return;
-    final session = jsonDecode(sessionString);
-    final users = session["users"];
-    for (var user in users) {
-      if (user["isloggedin"] == 1) {
-        user["weightMap"] = weightMap;
-      }
-    }
-    DeviceMapper().changeSyncStatus(false);
-    await prefs.setString(sessionKey, jsonEncode(session));
+  static Future<double> getLocalPreferencesHeight() async{
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    return prefs.getDouble("height") ?? 0.0;
   }
 
-static Future<void> removeUsers(String mailId) async{
-  final prefs = await SharedPreferences.getInstance();
-  final sessionString = prefs.getString(sessionKey);
-  if (sessionString == null) return;
-  final session = jsonDecode(sessionString);
-  List users = session["users"];
-  users = users.where((user){
-    final email = user["usermail"];
-    if(email == mailId) return false;
-    return true;
-  }).toList();
-}
-
-  static Future<void> removeUsersWithoutWeightMap() async {
-    final prefs = await SharedPreferences.getInstance();
-    final sessionString = prefs.getString(sessionKey);
-    if (sessionString == null) return;
-    final session = jsonDecode(sessionString);
-    List users = session["users"];
-    /// keep only users that have weightMap and not empty
-    users = users.where((user) {
-      if (!user.containsKey("weightMap")) return false;
-      final weightMap = user["weightMap"];
-      if (weightMap == null) return false;
-      if (weightMap is Map && weightMap.isEmpty) return false;
-      return true;
-    }).toList();
-    session["users"] = users;
-    /// also fix login flag if no users exist
-    final hasLoggedInUser =
-    users.any((user) => user["isloggedin"] == 1);
-    session["login"] = hasLoggedInUser ? 1 : 0;
-    await prefs.setString(
-      sessionKey,
-      jsonEncode(session),
-    );
+  static Future<double> getLocalPreferencesWeight() async{
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    return prefs.getDouble("goalWeight") ?? 0.0;
   }
 
 }

@@ -7,7 +7,7 @@ class DeviceMapper {
   //late SharedPreferences prefs;
   // String? uuid;
   bool isSynced = true;
-  bool fbStatus = true;
+  // bool fbStatus = true;
   // static final DeviceMapper _instance =
   // DeviceMapper._internal();
   // factory DeviceMapper() => _instance;
@@ -44,20 +44,20 @@ class DeviceMapper {
     return isSynced;
   }
 
-  Future<bool?> getFbStatus() async{
-    final prefs = await SharedPreferences.getInstance();
-    final jsonString = prefs.getString(_key);
-    if (jsonString == null) return true;
-    final data = jsonDecode(jsonString);
-    fbStatus = data['fbStatus'] == 1;
-    return fbStatus;
-  }
+  // Future<bool?> getFbStatus() async{
+  //   final prefs = await SharedPreferences.getInstance();
+  //   final jsonString = prefs.getString(_key);
+  //   if (jsonString == null) return true;
+  //   final data = jsonDecode(jsonString);
+  //   fbStatus = data['fbStatus'] == 1;
+  //   return fbStatus;
+  // }
 
   Future<void> createSession() async {
     String? uuid = const Uuid().v4().replaceAll("-", "").toUpperCase();
     print("uuid = $uuid");
     isSynced = false;
-    fbStatus = true;
+    // fbStatus = true;
     await _save(uuid);
   }
 
@@ -67,18 +67,18 @@ class DeviceMapper {
     await _save(uuid);
   }
 
-  Future<void> changeFbStatus(bool fbSyncStatus) async {
-    String? uuid = await getUuid();
-    fbStatus = fbSyncStatus;
-    await _save(uuid);
-  }
+  // Future<void> changeFbStatus(bool fbSyncStatus) async {
+  //   String? uuid = await getUuid();
+  //   fbStatus = fbSyncStatus;
+  //   await _save(uuid);
+  // }
 
   Future<void> _save(String? uuid) async {
     final prefs = await SharedPreferences.getInstance();
     final data = {
       "uuid": uuid,
       "isSynced": isSynced ? 1 : 0,
-      "fbStatus": fbStatus ? 1 : 0
+      // "fbStatus": fbStatus ? 1 : 0
     };
     await prefs.setString(_key, jsonEncode(data));
   }
@@ -96,7 +96,7 @@ class DeviceMapper {
 
   Future<void> clear() async {
     isSynced = true;
-    fbStatus = true;
+    // fbStatus = true;
     await _save(null);
   }
 

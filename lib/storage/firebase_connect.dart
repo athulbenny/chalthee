@@ -1,52 +1,64 @@
+import 'package:chalthee/constants/constant_values.dart';
 import 'package:chalthee/storage/device_mapper.dart';
 import 'package:chalthee/storage/session_router.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class DbConnect {
-
   final FirebaseFirestore firestore = FirebaseFirestore.instance;
-  late CollectionReference usersCollection = firestore.collection('chalthee');
+  late CollectionReference usersCollection = firestore.collection(ConstantValues.firestoreCollection);
 
-  // Add a new document with an auto-generated ID
-  void addProduct(Map<String, dynamic> encodedString) async {
+  Future<Map<String, dynamic>?> fetchWeightMap() async {
     final uuid = await DeviceMapper().getUuid();
-    print("uuid in dbconnect = $uuid");
-    bool ableToSync = true;
-    try{
-      await usersCollection.doc(uuid).set(encodedString);
-    }catch(e){
-      ableToSync = false;
-    }
-    finally{
-      DeviceMapper().changeSyncStatus(ableToSync);
-    }
-  }
+    try {
+      final docSnapshot = await usersCollection.doc(uuid).get();
+      if (!docSnapshot.exists) return {};
+      final data = docSnapshot.data() as Map<String, dynamic>?;
+      if (data == null) return {};
+      final List users = data['users'] ?? [];
 
-// Fetch all documents from a collection
-  Future<Object?> getProductsByUuid(String uuid) async {
-    final docSnapshot = await usersCollection.doc(uuid).get();
-    return docSnapshot.data();
-  }
+      final currentUser = await SessionManager.getCurrentUser();
+      if (currentUser == null) return {};
+      final email = currentUser['usermail'];
 
-    Future<Map<String, dynamic>?> getProductsByUserMail(String mailId) async {
-      final querySnapshot = await usersCollection.get();
-      for (var doc in querySnapshot.docs) {
-        final Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
-        if (data.containsKey('users')) {
-          final List users = data['users'];
-          for (var user in users) {
-            final Map<String, dynamic> userMap = user as Map<String, dynamic>;
-            if (userMap['usermail'] == mailId) {
-              return {
-                "docId" : doc.id,
-                "user": userMap
-              };
-            }
-          }
+      for (var user in users) {
+        if ((user as Map)['usermail'] == email) {
+          return Map<String, dynamic>.from(user['weightMap'] ?? {});
         }
       }
-      return null;
+    } catch (e) {
+      print("Error fetching weight map from firebase: $e");
     }
+    return null;
+  }
+
+  Future<void> updateWeightMap(Map<String, dynamic> weightMap) async {
+    final uuid = await DeviceMapper().getUuid();
+    try {
+      final docSnapshot = await usersCollection.doc(uuid).get();
+      if (!docSnapshot.exists) return;
+      final data = docSnapshot.data() as Map<String, dynamic>?;
+      if (data == null) return;
+      List users = data['users'] ?? [];
+
+      final currentUser = await SessionManager.getCurrentUser();
+      if (currentUser == null) return;
+      final email = currentUser['usermail'];
+
+      bool found = false;
+      for (var i = 0; i < users.length; i++) {
+        if ((users[i] as Map)['usermail'] == email) {
+          users[i]['weightMap'] = weightMap;
+          found = true;
+          break;
+        }
+      }
+      if (found) {
+        await usersCollection.doc(uuid).update({'users': users});
+      }
+    } catch (e) {
+      print("Error updating weight map sequentially: $e");
+    }
+  }
 
   Future<Map<String, dynamic>?> getProductsByMail(String username) async {
     try {
@@ -56,20 +68,35 @@ class DbConnect {
         if (data == null) continue;
         final List<dynamic> users = data['users'] ?? [];
         final matchedUser = users.cast<Map<String, dynamic>?>().firstWhere(
-              (user) => user?['usermail'] == username,
+          (user) => user?['usermail'] == username,
           orElse: () => null,
         );
         if (matchedUser != null) {
-          await SessionManager.saveSession(data);
           await DeviceMapper().saveFromFirebase(doc.id);
           return matchedUser;
         }
       }
-    }catch(e){
-      await DeviceMapper().changeFbStatus(false);
+    } catch (e) {
+      print("Error getting weight map: $e");
     }
     return null;
   }
 
-
+  Future<void> createNewUserRecord(String name, String email) async {
+    final uuid = await DeviceMapper().getUuid();
+    final docSnapshot = await usersCollection.doc(uuid).get();
+    Map<String, dynamic> data = {};
+    if (docSnapshot.exists) {
+      data = docSnapshot.data() as Map<String, dynamic>? ?? {};
+    }
+    List users = data['users'] ?? [];
+    users.add({
+      "username": name,
+      "usermail": email,
+      "isloggedin": 1,
+      "weightMap": {},
+    });
+    data['users'] = users;
+    await usersCollection.doc(uuid).set(data);
+  }
 }

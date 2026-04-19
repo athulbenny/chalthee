@@ -1,24 +1,24 @@
-import 'package:chalthee/storage/session_router.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:chalthee/storage/firebase_connect.dart';
 
 class WeightStorage {
-  late SharedPreferences _prefs;
-  late SessionManager _sessionManager;
 
   final Map<DateTime, double> _weights = {};
   Map<DateTime, double> get weights => _weights;
 
   /// ---------------- INIT ----------------
-  Future<void> init() async {
-    _prefs = await SharedPreferences.getInstance();
-    /// Load from current logged-in user's weightMap
-    final map = await SessionManager.getCurrentWeightMap();
+  Future<bool> init() async {
+    /// Load directly from Firebase
+    final map = await DbConnect().fetchWeightMap();
     _weights.clear();
-    map.forEach((key, value) {
-      _weights[DateTime.parse(key)] =
-          (value as num).toDouble();
-    });
-    print(_weights);
+    if(map != null) {
+      map.forEach((key, value) {
+        _weights[DateTime.parse(key)] = (value as num).toDouble();
+      });
+      print(_weights);
+      return true;
+    }else {
+      return false;
+    }
   }
 
   /// ---------------- SAVE ----------------
@@ -29,7 +29,7 @@ class WeightStorage {
     final normalized =
     DateTime(date.year, date.month, date.day);
     _weights[normalized] = weight;
-    await _saveToSession();
+    await _saveToFirebase();
   }
 
   /// ---------------- DELETE ----------------
@@ -37,7 +37,7 @@ class WeightStorage {
     final normalized =
     DateTime(date.year, date.month, date.day);
     _weights.remove(normalized);
-    await _saveToSession();
+    await _saveToFirebase();
   }
 
   /// ---------------- GET PREVIOUS DAY ----------------
@@ -50,15 +50,15 @@ class WeightStorage {
     return _weights[prevDay];
   }
 
-  /// ---------------- SAVE TO SESSION ----------------
-  Future<void> _saveToSession() async {
+  /// ---------------- SAVE TO FIREBASE ----------------
+  Future<void> _saveToFirebase() async {
     final mapToSave = _weights.map(
           (k, v) => MapEntry(
         k.toIso8601String().split('T')[0],
         v,
       ),
     );
-    await SessionManager.saveWeightMap(mapToSave);
+    await DbConnect().updateWeightMap(mapToSave);
   }
 
 }
