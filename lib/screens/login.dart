@@ -28,17 +28,10 @@ class _LoginPageState extends State<LoginPage> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Container(
-            padding: const EdgeInsets.all(12),
-            decoration: BoxDecoration(
-              color: uiVariables.primaryContainer,
-              shape: BoxShape.circle,
-            ),
-            child: CircleAvatar(
-              backgroundColor: CommonUI().outlineVariant,
-              backgroundImage: AssetImage(ConstantValues.logo),
-              radius: 20,
-            ),
+          CircleAvatar(
+            backgroundColor: CommonUI().outlineVariant,
+            backgroundImage: AssetImage(ConstantValues.logo),
+            radius: 20,
           ),
           const SizedBox(height: 24),
           Text(
@@ -137,7 +130,7 @@ class _LoginPageState extends State<LoginPage> {
                   borderSide: BorderSide(color: uiVariables.primary, width: 2),
                 ),
               ),
-              validator: (val) => (val == null || !val.contains("@"))
+              validator: (val) => (val == null || !val.contains("@") || val.length<2)
                   ? "Enter valid email"
                   : null,
             ),

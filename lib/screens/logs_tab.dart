@@ -106,7 +106,7 @@ class _LogsTabState extends State<LogsTab> {
     setState(() {
       if (text.isNotEmpty) {
         final value = double.tryParse(text);
-        if (value != null) {
+        if (value != null && value > 0) {
           widget.weightStorage.saveWeight(key, value);
         }
       }

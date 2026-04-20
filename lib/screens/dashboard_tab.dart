@@ -24,18 +24,17 @@ class DashboardTab extends StatefulWidget {
 class _DashboardTabState extends State<DashboardTab> {
   double userHeight = 0.0;
   double goalWeight = 0.0;
+
   @override
   void initState() {
     super.initState();
     loadPrefs();
   }
 
-  Future<void> loadPrefs() async{
+  Future<void> loadPrefs() async {
     userHeight = await SessionManager.getLocalPreferencesHeight();
     goalWeight = await SessionManager.getLocalPreferencesWeight();
-    setState(() {
-
-    });
+    setState(() {});
   }
 
   @override
@@ -171,7 +170,10 @@ class _DashboardTabState extends State<DashboardTab> {
       currentWeight = widget.weightStorage.weights[lastEntryDate];
 
       // Calculate BMI
-      if (currentWeight != null && userHeight > 0) {
+      if (currentWeight != null &&
+          currentWeight > 0 &&
+          userHeight != null &&
+          userHeight > 0) {
         bmi = currentWeight / (userHeight * userHeight) * 10000;
         if (bmi < 18.5)
           bmiLabel = "Underweight";
@@ -240,7 +242,7 @@ class _DashboardTabState extends State<DashboardTab> {
                       children: [
                         Text(
                           currentWeight != null
-                              ? currentWeight.toStringAsFixed(1)
+                              ? currentWeight.toStringAsFixed(3)
                               : '',
                           style: GoogleFonts.manrope(
                             fontSize: 64,
@@ -250,8 +252,7 @@ class _DashboardTabState extends State<DashboardTab> {
                         ),
                         const SizedBox(width: 8),
                         Text(
-                          currentWeight != null ?
-                          'kg' : '',
+                          currentWeight != null ? 'kg' : '',
                           style: GoogleFonts.inter(
                             fontSize: 20,
                             fontWeight: FontWeight.bold,
@@ -275,28 +276,61 @@ class _DashboardTabState extends State<DashboardTab> {
                       child: Row(
                         crossAxisAlignment: CrossAxisAlignment.end,
                         children: [
-                          Expanded(
-                            child: Container(
-                              margin: const EdgeInsets.symmetric(horizontal: 2),
-                              height: goalWeight,
-                              decoration: BoxDecoration(
-                                color: CommonUI().primary,
-                                borderRadius: const BorderRadius.vertical(
-                                  top: Radius.circular(8),
+                          if (goalWeight == null ||
+                              goalWeight == 0.0 &&
+                              weightList.isEmpty)
+                            Expanded(
+                              child: Container(
+                                margin: const EdgeInsets.symmetric(
+                                  horizontal: 2,
+                                ),
+                                height: 60,
+                                decoration: BoxDecoration(
+                                  color: CommonUI().primary,
+                                  borderRadius: const BorderRadius.all(
+                                    Radius.circular(8),
+                                  ),
+                                ),
+                                child: Center(
+                                  child: TextButton(
+                                    onPressed: () => widget.onSwitchTab(3),
+                                    child: Text(
+                                      'Setup your profile',
+                                      style: GoogleFonts.inter(
+                                        fontSize: 16, fontWeight: FontWeight.bold,
+                                        color: Colors.white,
+                                      ),
+                                    ),
+                                  ),
                                 ),
                               ),
-                              child: Center(
-                                child: goalWeight != null && goalWeight != 0.0 ?
-                                Text(
-                                  weightList.isEmpty? 'Target weight : $goalWeight' : '$goalWeight',
-                                  style: const TextStyle(
-                                    color: Colors.white,
-                                    fontSize: 16,
+                            ),
+                          if (goalWeight != null && goalWeight > 0.0)
+                            Expanded(
+                              child: Container(
+                                margin: const EdgeInsets.symmetric(
+                                  horizontal: 2,
+                                ),
+                                height: goalWeight,
+                                decoration: BoxDecoration(
+                                  color: CommonUI().primary,
+                                  borderRadius: const BorderRadius.vertical(
+                                    top: Radius.circular(8),
                                   ),
-                                ): TextButton(onPressed: ()=> widget.onSwitchTab(3), child: Text('Setup your profile', style: GoogleFonts.inter(fontSize: 13,color: Colors.white))),
+                                ),
+                                child: Center(
+                                  child: Text(
+                                    weightList.isEmpty
+                                        ? 'Target weight : $goalWeight'
+                                        : '$goalWeight',
+                                    style: const TextStyle(
+                                      color: Colors.white,
+                                      fontSize: 16,
+                                    ),
+                                  ),
+                                ),
                               ),
                             ),
-                          ),
                           for (var i in weightList)
                             Expanded(
                               child: Container(

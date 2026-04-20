@@ -282,10 +282,6 @@ class _ProfileTabState extends State<ProfileTab> {
                       ),
                     ],
                   ),
-                  IconButton(
-                    icon: Icon(Icons.settings, color: CommonUI().primary),
-                    onPressed: () {},
-                  ),
                 ],
               ),
               const SizedBox(height: 32),
