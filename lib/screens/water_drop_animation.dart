@@ -21,12 +21,13 @@ class _RainLoaderState extends State<RainLoader>
   void initState() {
     super.initState();
 
-    controller = AnimationController(
-      vsync: this,
-      duration: const Duration(milliseconds: 2000),
-    )..addListener(() {
-      setState(() {});
-    });
+    controller =
+        AnimationController(
+          vsync: this,
+          duration: const Duration(milliseconds: 2000),
+        )..addListener(() {
+          setState(() {});
+        });
 
     controller.repeat();
   }
@@ -70,10 +71,7 @@ class _RainLoaderState extends State<RainLoader>
           initializeDrops(size);
           updateDrops(size);
 
-          return CustomPaint(
-            painter: _RainPainter(drops),
-            size: size,
-          );
+          return CustomPaint(painter: _RainPainter(drops), size: size);
         },
       ),
     );
@@ -91,11 +89,7 @@ class _Drop {
   double speed;
   double size;
 
-  _Drop({
-    required this.position,
-    required this.speed,
-    required this.size,
-  });
+  _Drop({required this.position, required this.speed, required this.size});
 }
 
 class _RainPainter extends CustomPainter {
@@ -115,17 +109,12 @@ class _RainPainter extends CustomPainter {
     final radius = drop.size;
 
     final paint = Paint()
-      ..shader = const RadialGradient(
-        colors: [
-          Color(0xFF81D4FA),
-          Color(0xFF0288D1),
-        ],
-      ).createShader(
-        Rect.fromCircle(
-          center: Offset(pos.x, pos.y),
-          radius: radius,
-        ),
-      );
+      ..shader =
+          const RadialGradient(
+            colors: [Color(0xFF81D4FA), Color(0xFF0288D1)],
+          ).createShader(
+            Rect.fromCircle(center: Offset(pos.x, pos.y), radius: radius),
+          );
 
     final path = Path();
 
@@ -145,12 +134,7 @@ class _RainPainter extends CustomPainter {
       pos.y + radius,
     );
 
-    path.quadraticBezierTo(
-      pos.x + radius,
-      pos.y,
-      pos.x,
-      pos.y - radius,
-    );
+    path.quadraticBezierTo(pos.x + radius, pos.y, pos.x, pos.y - radius);
 
     canvas.drawPath(path, paint);
   }

@@ -34,17 +34,38 @@ class _LoginPageState extends State<LoginPage> {
               color: uiVariables.primaryContainer,
               shape: BoxShape.circle,
             ),
-            child:  CircleAvatar(
-              backgroundColor: Colors.transparent,
+            child: CircleAvatar(
+              backgroundColor: CommonUI().outlineVariant,
               backgroundImage: AssetImage(ConstantValues.logo),
               radius: 20,
             ),
           ),
           const SizedBox(height: 24),
-          Text('Welcome to', style: GoogleFonts.inter(fontSize: 16, fontWeight: FontWeight.w600, color: uiVariables.onSurfaceVariant)),
-          Text('The Chalthee Verse', style: GoogleFonts.manrope(fontSize: 36, fontWeight: FontWeight.w800, color: uiVariables.primary, letterSpacing: -1.0)),
+          Text(
+            'Welcome to',
+            style: GoogleFonts.inter(
+              fontSize: 16,
+              fontWeight: FontWeight.w600,
+              color: uiVariables.onSurfaceVariant,
+            ),
+          ),
+          Text(
+            'The Chalthee Verse',
+            style: GoogleFonts.manrope(
+              fontSize: 36,
+              fontWeight: FontWeight.w800,
+              color: uiVariables.primary,
+              letterSpacing: -1.0,
+            ),
+          ),
           const SizedBox(height: 8),
-          Text('Sign in to continue your wellness journey.', style: GoogleFonts.inter(fontSize: 14, color: uiVariables.onSurfaceVariant)),
+          Text(
+            'Sign in to continue your wellness journey.',
+            style: GoogleFonts.inter(
+              fontSize: 14,
+              color: uiVariables.onSurfaceVariant,
+            ),
+          ),
         ],
       ),
     );
@@ -62,8 +83,14 @@ class _LoginPageState extends State<LoginPage> {
                 hintStyle: GoogleFonts.inter(color: uiVariables.outlineVariant),
                 filled: true,
                 fillColor: uiVariables.surfaceContainerLowest,
-                prefixIcon: Icon(Icons.person_outline, color: uiVariables.primary),
-                contentPadding: const EdgeInsets.symmetric(vertical: 20, horizontal: 20),
+                prefixIcon: Icon(
+                  Icons.person_outline,
+                  color: uiVariables.primary,
+                ),
+                contentPadding: const EdgeInsets.symmetric(
+                  vertical: 20,
+                  horizontal: 20,
+                ),
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(16),
                   borderSide: BorderSide.none,
@@ -77,18 +104,26 @@ class _LoginPageState extends State<LoginPage> {
                   borderSide: BorderSide(color: uiVariables.primary, width: 2),
                 ),
               ),
-              validator: (val) => (val == null || val.trim().isEmpty) ? "Enter your name" : null,
+              validator: (val) => (val == null || val.trim().isEmpty)
+                  ? "Enter your name"
+                  : null,
             ),
             const SizedBox(height: 16),
-             TextFormField(
+            TextFormField(
               controller: _emailController,
               decoration: InputDecoration(
                 hintText: 'Email Address',
                 hintStyle: GoogleFonts.inter(color: uiVariables.outlineVariant),
                 filled: true,
                 fillColor: uiVariables.surfaceContainerLowest,
-                prefixIcon: Icon(Icons.email_outlined, color: uiVariables.primary),
-                contentPadding: const EdgeInsets.symmetric(vertical: 20, horizontal: 20),
+                prefixIcon: Icon(
+                  Icons.email_outlined,
+                  color: uiVariables.primary,
+                ),
+                contentPadding: const EdgeInsets.symmetric(
+                  vertical: 20,
+                  horizontal: 20,
+                ),
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(16),
                   borderSide: BorderSide.none,
@@ -102,42 +137,27 @@ class _LoginPageState extends State<LoginPage> {
                   borderSide: BorderSide(color: uiVariables.primary, width: 2),
                 ),
               ),
-              validator: (val) => (val == null || !val.contains("@")) ? "Enter valid email" : null,
+              validator: (val) => (val == null || !val.contains("@"))
+                  ? "Enter valid email"
+                  : null,
             ),
             const SizedBox(height: 32),
             InkWell(
               onTap: () async {
-                 // if (_formKey.currentState!.validate()) {
-                 //    setState(() { _isLoading = true; });
-                 //    await SessionManager.loginUser(
-                 //      _nameController.text.trim(),
-                 //      _emailController.text.trim(),
-                 //    );
-                 //    if (mounted) {
-                 //      Navigator.pushReplacement(
-                 //        context,
-                 //        MaterialPageRoute(builder: (_) => const CalendarPage()),
-                 //      );
-                 //    }
-                 // }
                 if (_formKey.currentState!.validate()) {
                   setState(() {
                     _isLoading = true;
                   });
-
                   try {
                     final result = await Future.any([
                       SessionManager.loginUser(
                         _nameController.text.trim(),
                         _emailController.text.trim(),
                       ),
-                      Future.delayed(const Duration(seconds: 5), () => false),
+                      Future.delayed(const Duration(seconds: 15), () => false),
                     ]);
-
                     if (!mounted) return;
-
                     if (!result) {
-                      // 🚨 Go to error screen
                       Navigator.pushReplacement(
                         context,
                         MaterialPageRoute(
@@ -145,18 +165,13 @@ class _LoginPageState extends State<LoginPage> {
                         ),
                       );
                     } else {
-                      // ✅ Success
                       Navigator.pushReplacement(
                         context,
-                        MaterialPageRoute(
-                          builder: (_) => const CalendarPage(),
-                        ),
+                        MaterialPageRoute(builder: (_) => const CalendarPage()),
                       );
                     }
                   } catch (e) {
                     if (!mounted) return;
-
-                    // ❌ Any error → error screen
                     Navigator.pushReplacement(
                       context,
                       MaterialPageRoute(
@@ -176,17 +191,39 @@ class _LoginPageState extends State<LoginPage> {
                 width: double.infinity,
                 padding: const EdgeInsets.symmetric(vertical: 20),
                 decoration: BoxDecoration(
-                  gradient: LinearGradient(colors: [uiVariables.primary, uiVariables.primaryContainer]),
+                  gradient: LinearGradient(
+                    colors: [uiVariables.primary, uiVariables.primaryContainer],
+                  ),
                   borderRadius: BorderRadius.circular(9999),
-                  boxShadow: [BoxShadow(color: uiVariables.primary.withOpacity(0.3), blurRadius: 10, offset: const Offset(0, 4))]
+                  boxShadow: [
+                    BoxShadow(
+                      color: uiVariables.primary.withOpacity(0.3),
+                      blurRadius: 10,
+                      offset: const Offset(0, 4),
+                    ),
+                  ],
                 ),
                 child: Center(
-                  child: _isLoading 
-                      ? const SizedBox(width: 20, height: 20, child: CircularProgressIndicator(color: Colors.white, strokeWidth: 2))
-                      : Text('Continue', style: GoogleFonts.inter(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 16)),
+                  child: _isLoading
+                      ? const SizedBox(
+                          width: 20,
+                          height: 20,
+                          child: CircularProgressIndicator(
+                            color: Colors.white,
+                            strokeWidth: 2,
+                          ),
+                        )
+                      : Text(
+                          'Continue',
+                          style: GoogleFonts.inter(
+                            color: Colors.white,
+                            fontWeight: FontWeight.bold,
+                            fontSize: 16,
+                          ),
+                        ),
                 ),
               ),
-            )
+            ),
           ],
         ),
       ),
@@ -199,15 +236,11 @@ class _LoginPageState extends State<LoginPage> {
           SingleChildScrollView(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                header,
-                form,
-              ],
+              children: [header, form],
             ),
           ),
-          // if (_isLoading) const Center(child: CircularProgressIndicator()),
         ],
-      )
+      ),
     );
   }
 }

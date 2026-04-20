@@ -12,7 +12,7 @@ class CommonUI {
   final Color surfaceContainerHigh = const Color(0xFFE5E9E9);
   final Color surfaceContainerHighest = const Color(0xFFDFE3E3);
   final Color surfaceContainerLowest = const Color(0xFFFFFFFF);
-  
+
   final Color primary = const Color(0xFF006067);
   final Color primaryContainer = const Color(0xFF007b83);
   final Color onPrimaryContainer = const Color(0xFFd0fbff);
@@ -26,16 +26,14 @@ class CommonUI {
 
   final Color onSurface = const Color(0xFF181C1D);
   final Color onSurfaceVariant = const Color(0xFF3E494A);
-  
+
   final Color outlineVariant = const Color(0xFFBDC9CA);
-  
+
   final Color error = const Color(0xFFba1a1a);
   final Color onError = const Color(0xFFFFFFFF);
 
   // BoxDecorations
-  BoxDecoration get bodyBoxDecorator => BoxDecoration(
-    color: surface,
-  );
+  BoxDecoration get bodyBoxDecorator => BoxDecoration(color: surface);
 
   BoxDecoration get cardDecorator => BoxDecoration(
     color: surfaceContainerLowest,
@@ -69,12 +67,18 @@ class CommonUI {
     fillColor: const Color(0xFFFFFFFF),
     contentPadding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
     enabledBorder: const UnderlineInputBorder(
-        borderSide: BorderSide(color: Colors.black),
-        borderRadius: BorderRadius.only(topLeft: Radius.circular(8), topRight: Radius.circular(8)),
+      borderSide: BorderSide(color: Colors.black),
+      borderRadius: BorderRadius.only(
+        topLeft: Radius.circular(8),
+        topRight: Radius.circular(8),
+      ),
     ),
     focusedBorder: const UnderlineInputBorder(
-        borderSide: BorderSide(color: Color(0xFF006067), width: 2),
-        borderRadius: BorderRadius.only(topLeft: Radius.circular(8), topRight: Radius.circular(8)),
+      borderSide: BorderSide(color: Color(0xFF006067), width: 2),
+      borderRadius: BorderRadius.only(
+        topLeft: Radius.circular(8),
+        topRight: Radius.circular(8),
+      ),
     ),
   );
 
@@ -85,18 +89,21 @@ class CommonUI {
   ];
 
   Color get scaffoldBackgroundColor => surface;
+
   Color get textColorDefault => onSurface;
+
   Color get weightGainColor => error;
+
   Color get weightLossColor => secondary;
-  
+
   double get mainHeadingSize => 24.0;
+
   double get mediumHeadingSize => 18.0;
+
   double get subHeadingSize => 14.0;
 
-  BoxDecoration get bodyCircleDecorator => BoxDecoration(
-    color: surface,
-    shape: BoxShape.circle,
-  );
+  BoxDecoration get bodyCircleDecorator =>
+      BoxDecoration(color: surface, shape: BoxShape.circle);
 
   ButtonStyle get elevatedButtonStyle => ElevatedButton.styleFrom(
     backgroundColor: primary,

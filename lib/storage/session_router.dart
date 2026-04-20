@@ -1,27 +1,26 @@
 import 'package:android_alarm_manager_plus/android_alarm_manager_plus.dart';
+import 'package:chalthee/constants/constant_values.dart';
 import 'package:chalthee/storage/device_mapper.dart';
 import 'package:chalthee/storage/firebase_connect.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class SessionManager {
 
-  /// Check login status
   static Future<bool> isLoggedIn() async {
     final prefs = await SharedPreferences.getInstance();
-    return prefs.getBool('loginStatus') ?? false;
+    return prefs.getBool(ConstantValues.loginStatusCache) ?? false;
   }
 
   static Future<String?> getUserEmail() async {
     final prefs = await SharedPreferences.getInstance();
-    return prefs.getString('userEmail');
+    return prefs.getString(ConstantValues.userEmailCache);
   }
 
   static Future<String?> getUserName() async {
     final prefs = await SharedPreferences.getInstance();
-    return prefs.getString('userName');
+    return prefs.getString(ConstantValues.userNameCache);
   }
 
-  /// Get current logged user (stubbed structure for compatibility)
   static Future<Map<String, dynamic>?> getCurrentUser() async {
     final email = await getUserEmail();
     final name = await getUserName();
@@ -35,7 +34,6 @@ class SessionManager {
     return null;
   }
 
-  /// Login user
   static Future<bool> loginUser(String name, String mail) async {
     final prefs = await SharedPreferences.getInstance();
     // Check if user exists in Firebase.
@@ -44,18 +42,18 @@ class SessionManager {
        // Create new user record aligned to this unique device UUID because they aren't in Firebase
        await DbConnect().createNewUserRecord(name, mail);
     }
-    await prefs.setBool('loginStatus', true);
-    await prefs.setString('userEmail', mail);
-    await prefs.setString('userName', name);
+    await prefs.setBool(ConstantValues.loginStatusCache, true);
+    await prefs.setString(ConstantValues.userEmailCache, mail);
+    await prefs.setString(ConstantValues.userNameCache, name);
     return true;
   }
 
-  /// Logout current user
   static Future<void> logout() async {
     final prefs = await SharedPreferences.getInstance();
-    await prefs.remove('loginStatus');
-    await prefs.remove('userEmail');
-    await prefs.remove('userName');
+    await prefs.remove(ConstantValues.loginStatusCache);
+    await prefs.remove(ConstantValues.userEmailCache);
+    await prefs.remove(ConstantValues.userNameCache);
+    await prefs.remove(ConstantValues.uniqueDeviceIdCache);
     cleanLocalPreferences(prefs);
     DeviceMapper().changeSyncStatus(false);
   }

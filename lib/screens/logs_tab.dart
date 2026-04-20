@@ -104,14 +104,22 @@ class _LogsTabState extends State<LogsTab> {
     final key = WeightCalculatorHelper.normalizeDate(_selectedDay!);
     final text = _weightController.text.trim();
     setState(() {
-      if (text.isEmpty) {
-        widget.weightStorage.deleteWeight(key);
-      } else {
+      if (text.isNotEmpty) {
         final value = double.tryParse(text);
         if (value != null) {
           widget.weightStorage.saveWeight(key, value);
         }
       }
+      _isEditingWeight = false;
+      _weightController.clear();
+    });
+  }
+
+  void _dltWeight() {
+    if (_selectedDay == null) return;
+    final key = WeightCalculatorHelper.normalizeDate(_selectedDay!);
+    setState(() {
+      widget.weightStorage.deleteWeight(key);
       _isEditingWeight = false;
       _weightController.clear();
     });
@@ -585,7 +593,7 @@ class _LogsTabState extends State<LogsTab> {
                                   InkWell(
                                     onTap: () {
                                       _weightController.clear();
-                                      _saveWeight();
+                                      _dltWeight();
                                     },
                                     child: _button(
                                       icon: Icons.delete,

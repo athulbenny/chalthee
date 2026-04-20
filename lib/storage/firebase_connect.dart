@@ -5,7 +5,9 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 
 class DbConnect {
   final FirebaseFirestore firestore = FirebaseFirestore.instance;
-  late CollectionReference usersCollection = firestore.collection(ConstantValues.firestoreCollection);
+  late CollectionReference usersCollection = firestore.collection(
+    ConstantValues.firestoreCollection,
+  );
 
   Future<Map<String, dynamic>?> fetchWeightMap() async {
     final uuid = await DeviceMapper().getUuid();

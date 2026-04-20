@@ -1,12 +1,9 @@
 import 'package:chalthee/constants/CommonUI.dart';
-import 'package:chalthee/screens/system_status_screen.dart';
-import 'package:chalthee/screens/water_drop_animation.dart';
 import 'package:flutter/material.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 import '../helpers/WeightCalculator.dart';
-import '../storage/weight_storage.dart';
 import '../storage/session_router.dart';
+import '../storage/weight_storage.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import 'dashboard_tab.dart';
@@ -18,11 +15,7 @@ class CalendarPage extends StatefulWidget {
   final WeightStorage? preloadedStorage;
   final Map<String, dynamic>? preloadedUser;
 
-  const CalendarPage({
-    this.preloadedStorage,
-    this.preloadedUser,
-    super.key,
-  });
+  const CalendarPage({this.preloadedStorage, this.preloadedUser, super.key});
 
   @override
   State<CalendarPage> createState() => _CalendarPageState();
@@ -38,6 +31,7 @@ class _CalendarPageState extends State<CalendarPage> {
   double goalWeight = 0.0;
   Map<String, dynamic>? user;
   bool result = false;
+
   // We no longer strictly need this ScaffoldKey for drawer handling,
   // but we keep it in case we need to show Snackbars or other scaffold traits in the future.
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
@@ -65,10 +59,10 @@ class _CalendarPageState extends State<CalendarPage> {
     });
   }
 
-  void updateUserIfNull() async{
+  void updateUserIfNull() async {
     // Use preloaded data from splash screen, falling back to empty/new if missing
     user = widget.preloadedUser;
-    if(widget.preloadedUser == null){
+    if (widget.preloadedUser == null) {
       user = await SessionManager.getCurrentUser();
     }
     _userName = user?["username"] ?? "User";
@@ -106,12 +100,10 @@ class _CalendarPageState extends State<CalendarPage> {
               TrendsTab(
                 userName: _userName,
                 weightStorage: _weightStorage,
-                onOpenProfile: () => _onSwitchTab(3), calculator: _calculator,
+                onOpenProfile: () => _onSwitchTab(3),
+                calculator: _calculator,
               ),
-              ProfileTab(
-                userName: _userName,
-                email: _email,
-              ),
+              ProfileTab(userName: _userName, email: _email),
             ],
           ),
           bottomNavigationBar: _buildBottomNav(),
@@ -132,8 +124,14 @@ class _CalendarPageState extends State<CalendarPage> {
           currentIndex: _selectedIndex,
           selectedItemColor: CommonUI().primary,
           unselectedItemColor: CommonUI().onSurfaceVariant,
-          selectedLabelStyle: GoogleFonts.inter(fontSize: 11, fontWeight: FontWeight.w600),
-          unselectedLabelStyle: GoogleFonts.inter(fontSize: 11, fontWeight: FontWeight.normal),
+          selectedLabelStyle: GoogleFonts.inter(
+            fontSize: 11,
+            fontWeight: FontWeight.w600,
+          ),
+          unselectedLabelStyle: GoogleFonts.inter(
+            fontSize: 11,
+            fontWeight: FontWeight.normal,
+          ),
           onTap: _onSwitchTab,
           items: const [
             BottomNavigationBarItem(

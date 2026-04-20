@@ -6,12 +6,17 @@ import '../constants/CommonUI.dart';
 import '../constants/constant_values.dart';
 import '../helpers/WeightCalculator.dart';
 
-
 class AddWeightScreen extends StatefulWidget {
   final WeightStorage weightStorage;
   final String userName;
   final Function(int) onSwitchTab;
-  const AddWeightScreen({super.key, required this.weightStorage, required this.userName, required this.onSwitchTab});
+
+  const AddWeightScreen({
+    super.key,
+    required this.weightStorage,
+    required this.userName,
+    required this.onSwitchTab,
+  });
 
   @override
   State<AddWeightScreen> createState() => _AddWeightScreenState();
@@ -33,29 +38,12 @@ class _AddWeightScreenState extends State<AddWeightScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final sortedKeys = widget.weightStorage.weights.keys.toList()..sort((a, b) => b.compareTo(a));
+    final sortedKeys = widget.weightStorage.weights.keys.toList()
+      ..sort((a, b) => b.compareTo(a));
     lastEntryDate = sortedKeys.first;
     weight = widget.weightStorage.weights[lastEntryDate]!;
     return Scaffold(
       backgroundColor: const Color(0xFFEFF3F3),
-      // appBar: AppBar(
-      //   backgroundColor: Colors.transparent,
-      //   elevation: 0,
-      //   leading: IconButton(
-      //     icon: const Icon(Icons.close, color: Colors.teal),
-      //     onPressed: () => Navigator.pop(context),
-      //   ),
-      //   centerTitle: true,
-      //   title:  Text(
-      //     ConstantValues.appName,
-      //     style: GoogleFonts.manrope(
-      //       fontSize: 20,
-      //       fontWeight: FontWeight.w800,
-      //       color: CommonUI().primary,
-      //       letterSpacing: -0.5,
-      //     ),
-      //   ),
-      // ),
       body: SafeArea(
         child: SingleChildScrollView(
           padding: const EdgeInsets.all(16),
@@ -78,8 +66,13 @@ class _AddWeightScreenState extends State<AddWeightScreen> {
                           child: CircleAvatar(
                             backgroundColor: CommonUI().surfaceContainerHighest,
                             child: Text(
-                              widget.userName.isNotEmpty ? widget.userName[0].toUpperCase() : 'U',
-                              style: GoogleFonts.inter(color: CommonUI().primary, fontWeight: FontWeight.bold),
+                              widget.userName.isNotEmpty
+                                  ? widget.userName[0].toUpperCase()
+                                  : 'U',
+                              style: GoogleFonts.inter(
+                                color: CommonUI().primary,
+                                fontWeight: FontWeight.bold,
+                              ),
                             ),
                           ),
                         ),
@@ -98,13 +91,18 @@ class _AddWeightScreenState extends State<AddWeightScreen> {
                     IconButton(
                       icon: Icon(Icons.close, color: CommonUI().primary),
                       onPressed: () => Navigator.pop(context),
-                    )
+                    ),
                   ],
                 ),
                 Center(
                   child: Text(
                     "CURRENT WEIGHT",
-                    style: GoogleFonts.manrope(fontSize: 32, fontWeight: FontWeight.w800, color: CommonUI().onSurface, height: 1.1),
+                    style: GoogleFonts.manrope(
+                      fontSize: 32,
+                      fontWeight: FontWeight.w800,
+                      color: CommonUI().onSurface,
+                      height: 1.1,
+                    ),
                   ),
                 ),
                 const SizedBox(height: 20),
@@ -164,8 +162,9 @@ class _AddWeightScreenState extends State<AddWeightScreen> {
                   ),
                 ),
                 const SizedBox(height: 20),
-                Text("MEASUREMENT DATE",
-                    style: GoogleFonts.inter(
+                Text(
+                  "MEASUREMENT DATE",
+                  style: GoogleFonts.inter(
                     fontSize: 12,
                     fontWeight: FontWeight.w800,
                     letterSpacing: 2.0,
@@ -187,11 +186,14 @@ class _AddWeightScreenState extends State<AddWeightScreen> {
                       children: [
                         Row(
                           children: [
-                            const Icon(Icons.calendar_today,
-                                color: Colors.teal),
+                            const Icon(
+                              Icons.calendar_today,
+                              color: Colors.teal,
+                            ),
                             const SizedBox(width: 10),
                             Text(
-                                "${selectedDate.year}-${selectedDate.month.toString().padLeft(2, '0')}-${selectedDate.day.toString().padLeft(2, '0')}"                            ),
+                              "${selectedDate.year}-${selectedDate.month.toString().padLeft(2, '0')}-${selectedDate.day.toString().padLeft(2, '0')}",
+                            ),
                           ],
                         ),
                         const Icon(Icons.calendar_today),
@@ -245,7 +247,7 @@ class _AddWeightScreenState extends State<AddWeightScreen> {
                     maxLines: null,
                     decoration: const InputDecoration.collapsed(
                       hintText:
-                      "Add details about your morning routine, water intake, etc...",
+                          "Add details about your morning routine, water intake, etc...",
                     ),
                   ),
                 ),
@@ -263,7 +265,11 @@ class _AddWeightScreenState extends State<AddWeightScreen> {
                     onPressed: _saveEntry,
                     child: const Text(
                       "Save Entry",
-                      style: TextStyle(fontSize: 18, color: Colors.white, fontWeight: FontWeight.bold),
+                      style: TextStyle(
+                        fontSize: 18,
+                        color: Colors.white,
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
                   ),
                 ),
@@ -330,8 +336,15 @@ class _AddWeightScreenState extends State<AddWeightScreen> {
         "${selectedDate.year}-"
         "${selectedDate.month.toString().padLeft(2, '0')}-"
         "${selectedDate.day.toString().padLeft(2, '0')}";
-    final key = WeightCalculatorHelper.normalizeDate(DateTime.parse(formattedDate));
-    debugPrint("Saved: date: $key,  ${weight.toStringAsFixed(3)} ${isKg ? 'kg' : 'lbs'} | Mood: $selectedMood | Notes: ${notesController.text}");
-    widget.weightStorage.saveWeight(key, double.parse(weight.toStringAsFixed(3)));
+    final key = WeightCalculatorHelper.normalizeDate(
+      DateTime.parse(formattedDate),
+    );
+    debugPrint(
+      "Saved: date: $key,  ${weight.toStringAsFixed(3)} ${isKg ? 'kg' : 'lbs'} | Mood: $selectedMood | Notes: ${notesController.text}",
+    );
+    widget.weightStorage.saveWeight(
+      key,
+      double.parse(weight.toStringAsFixed(3)),
+    );
   }
 }

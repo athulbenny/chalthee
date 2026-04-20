@@ -5,11 +5,20 @@ class WeightCalculatorHelper {
 
   WeightCalculatorHelper(this.storage);
 
-  static DateTime normalizeDate(DateTime date) => DateTime(date.year, date.month, date.day);
-  static DateTime startOfWeek(DateTime date) => normalizeDate(date).subtract(Duration(days: date.weekday - 1));
-  static DateTime endOfWeek(DateTime date) => startOfWeek(date).add(const Duration(days: 6));
-  static DateTime startOfMonth(DateTime date) => DateTime(date.year, date.month, 1);
-  static DateTime endOfMonth(DateTime date) => DateTime(date.year, date.month + 1, 0);
+  static DateTime normalizeDate(DateTime date) =>
+      DateTime(date.year, date.month, date.day);
+
+  static DateTime startOfWeek(DateTime date) =>
+      normalizeDate(date).subtract(Duration(days: date.weekday - 1));
+
+  static DateTime endOfWeek(DateTime date) =>
+      startOfWeek(date).add(const Duration(days: 6));
+
+  static DateTime startOfMonth(DateTime date) =>
+      DateTime(date.year, date.month, 1);
+
+  static DateTime endOfMonth(DateTime date) =>
+      DateTime(date.year, date.month + 1, 0);
 
   double? dailyDifference(DateTime day) {
     final today = storage.weights[DateTime(day.year, day.month, day.day)];
@@ -24,9 +33,9 @@ class WeightCalculatorHelper {
     return sum / entries.length;
   }
 
-  double? getInitialWeight(List<MapEntry<DateTime, double>> entries){
-  if (entries.isEmpty) return null;
-  return entries.first.value;
+  double? getInitialWeight(List<MapEntry<DateTime, double>> entries) {
+    if (entries.isEmpty) return null;
+    return entries.first.value;
   }
 
   double? calculateDiff(List<MapEntry<DateTime, double>> entries) {

@@ -42,6 +42,7 @@ class TrendsTab extends StatelessWidget {
           );
         }
       }
+
       // Streak Calculation
       DateTime expectedDate = sortedKeys.first;
       for (var date in sortedKeys) {
@@ -69,7 +70,7 @@ class TrendsTab extends StatelessWidget {
         if (firstEntryWeight - w >= 5.0) {
           hasLost5kg = true;
           first5kgDate =
-          "${sortedKeys[i].day}/${sortedKeys[i].month}/${sortedKeys[i].year}";
+              "${sortedKeys[i].day}/${sortedKeys[i].month}/${sortedKeys[i].year}";
           break;
         }
       }
@@ -82,7 +83,7 @@ class TrendsTab extends StatelessWidget {
       if (thisMonthKeys.length >= 2) {
         monthlyDiff =
             weightStorage.weights[thisMonthKeys.first]! -
-                weightStorage.weights[thisMonthKeys.last]!;
+            weightStorage.weights[thisMonthKeys.last]!;
       }
     }
 
@@ -222,83 +223,83 @@ class TrendsTab extends StatelessWidget {
                       ),
                       child: (spotList.isEmpty)
                           ? Center(
-                        child: Column(
-                          children: [
-                            SizedBox(height: 10),
-                            Icon(
-                              Icons.show_chart,
-                              size: 55,
-                              color: uiVariables.primary,
-                            ),
-                            SizedBox(height: 10),
-                            Text(
-                              'No data available',
-                              style: GoogleFonts.inter(
-                                fontWeight: FontWeight.w600,
-                                fontSize: 15,
+                              child: Column(
+                                children: [
+                                  SizedBox(height: 10),
+                                  Icon(
+                                    Icons.show_chart,
+                                    size: 55,
+                                    color: uiVariables.primary,
+                                  ),
+                                  SizedBox(height: 10),
+                                  Text(
+                                    'No data available',
+                                    style: GoogleFonts.inter(
+                                      fontWeight: FontWeight.w600,
+                                      fontSize: 15,
+                                    ),
+                                  ),
+                                ],
                               ),
-                            ),
-                          ],
-                        ),
-                      )
+                            )
                           : LineChart(
-                        LineChartData(
-                          gridData: FlGridData(show: false),
-                          borderData: FlBorderData(show: false),
-                          titlesData: FlTitlesData(
-                            topTitles: AxisTitles(
-                              sideTitles: SideTitles(showTitles: false),
-                            ),
-                            rightTitles: AxisTitles(
-                              sideTitles: SideTitles(showTitles: false),
-                            ),
+                              LineChartData(
+                                gridData: FlGridData(show: false),
+                                borderData: FlBorderData(show: false),
+                                titlesData: FlTitlesData(
+                                  topTitles: AxisTitles(
+                                    sideTitles: SideTitles(showTitles: false),
+                                  ),
+                                  rightTitles: AxisTitles(
+                                    sideTitles: SideTitles(showTitles: false),
+                                  ),
 
-                            leftTitles: AxisTitles(
-                              sideTitles: SideTitles(
-                                showTitles: true,
-                                reservedSize: 40,
-                                interval: 3,
-                                getTitlesWidget: (value, meta) {
-                                  return Text(
-                                    value.toStringAsFixed(0),
-                                    style: const TextStyle(fontSize: 12),
-                                  );
-                                },
+                                  leftTitles: AxisTitles(
+                                    sideTitles: SideTitles(
+                                      showTitles: true,
+                                      reservedSize: 40,
+                                      interval: 3,
+                                      getTitlesWidget: (value, meta) {
+                                        return Text(
+                                          value.toStringAsFixed(0),
+                                          style: const TextStyle(fontSize: 12),
+                                        );
+                                      },
+                                    ),
+                                  ),
+
+                                  bottomTitles: AxisTitles(
+                                    sideTitles: SideTitles(
+                                      showTitles: true,
+                                      interval: 5,
+                                      getTitlesWidget: (value, meta) {
+                                        return Padding(
+                                          padding: const EdgeInsets.only(
+                                            top: 8,
+                                          ),
+                                          child: Text(
+                                            '${value.toInt()}',
+                                            style: const TextStyle(
+                                              fontSize: 12,
+                                            ),
+                                          ),
+                                        );
+                                      },
+                                    ),
+                                  ),
+                                ),
+                                lineBarsData: [
+                                  LineChartBarData(
+                                    isCurved: true,
+                                    color: Colors.teal,
+                                    barWidth: 3,
+                                    dotData: FlDotData(show: true),
+
+                                    spots: spotList,
+                                  ),
+                                ],
                               ),
                             ),
-
-                            bottomTitles: AxisTitles(
-                              sideTitles: SideTitles(
-                                showTitles: true,
-                                interval: 5,
-                                getTitlesWidget: (value, meta) {
-                                  return Padding(
-                                    padding: const EdgeInsets.only(
-                                      top: 8,
-                                    ),
-                                    child: Text(
-                                      '${value.toInt()}',
-                                      style: const TextStyle(
-                                        fontSize: 12,
-                                      ),
-                                    ),
-                                  );
-                                },
-                              ),
-                            ),
-                          ),
-                          lineBarsData: [
-                            LineChartBarData(
-                              isCurved: true,
-                              color: Colors.teal,
-                              barWidth: 3,
-                              dotData: FlDotData(show: true),
-
-                              spots: spotList,
-                            ),
-                          ],
-                        ),
-                      ),
                     ),
                   ],
                 ),
@@ -419,8 +420,8 @@ class TrendsTab extends StatelessWidget {
                 ),
               ),
 
-              SizedBox(height: 10,),
-              if(weightEntry.isNotEmpty)
+              SizedBox(height: 10),
+              if (weightEntry.isNotEmpty)
                 Padding(
                   padding: const EdgeInsets.only(left: 8, bottom: 8),
                   child: Text(
@@ -433,7 +434,7 @@ class TrendsTab extends StatelessWidget {
                     ),
                   ),
                 ),
-              if(weightEntry.isNotEmpty)
+              if (weightEntry.isNotEmpty)
                 Container(
                   decoration: BoxDecoration(
                     color: Colors.white,
@@ -459,10 +460,7 @@ class TrendsTab extends StatelessWidget {
                             color: Colors.orange.withOpacity(0.2),
                             shape: BoxShape.circle,
                           ),
-                          child: Icon(
-                            Icons.flight,
-                            color: Colors.orange[800],
-                          ),
+                          child: Icon(Icons.flight, color: Colors.orange[800]),
                         ),
                         title: Text(
                           'Highest Weight Recorded ${weightEntry.values.first}',
@@ -578,7 +576,7 @@ class TrendsTab extends StatelessWidget {
                             context: context,
                             builder: (_) => AlertDialog(
                               backgroundColor:
-                              uiVariables.scaffoldBackgroundColor,
+                                  uiVariables.scaffoldBackgroundColor,
                               title: const Text('Prediction Result'),
                               content: Text(
                                 predicted == null
@@ -625,165 +623,4 @@ class TrendsTab extends StatelessWidget {
     );
   }
 
-  Widget _predict(BuildContext context) {
-    final controller = TextEditingController();
-    CommonUI uiVariables = CommonUI();
-    return Expanded(
-      flex: 1,
-      child: Container(
-        height: 50,
-        color: uiVariables.surfaceContainerHigh,
-        child: Column(
-          children: [
-            Row(
-              children: [
-                Text(
-                  'Target Weight',
-                  style: GoogleFonts.manrope(
-                    fontSize: 18,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-                TextField(
-                  controller: controller,
-                  autofocus: true,
-                  keyboardType: uiVariables.textEditingField,
-                  inputFormatters: uiVariables.inputFormatter,
-                  decoration: uiVariables.textEditingFieldDecoration,
-                  style: TextStyle(color: uiVariables.textColorDefault),
-                ),
-              ],
-            ),
-            ElevatedButton(
-              onPressed: () {
-                final target = double.tryParse(controller.text.trim());
-                if (target == null) return;
-                final predicted = calculator.predictDateForTarget(target);
-                Navigator.pop(context);
-                showDialog(
-                  context: context,
-                  builder: (_) => AlertDialog(
-                    backgroundColor: uiVariables.scaffoldBackgroundColor,
-                    title: const Text('Prediction Result'),
-                    content: Text(
-                      predicted == null
-                          ? 'Not enough data to predict.'
-                          : 'You may reach $target kg on\n${predicted.toLocal().toString().split(' ')[0]}',
-                      style: GoogleFonts.manrope(
-                        fontSize: 16,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                    actions: [
-                      ElevatedButton(
-                        style: uiVariables.elevatedButtonStyle,
-                        onPressed: () => Navigator.pop(context),
-                        child: Text(
-                          'OK',
-                          style: GoogleFonts.manrope(
-                            fontSize: 16,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                );
-              },
-              style: uiVariables.elevatedButtonStyle,
-              child: Text(
-                'Predict',
-                style: GoogleFonts.manrope(
-                  fontSize: 18,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  void _showTargetWeightDialog(context) {
-    CommonUI uiVariables = CommonUI();
-    final controller = TextEditingController();
-    showDialog(
-      context: context,
-      builder: (_) => AlertDialog(
-        backgroundColor: uiVariables.surface,
-        title: Text(
-          'Target Weight',
-          style: GoogleFonts.manrope(fontSize: 18, fontWeight: FontWeight.bold),
-        ),
-        content: TextField(
-          controller: controller,
-          autofocus: true,
-          keyboardType: uiVariables.textEditingField,
-          inputFormatters: uiVariables.inputFormatter,
-          decoration: uiVariables.textEditingFieldDecoration,
-          style: TextStyle(color: uiVariables.textColorDefault),
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context),
-            child: Text(
-              'Cancel',
-              style: TextStyle(
-                color: uiVariables.weightGainColor,
-                fontWeight: FontWeight.bold,
-                fontSize: uiVariables.subHeadingSize,
-              ),
-            ),
-          ),
-          ElevatedButton(
-            onPressed: () {
-              final target = double.tryParse(controller.text.trim());
-              if (target == null) return;
-              final predicted = calculator.predictDateForTarget(target);
-              Navigator.pop(context);
-              showDialog(
-                context: context,
-                builder: (_) => AlertDialog(
-                  backgroundColor: uiVariables.scaffoldBackgroundColor,
-                  title: const Text('Prediction Result'),
-                  content: Text(
-                    predicted == null
-                        ? 'Not enough data to predict.'
-                        : 'You may reach $target kg on\n${predicted.toLocal().toString().split(' ')[0]}',
-                    style: GoogleFonts.manrope(
-                      fontSize: 16,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  actions: [
-                    ElevatedButton(
-                      style: uiVariables.elevatedButtonStyle,
-                      onPressed: () => Navigator.pop(context),
-                      child: Text(
-                        'OK',
-                        style: TextStyle(
-                          color: uiVariables.textColorDefault,
-                          fontWeight: FontWeight.bold,
-                          fontSize: uiVariables.subHeadingSize,
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              );
-            },
-            style: uiVariables.elevatedButtonStyle,
-            child: Text(
-              'Predict',
-              style: GoogleFonts.manrope(
-                fontSize: 18,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
 }

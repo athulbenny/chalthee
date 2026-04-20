@@ -17,10 +17,7 @@ class SystemStatusScreen extends StatelessWidget {
           gradient: RadialGradient(
             center: Alignment(0, -0.3),
             radius: 1.2,
-            colors: [
-              Color(0xFFDFF5F1),
-              Color(0xFFF4F6F6),
-            ],
+            colors: [Color(0xFFDFF5F1), Color(0xFFF4F6F6)],
           ),
         ),
         child: SafeArea(
@@ -103,12 +100,15 @@ class SystemStatusScreen extends StatelessWidget {
       ),
       child: Row(
         mainAxisSize: MainAxisSize.min,
-        children:  [
+        children: [
           Icon(Icons.bolt, size: 18, color: CommonUI().outlineVariant),
           SizedBox(width: 6),
           Text(
             "Service Disruption",
-            style: TextStyle(fontWeight: FontWeight.w600, color: CommonUI().outlineVariant),
+            style: TextStyle(
+              fontWeight: FontWeight.w600,
+              color: CommonUI().outlineVariant,
+            ),
           ),
         ],
       ),
@@ -125,11 +125,7 @@ class SystemStatusScreen extends StatelessWidget {
         borderRadius: BorderRadius.circular(20),
       ),
       child: const Center(
-        child: Icon(
-          Icons.cloud_off,
-          size: 60,
-          color: Colors.teal,
-        ),
+        child: Icon(Icons.cloud_off, size: 60, color: Colors.teal),
       ),
     );
   }
@@ -139,10 +135,7 @@ class SystemStatusScreen extends StatelessWidget {
     return Text(
       "OOPS! \nSomething went wrong",
       textAlign: TextAlign.center,
-      style: GoogleFonts.manrope(
-        fontSize: 26,
-        fontWeight: FontWeight.w800,
-      ),
+      style: GoogleFonts.manrope(fontSize: 26, fontWeight: FontWeight.w800),
     );
   }
 
@@ -150,7 +143,7 @@ class SystemStatusScreen extends StatelessWidget {
   Widget _subtitleText() {
     return Text(
       "You're having trouble connecting to our services. "
-          "Please check your connection or try again later.",
+      "Please check your connection or try again later.",
       textAlign: TextAlign.center,
       style: GoogleFonts.inter(
         fontSize: 15,
@@ -172,10 +165,7 @@ class SystemStatusScreen extends StatelessWidget {
       child: InkWell(
         onTap: () {},
         child: Container(
-          padding: const EdgeInsets.symmetric(
-            horizontal: 24,
-            vertical: 16,
-          ),
+          padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
           decoration: BoxDecoration(
             gradient: LinearGradient(
               colors: [CommonUI().primary, CommonUI().primaryContainer],
@@ -244,10 +234,7 @@ class SystemStatusScreen extends StatelessWidget {
       ),
       child: Row(
         children: [
-          const CircleAvatar(
-            radius: 5,
-            backgroundColor: Colors.red,
-          ),
+          const CircleAvatar(radius: 5, backgroundColor: Colors.red),
           const SizedBox(width: 10),
           const Text("Error Code: 503_SERVICE_UNAVAILABLE"),
           const Spacer(),

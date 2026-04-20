@@ -1,6 +1,5 @@
 import 'package:chalthee/constants/CommonUI.dart';
 import 'package:chalthee/constants/constant_values.dart';
-import 'package:chalthee/screens/system_status_screen.dart';
 import 'package:chalthee/storage/session_router.dart';
 import 'package:chalthee/storage/weight_storage.dart';
 import 'package:flutter/material.dart';
@@ -68,7 +67,7 @@ class _DashboardTabState extends State<DashboardTab> {
           ),
           IconButton(
             icon: Icon(Icons.settings, color: CommonUI().primary),
-            onPressed: () => widget.onSwitchTab(3), // Navigate to settings/profile
+            onPressed: () => widget.onSwitchTab(3),
           ),
         ],
       ),
@@ -108,9 +107,6 @@ class _DashboardTabState extends State<DashboardTab> {
               InkWell(
                 onTap: () {
                   widget.onSwitchTab(1);
-                  // Navigator.push(context, MaterialPageRoute(builder: (_){
-                  //   return SystemStatusScreen();//AddWeightScreen(weightStorage: weightStorage, userName: userName, onSwitchTab: onSwitchTab);
-                  // }));
                 },
                 child: Container(
                   padding: const EdgeInsets.symmetric(

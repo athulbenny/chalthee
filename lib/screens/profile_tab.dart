@@ -382,12 +382,12 @@ class _ProfileTabState extends State<ProfileTab> {
                   ),
                   _buildDivider(),
                   _buildListItem(
-                    iconData: Icons.sync,
+                    iconData: Icons.add_alarm,
                     iconColor: Colors.grey[700]!,
                     iconBg: Colors.grey[300]!,
                     title: 'Reminder Times',
                     subtitle: _alarmTime.isNotEmpty
-                        ? "Alarm rings daily at ${selectedTime.hour > 12 ? selectedTime.hour - 12 : selectedTime.hour}:${selectedTime.minute.toString().padLeft(2, '0')} ${selectedTime.hour > 12 ? 'PM' : 'AM'}"
+                        ? "Daily at ${selectedTime.hour > 12 ? selectedTime.hour - 12 : selectedTime.hour}:${selectedTime.minute.toString().padLeft(2, '0')} ${selectedTime.hour > 12 ? 'PM' : 'AM'}"
                         : 'Pick up your time',
                     trailing: Switch(
                       value: _alarmTime.isNotEmpty,
@@ -434,11 +434,6 @@ class _ProfileTabState extends State<ProfileTab> {
                     iconBg: Colors.grey[300]!,
                     title: 'Email Address',
                     subtitle: widget.email.isNotEmpty ? widget.email : '',
-                    trailing: const Icon(
-                      Icons.edit,
-                      size: 18,
-                      color: Colors.grey,
-                    ),
                   ),
                   _buildDivider(),
                   ListTile(

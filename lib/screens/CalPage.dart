@@ -19,10 +19,8 @@ class _CalendarPageState extends State<CalendarPage> {
   DateTime? _selectedDay;
   DateTime? _rangeStart;
   DateTime? _rangeEnd;
-  RangeSelectionMode _rangeSelectionMode =
-      RangeSelectionMode.toggledOff;
+  RangeSelectionMode _rangeSelectionMode = RangeSelectionMode.toggledOff;
   AppBarAction _appBarAction = AppBarAction.weekly;
-
 
   final TextEditingController _weightController = TextEditingController();
   final Map<DateTime, double> _weights = {};
@@ -30,7 +28,6 @@ class _CalendarPageState extends State<CalendarPage> {
   late SharedPreferences _prefs;
   final String _storageKey = 'weightMap';
   bool _isEditingWeight = false;
-
 
   @override
   void initState() {
@@ -79,8 +76,6 @@ class _CalendarPageState extends State<CalendarPage> {
       await _prefs.setString(_storageKey, json.encode(mapToSave));
     }
   }
-
-
 
   // -------------------- Helpers --------------------
   DateTime _normalizeDate(DateTime date) =>
@@ -131,11 +126,11 @@ class _CalendarPageState extends State<CalendarPage> {
     return entries.isEmpty ? null : entries.last.key;
   }
 
-// ---------------------DatePrediction-----------------------------
+  // ---------------------DatePrediction-----------------------------
   DateTime? predictDateForTargetWeight(
-      double targetWeight, {
-        int lookbackDays = 14,
-      }) {
+    double targetWeight, {
+    int lookbackDays = 14,
+  }) {
     if (_weights.length < 3) return null;
 
     // Sort entries
@@ -145,12 +140,9 @@ class _CalendarPageState extends State<CalendarPage> {
     final lastEntry = entries.last;
 
     // Take only recent entries
-    final cutoffDate =
-    lastEntry.key.subtract(Duration(days: lookbackDays));
+    final cutoffDate = lastEntry.key.subtract(Duration(days: lookbackDays));
 
-    final recent = entries
-        .where((e) => !e.key.isBefore(cutoffDate))
-        .toList();
+    final recent = entries.where((e) => !e.key.isBefore(cutoffDate)).toList();
 
     if (recent.length < 2) return null;
 
@@ -159,12 +151,10 @@ class _CalendarPageState extends State<CalendarPage> {
     int dayCount = 0;
 
     for (int i = 1; i < recent.length; i++) {
-      final days =
-          recent[i].key.difference(recent[i - 1].key).inDays;
+      final days = recent[i].key.difference(recent[i - 1].key).inDays;
       if (days == 0) continue;
 
-      final delta =
-          recent[i].value - recent[i - 1].value;
+      final delta = recent[i].value - recent[i - 1].value;
 
       // Ignore wild jumps (> 1.5kg/day)
       if (delta.abs() > 1.5) continue;
@@ -193,9 +183,6 @@ class _CalendarPageState extends State<CalendarPage> {
     return lastEntry.key.add(Duration(days: daysNeeded));
   }
 
-
-
-
   void _showTargetWeightDialog() {
     final controller = TextEditingController();
 
@@ -207,8 +194,7 @@ class _CalendarPageState extends State<CalendarPage> {
           title: const Text('Target Weight'),
           content: TextField(
             controller: controller,
-            keyboardType:
-            const TextInputType.numberWithOptions(decimal: true),
+            keyboardType: const TextInputType.numberWithOptions(decimal: true),
             decoration: const InputDecoration(
               hintText: 'Enter target weight (kg)',
             ),
@@ -220,8 +206,7 @@ class _CalendarPageState extends State<CalendarPage> {
             ),
             ElevatedButton(
               onPressed: () {
-                final target =
-                double.tryParse(controller.text.trim());
+                final target = double.tryParse(controller.text.trim());
                 if (target != null) {
                   _showPredictionResult(target);
                 }
@@ -234,10 +219,8 @@ class _CalendarPageState extends State<CalendarPage> {
     );
   }
 
-
   void _showPredictionResult(double targetWeight) {
-    final predictedDate =
-    predictDateForTargetWeight(targetWeight);
+    final predictedDate = predictDateForTargetWeight(targetWeight);
 
     showDialog(
       context: context,
@@ -249,7 +232,7 @@ class _CalendarPageState extends State<CalendarPage> {
             predictedDate == null
                 ? 'Not enough data to predict.'
                 : 'You may reach $targetWeight kg on\n'
-                '${predictedDate.toLocal().toString().split(' ')[0]}',
+                      '${predictedDate.toLocal().toString().split(' ')[0]}',
             style: const TextStyle(fontSize: 16),
           ),
           actions: [
@@ -262,7 +245,6 @@ class _CalendarPageState extends State<CalendarPage> {
       },
     );
   }
-
 
   // -------------------- Weight dialog --------------------
   void _saveWeight() {
@@ -283,7 +265,6 @@ class _CalendarPageState extends State<CalendarPage> {
     });
   }
 
-
   List<MapEntry<DateTime, double>> _getProgressEntries() {
     if (_focusedDay == null) return [];
     late DateTime start;
@@ -296,9 +277,7 @@ class _CalendarPageState extends State<CalendarPage> {
       end = _endOfMonth(_focusedDay);
     }
     return _weights.entries
-        .where((e) =>
-    !e.key.isBefore(start) &&
-        !e.key.isAfter(end))
+        .where((e) => !e.key.isBefore(start) && !e.key.isAfter(end))
         .toList()
       ..sort((a, b) => a.key.compareTo(b.key));
   }
@@ -351,7 +330,6 @@ class _CalendarPageState extends State<CalendarPage> {
     return DateTime(date.year, date.month + 1, 0);
   }
 
-
   void _startEditingWeight() {
     if (_selectedDay == null) return;
     final key = _normalizeDate(_selectedDay!);
@@ -397,10 +375,7 @@ class _CalendarPageState extends State<CalendarPage> {
                         builder: (context, index) {
                           return Center(
                             child: Text(
-                              DateTime(0, index + 1)
-                                  .toLocal()
-                                  .month
-                                  .toString(),
+                              DateTime(0, index + 1).toLocal().month.toString(),
                             ),
                           );
                         },
@@ -424,11 +399,7 @@ class _CalendarPageState extends State<CalendarPage> {
                       childDelegate: ListWheelChildBuilderDelegate(
                         childCount: 20, // 2020–2039
                         builder: (context, index) {
-                          return Center(
-                            child: Text(
-                              (2020 + index).toString(),
-                            ),
-                          );
+                          return Center(child: Text((2020 + index).toString()));
                         },
                       ),
                     ),
@@ -457,19 +428,17 @@ class _CalendarPageState extends State<CalendarPage> {
     );
   }
 
-
   // -------------------- UI --------------------
   @override
   Widget build(BuildContext context) {
-
-
     final progressDiff = _calculateProgressDiff();
     final progressAvg = _calculateProgressAverage();
-    final progressPercentage  = _calculateProgressPercentage();
+    final progressPercentage = _calculateProgressPercentage();
     final smartRangePercentage = _calculateSmartRangePercentage();
 
-    final label =
-    _appBarAction == AppBarAction.weekly ? 'This Week' : 'This Month';
+    final label = _appBarAction == AppBarAction.weekly
+        ? 'This Week'
+        : 'This Month';
 
     final avg = _calculateAverageWeight();
     final diff = _calculateSmartRangeDiff();
@@ -527,7 +496,6 @@ class _CalendarPageState extends State<CalendarPage> {
                   ),
                 ],
               ),
-
             ],
             flexibleSpace: Container(
               decoration: const BoxDecoration(
@@ -553,122 +521,118 @@ class _CalendarPageState extends State<CalendarPage> {
         child: Column(
           children: [
             TableCalendar(
-                firstDay: DateTime.utc(2020, 1, 1),
-                lastDay: DateTime.utc(2030, 12, 31),
-                focusedDay: _focusedDay,
+              firstDay: DateTime.utc(2020, 1, 1),
+              lastDay: DateTime.utc(2030, 12, 31),
+              focusedDay: _focusedDay,
 
-                headerStyle: const HeaderStyle(
-                  formatButtonVisible: false,
-                  titleTextStyle: TextStyle(
-                    fontSize: 22,        // 👈 increase size here
-                    fontWeight: FontWeight.bold,
-                    color: Colors.black,
-                  ),
+              headerStyle: const HeaderStyle(
+                formatButtonVisible: false,
+                titleTextStyle: TextStyle(
+                  fontSize: 22, // 👈 increase size here
+                  fontWeight: FontWeight.bold,
+                  color: Colors.black,
                 ),
+              ),
 
-                onHeaderTapped: (focusedDay) {
-                  _showMonthYearPicker(context);
-                },
+              onHeaderTapped: (focusedDay) {
+                _showMonthYearPicker(context);
+              },
 
-                daysOfWeekStyle: const DaysOfWeekStyle(
-                  weekdayStyle: TextStyle(
-                    fontSize: 16,          // Mon–Fri
-                    fontWeight: FontWeight.w600,
-                    color: Colors.black,
-                  ),
-                  weekendStyle: TextStyle(
-                    fontSize: 16,          // Sun
-                    fontWeight: FontWeight.w600,
-                    color: Colors.red,
-                  ),
+              daysOfWeekStyle: const DaysOfWeekStyle(
+                weekdayStyle: TextStyle(
+                  fontSize: 16, // Mon–Fri
+                  fontWeight: FontWeight.w600,
+                  color: Colors.black,
                 ),
+                weekendStyle: TextStyle(
+                  fontSize: 16, // Sun
+                  fontWeight: FontWeight.w600,
+                  color: Colors.red,
+                ),
+              ),
 
-                // Disable future dates
-                enabledDayPredicate: (day) {
-                  // Only allow dates up to today
-                  return !day.isAfter(DateTime.now());
-                },
+              // Disable future dates
+              enabledDayPredicate: (day) {
+                // Only allow dates up to today
+                return !day.isAfter(DateTime.now());
+              },
 
-                selectedDayPredicate: (day) =>
-                    isSameDay(_selectedDay, day),
+              selectedDayPredicate: (day) => isSameDay(_selectedDay, day),
 
-                rangeStartDay: _rangeStart,
-                rangeEndDay: _rangeEnd,
-                rangeSelectionMode: _rangeSelectionMode,
+              rangeStartDay: _rangeStart,
+              rangeEndDay: _rangeEnd,
+              rangeSelectionMode: _rangeSelectionMode,
 
-                onDaySelected: (selectedDay, focusedDay) {
-                  setState(() {
-                    _selectedDay = selectedDay;
-                    _focusedDay = focusedDay;
-                    _rangeStart = null;
-                    _rangeEnd = null;
-                    _rangeSelectionMode =
-                        RangeSelectionMode.toggledOff;
-                    _weightController.clear();
-                  });
-                },
+              onDaySelected: (selectedDay, focusedDay) {
+                setState(() {
+                  _selectedDay = selectedDay;
+                  _focusedDay = focusedDay;
+                  _rangeStart = null;
+                  _rangeEnd = null;
+                  _rangeSelectionMode = RangeSelectionMode.toggledOff;
+                  _weightController.clear();
+                });
+              },
 
-                onRangeSelected: (start, end, focusedDay) {
-                  setState(() {
-                    _selectedDay = null;
-                    _rangeStart = start;
-                    _rangeEnd = end;
-                    _focusedDay = focusedDay;
-                    _rangeSelectionMode =
-                        RangeSelectionMode.toggledOn;
-                  });
-                },
+              onRangeSelected: (start, end, focusedDay) {
+                setState(() {
+                  _selectedDay = null;
+                  _rangeStart = start;
+                  _rangeEnd = end;
+                  _focusedDay = focusedDay;
+                  _rangeSelectionMode = RangeSelectionMode.toggledOn;
+                });
+              },
 
-                calendarBuilders: CalendarBuilders(
-                  defaultBuilder: (context, day, focusedDay) {
-                    return Container(
-                      margin: const EdgeInsets.all(6),
-                      alignment: Alignment.center,
-                      decoration: BoxDecoration(
-                        color: isSameDay(day, _selectedDay)
-                            ? Colors.blue
-                            : Colors.transparent,
-                        borderRadius: BorderRadius.circular(8),
+              calendarBuilders: CalendarBuilders(
+                defaultBuilder: (context, day, focusedDay) {
+                  return Container(
+                    margin: const EdgeInsets.all(6),
+                    alignment: Alignment.center,
+                    decoration: BoxDecoration(
+                      color: isSameDay(day, _selectedDay)
+                          ? Colors.blue
+                          : Colors.transparent,
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    child: Text(
+                      '${day.day}',
+                      style: TextStyle(
+                        color: day.isAfter(DateTime.now())
+                            ? Colors.grey
+                            : Colors.black,
+                        fontWeight: isSameDay(day, DateTime.now())
+                            ? FontWeight.bold
+                            : FontWeight.normal,
                       ),
-                      child: Text(
-                        '${day.day}',
-                        style: TextStyle(
-                          color: day.isAfter(DateTime.now())
-                              ? Colors.grey
-                              : Colors.black,
-                          fontWeight: isSameDay(day, DateTime.now())
-                              ? FontWeight.bold
-                              : FontWeight.normal,
+                    ),
+                  );
+                },
+                markerBuilder: (context, date, events) {
+                  final normalized = _normalizeDate(date);
+                  if (_weights.containsKey(normalized)) {
+                    double? yesterdayWeight = _getPreviousDayWeight(normalized);
+                    Color dotColor = Colors.green;
+                    if (yesterdayWeight != null) {
+                      dotColor = _weights[normalized]! < yesterdayWeight
+                          ? Colors.green
+                          : Colors.red;
+                    }
+                    return Positioned(
+                      bottom: 4,
+                      child: Container(
+                        width: 6,
+                        height: 6,
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          color: dotColor,
                         ),
                       ),
                     );
-                  },
-                  markerBuilder: (context, date, events) {
-                    final normalized = _normalizeDate(date);
-                    if (_weights.containsKey(normalized)) {
-                      double? yesterdayWeight = _getPreviousDayWeight(normalized);
-                      Color dotColor = Colors.green;
-                      if (yesterdayWeight != null) {
-                        dotColor = _weights[normalized]! < yesterdayWeight
-                            ? Colors.green
-                            : Colors.red;
-                      }
-                      return Positioned(
-                        bottom: 4,
-                        child: Container(
-                          width: 6,
-                          height: 6,
-                          decoration: BoxDecoration(
-                            shape: BoxShape.circle,
-                            color: dotColor,
-                          ),
-                        ),
-                      );
-                    }
-                    return null;
-                  },
-                )
-
+                  }
+                  return null;
+                },
+              ),
             ),
 
             const SizedBox(height: 16),
@@ -676,11 +640,17 @@ class _CalendarPageState extends State<CalendarPage> {
             // -------- Single day view --------
             if (_selectedDay != null)
               Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 16,
+                  vertical: 6,
+                ),
                 child: ConstrainedBox(
-                  constraints: const BoxConstraints(maxWidth: 500), // max width for larger screens
+                  constraints: const BoxConstraints(maxWidth: 500),
+                  // max width for larger screens
                   child: Card(
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
                     elevation: 4,
                     child: Container(
                       decoration: const BoxDecoration(
@@ -692,7 +662,7 @@ class _CalendarPageState extends State<CalendarPage> {
                             Color(0xFFFF7043),
                             Color(0xFFFFFFFF),
                           ],
-                          stops: [0.0,0.7, 1.0],
+                          stops: [0.0, 0.7, 1.0],
                         ),
                         borderRadius: BorderRadius.all(Radius.circular(12)),
                       ),
@@ -703,21 +673,28 @@ class _CalendarPageState extends State<CalendarPage> {
                           Text(
                             'Selected: ${_selectedDay!.toLocal().toString().split(' ')[0]}',
                             style: const TextStyle(
-                                fontSize: 19,
-                                fontWeight: FontWeight.bold,
-                                color:  Colors.black),
+                              fontSize: 19,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.black,
+                            ),
                           ),
                           const SizedBox(height: 6),
                           Text(
                             _weights.containsKey(_normalizeDate(_selectedDay!))
                                 ? 'Weight: ${_weights[_normalizeDate(_selectedDay!)]} kg'
                                 : 'No weight recorded',
-                            style: const TextStyle(fontSize: 18, color: Colors.black87),
+                            style: const TextStyle(
+                              fontSize: 18,
+                              color: Colors.black87,
+                            ),
                           ),
                           if (_getPreviousDayWeight(_selectedDay!) != null)
                             Text(
                               'Yesterday: ${_getPreviousDayWeight(_selectedDay!)} kg',
-                              style: const TextStyle(fontSize: 16, color: Colors.black54),
+                              style: const TextStyle(
+                                fontSize: 16,
+                                color: Colors.black54,
+                              ),
                             ),
                           if (_getDayDifference(_selectedDay!) != null)
                             Text(
@@ -735,52 +712,78 @@ class _CalendarPageState extends State<CalendarPage> {
                           const SizedBox(height: 10),
                           !_isEditingWeight
                               ? ElevatedButton(
-                            onPressed: _startEditingWeight,
-                            child: const Text('Add / Edit Weight'),
-                          )
+                                  onPressed: _startEditingWeight,
+                                  child: const Text('Add / Edit Weight'),
+                                )
                               : Row(
-                            children: [
-                              Expanded(
-                                child: TextField(
-                                  controller: _weightController,
-                                  keyboardType: const TextInputType.numberWithOptions(decimal: true),
-                                  inputFormatters: [
-                                    FilteringTextInputFormatter.allow(
-                                        RegExp(r'^\d*\.?\d{0,3}$')),
+                                  children: [
+                                    Expanded(
+                                      child: TextField(
+                                        controller: _weightController,
+                                        keyboardType:
+                                            const TextInputType.numberWithOptions(
+                                              decimal: true,
+                                            ),
+                                        inputFormatters: [
+                                          FilteringTextInputFormatter.allow(
+                                            RegExp(r'^\d*\.?\d{0,3}$'),
+                                          ),
+                                        ],
+                                        decoration: const InputDecoration(
+                                          hintText: 'Weight (kg)',
+                                          hintStyle: TextStyle(
+                                            color: Colors.black87,
+                                          ),
+                                          isDense: true,
+                                          // smaller height
+                                          contentPadding: EdgeInsets.symmetric(
+                                            vertical: 8,
+                                            horizontal: 8,
+                                          ),
+                                          enabledBorder: OutlineInputBorder(
+                                            borderSide: BorderSide(
+                                              color: Colors.white54,
+                                            ),
+                                            borderRadius: BorderRadius.all(
+                                              Radius.circular(8),
+                                            ),
+                                          ),
+                                          focusedBorder: OutlineInputBorder(
+                                            borderSide: BorderSide(
+                                              color: Colors.black,
+                                            ),
+                                            borderRadius: BorderRadius.all(
+                                              Radius.circular(8),
+                                            ),
+                                          ),
+                                        ),
+                                        style: const TextStyle(
+                                          color: Colors.black,
+                                        ),
+                                      ),
+                                    ),
+                                    const SizedBox(width: 8),
+                                    IconButton(
+                                      icon: const Icon(
+                                        Icons.check,
+                                        color: Colors.green,
+                                      ),
+                                      onPressed: _saveWeight,
+                                    ),
+                                    IconButton(
+                                      icon: const Icon(
+                                        Icons.close,
+                                        color: Colors.red,
+                                      ),
+                                      onPressed: () {
+                                        setState(() {
+                                          _isEditingWeight = false;
+                                          _weightController.clear();
+                                        });
+                                      },
+                                    ),
                                   ],
-                                  decoration: const InputDecoration(
-                                    hintText: 'Weight (kg)',
-                                    hintStyle: TextStyle(color: Colors.black87),
-                                    isDense: true, // smaller height
-                                    contentPadding: EdgeInsets.symmetric(vertical: 8, horizontal: 8),
-                                    enabledBorder: OutlineInputBorder(
-                                      borderSide: BorderSide(color: Colors.white54),
-                                      borderRadius: BorderRadius.all(Radius.circular(8)),
-                                    ),
-                                    focusedBorder: OutlineInputBorder(
-                                      borderSide: BorderSide(color: Colors.black),
-                                      borderRadius: BorderRadius.all(Radius.circular(8)),
-                                    ),
-                                  ),
-                                  style: const TextStyle(color: Colors.black),
                                 ),
-                              ),
-                              const SizedBox(width: 8),
-                              IconButton(
-                                icon: const Icon(Icons.check, color: Colors.green),
-                                onPressed: _saveWeight,
-                              ),
-                              IconButton(
-                                icon: const Icon(Icons.close, color: Colors.red),
-                                onPressed: () {
-                                  setState(() {
-                                    _isEditingWeight = false;
-                                    _weightController.clear();
-                                  });
-                                },
-                              ),
-                            ],
-                          ),
                         ],
                       ),
                     ),
@@ -788,17 +791,20 @@ class _CalendarPageState extends State<CalendarPage> {
                 ),
               ),
 
-
-
-
             // -------- Smart range view --------
             if (_rangeStart != null && _rangeEnd != null)
               Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 16,
+                  vertical: 16,
+                ),
                 child: ConstrainedBox(
-                  constraints: const BoxConstraints(maxWidth: 500), // limit width
+                  constraints: const BoxConstraints(maxWidth: 500),
+                  // limit width
                   child: Card(
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
                     elevation: 4,
                     child: Container(
                       decoration: const BoxDecoration(
@@ -832,23 +838,27 @@ class _CalendarPageState extends State<CalendarPage> {
                           if (avg != null)
                             Text(
                               'Average Weight: ${avg.toStringAsFixed(3)} kg',
-                              style: const TextStyle(fontSize: 18, color: Colors.black87),
+                              style: const TextStyle(
+                                fontSize: 18,
+                                color: Colors.black87,
+                              ),
                             ),
                           const SizedBox(height: 4),
                           if (diff != null && smartRangePercentage != null)
                             Text(
                               diff < 0
                                   ? 'Weight Loss: ${diff.abs().toStringAsFixed(3)} kg '
-                                  '(${smartRangePercentage.abs().toStringAsFixed(2)}%)'
+                                        '(${smartRangePercentage.abs().toStringAsFixed(2)}%)'
                                   : 'Weight Gain: ${diff.toStringAsFixed(3)} kg '
-                                  '(+${smartRangePercentage.toStringAsFixed(2)}%)',
+                                        '(+${smartRangePercentage.toStringAsFixed(2)}%)',
                               style: TextStyle(
                                 fontSize: 20,
                                 fontWeight: FontWeight.bold,
-                                color: diff < 0 ? Colors.greenAccent : Colors.red[900],
+                                color: diff < 0
+                                    ? Colors.greenAccent
+                                    : Colors.red[900],
                               ),
                             )
-
                           else
                             const Text(
                               'Not enough data to calculate change',
@@ -861,13 +871,17 @@ class _CalendarPageState extends State<CalendarPage> {
                 ),
               ),
 
-
             if (progressAvg != null)
               Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 16,
+                  vertical: 6,
+                ),
                 child: Card(
                   elevation: 4,
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
                   child: Container(
                     decoration: const BoxDecoration(
                       gradient: LinearGradient(
@@ -878,7 +892,7 @@ class _CalendarPageState extends State<CalendarPage> {
                           Color(0xFFFF7043),
                           Color(0xFFFFFFFF),
                         ],
-                        stops: [0.0,0.7, 1.0],
+                        stops: [0.0, 0.7, 1.0],
                       ),
                       borderRadius: BorderRadius.all(Radius.circular(12)),
                     ),
@@ -899,13 +913,14 @@ class _CalendarPageState extends State<CalendarPage> {
                             'Average Weight: ${progressAvg.toStringAsFixed(3)} kg',
                             style: const TextStyle(fontSize: 18),
                           ),
-                          if (progressDiff != null && progressPercentage != null)
+                          if (progressDiff != null &&
+                              progressPercentage != null)
                             Text(
                               progressDiff < 0
                                   ? 'Loss: ${progressDiff.abs().toStringAsFixed(3)} kg '
-                                  '(${progressPercentage.abs().toStringAsFixed(2)}%)'
+                                        '(${progressPercentage.abs().toStringAsFixed(2)}%)'
                                   : 'Gain: ${progressDiff.toStringAsFixed(3)} kg '
-                                  '(+${progressPercentage.toStringAsFixed(2)}%)',
+                                        '(+${progressPercentage.toStringAsFixed(2)}%)',
                               style: TextStyle(
                                 fontSize: 18,
                                 fontWeight: FontWeight.bold,
@@ -914,7 +929,6 @@ class _CalendarPageState extends State<CalendarPage> {
                                     : Colors.red[900],
                               ),
                             )
-
                           else
                             const Text('Not enough data'),
                         ],
@@ -923,10 +937,6 @@ class _CalendarPageState extends State<CalendarPage> {
                   ),
                 ),
               ),
-
-
-
-
           ],
         ),
       ),
