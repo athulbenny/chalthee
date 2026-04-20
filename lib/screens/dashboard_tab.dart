@@ -201,12 +201,11 @@ class _DashboardTabState extends State<DashboardTab> {
             .toInt();
       }
     }
-
+    findWeightList();
     Widget bentoGrid = Padding(
       padding: const EdgeInsets.symmetric(horizontal: 24.0),
       child: LayoutBuilder(
         builder: (context, constraints) {
-          findWeightList();
           return Column(
             children: [
               Container(
@@ -323,9 +322,9 @@ class _DashboardTabState extends State<DashboardTab> {
                                     weightList.isEmpty
                                         ? 'Target weight : $goalWeight'
                                         : '$goalWeight',
-                                    style: const TextStyle(
+                                    style: GoogleFonts.inter(
                                       color: Colors.white,
-                                      fontSize: 16,
+                                      fontSize: 16, fontWeight: FontWeight.bold,
                                     ),
                                   ),
                                 ),

@@ -319,7 +319,7 @@ class _ProfileTabState extends State<ProfileTab> {
                     iconColor: Colors.green,
                     iconBg: Colors.green.withOpacity(0.2),
                     title: 'Goal Weight',
-                    subtitle: '$_goalWeight ${_isKg ? 'kg' : 'lbs'}',
+                    subtitle: '${_goalWeight > 0 ? _goalWeight : 'Add target weight in'} ${_isKg ? 'kg' : 'lbs'}',
                     trailing: IconButton(
                       icon: const Icon(
                         Icons.edit,
@@ -384,7 +384,7 @@ class _ProfileTabState extends State<ProfileTab> {
                     title: 'Reminder Times',
                     subtitle: _alarmTime.isNotEmpty
                         ? "Daily at ${selectedTime.hour > 12 ? selectedTime.hour - 12 : selectedTime.hour}:${selectedTime.minute.toString().padLeft(2, '0')} ${selectedTime.hour > 12 ? 'PM' : 'AM'}"
-                        : 'Pick up your time',
+                        : 'Lock a suitable time',
                     trailing: Switch(
                       value: _alarmTime.isNotEmpty,
                       onChanged: _editAlarm,
@@ -397,7 +397,7 @@ class _ProfileTabState extends State<ProfileTab> {
                     iconColor: Colors.grey[700]!,
                     iconBg: Colors.grey[300]!,
                     title: 'Current Height',
-                    subtitle: '${_currentHeight}cm',
+                    subtitle: '${_currentHeight > 0 ? _currentHeight : 'Add height in '}cm',
                     trailing: IconButton(
                       icon: const Icon(
                         Icons.edit,
