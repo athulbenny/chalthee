@@ -28,7 +28,7 @@ class SessionManager {
       return {
         "usermail": email,
         "username": name ?? "User",
-        "isloggedin": 1
+        // "isloggedin": 1
       };
     }
     return null;

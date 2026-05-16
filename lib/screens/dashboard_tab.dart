@@ -4,6 +4,8 @@ import 'package:chalthee/storage/session_router.dart';
 import 'package:chalthee/storage/weight_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:intl/intl.dart';
 
 class DashboardTab extends StatefulWidget {
   final String userName;
@@ -41,7 +43,7 @@ class _DashboardTabState extends State<DashboardTab> {
   Widget build(BuildContext context) {
     loadPrefs();
     Widget header = Container(
-      padding: const EdgeInsets.only(left: 24, right: 24, top: 48, bottom: 16),
+      padding: EdgeInsets.only(left: 24.w, right: 24.w, top: 48.h, bottom: 16.h),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
@@ -52,11 +54,11 @@ class _DashboardTabState extends State<DashboardTab> {
                 backgroundImage: AssetImage(ConstantValues.logo),
                 radius: 20,
               ),
-              const SizedBox(width: 12),
+              SizedBox(width: 12.w),
               Text(
                 ConstantValues.appName,
                 style: GoogleFonts.manrope(
-                  fontSize: 20,
+                  fontSize: 20.sp,
                   fontWeight: FontWeight.w800,
                   color: CommonUI().primary,
                   letterSpacing: -0.5,
@@ -66,14 +68,14 @@ class _DashboardTabState extends State<DashboardTab> {
           ),
           IconButton(
             icon: Icon(Icons.settings, color: CommonUI().primary),
-            onPressed: () => widget.onSwitchTab(3),
+            onPressed: () => widget.onSwitchTab(4),
           ),
         ],
       ),
     );
 
     Widget welcomeCTA = Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 16),
+      padding: EdgeInsets.symmetric(horizontal: 24.0.w, vertical: 16.h),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -84,23 +86,23 @@ class _DashboardTabState extends State<DashboardTab> {
                 ? 'GOOD AFTERNOON, ${widget.userName.toUpperCase()}'
                 : 'GOOD EVENING, ${widget.userName.toUpperCase()}',
             style: GoogleFonts.inter(
-              fontSize: 14,
+              fontSize: 14.sp,
               fontWeight: FontWeight.w500,
               color: CommonUI().onSurfaceVariant,
               letterSpacing: 1.0,
             ),
           ),
-          const SizedBox(height: 4),
+          SizedBox(height: 4.h),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text(
                 'Focus on your\nprogress.',
                 style: GoogleFonts.manrope(
-                  fontSize: 32,
+                  fontSize: 32.sp,
                   fontWeight: FontWeight.w800,
                   color: CommonUI().onSurface,
-                  height: 1.1,
+                  height: 1.1.h,
                 ),
               ),
               InkWell(
@@ -108,15 +110,15 @@ class _DashboardTabState extends State<DashboardTab> {
                   widget.onSwitchTab(1);
                 },
                 child: Container(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 24,
-                    vertical: 16,
+                  padding: EdgeInsets.symmetric(
+                    horizontal: 24.w,
+                    vertical: 16.h,
                   ),
                   decoration: BoxDecoration(
                     gradient: LinearGradient(
                       colors: [CommonUI().primary, CommonUI().primaryContainer],
                     ),
-                    borderRadius: BorderRadius.circular(9999),
+                    borderRadius: BorderRadius.circular(9999.r),
                     boxShadow: [
                       BoxShadow(
                         color: CommonUI().primary.withOpacity(0.3),
@@ -127,8 +129,8 @@ class _DashboardTabState extends State<DashboardTab> {
                   ),
                   child: Row(
                     children: [
-                      const Icon(Icons.add, color: Colors.white, size: 20),
-                      const SizedBox(width: 8),
+                      Icon(Icons.add, color: Colors.white, size: 20.sp),
+                      SizedBox(width: 8.w),
                       Text(
                         'Add Entry',
                         style: GoogleFonts.inter(
@@ -203,38 +205,38 @@ class _DashboardTabState extends State<DashboardTab> {
     }
     findWeightList();
     Widget bentoGrid = Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 24.0),
+      padding: EdgeInsets.symmetric(horizontal: 24.0.w),
       child: LayoutBuilder(
         builder: (context, constraints) {
           return Column(
             children: [
               Container(
                 width: double.infinity,
-                padding: const EdgeInsets.all(24),
+                padding: EdgeInsets.all(24.w),
                 decoration: CommonUI().cardDecorator,
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Container(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 12,
-                        vertical: 4,
+                      padding: EdgeInsets.symmetric(
+                        horizontal: 12.w,
+                        vertical: 4.h,
                       ),
                       decoration: BoxDecoration(
                         color: CommonUI().secondaryContainer,
-                        borderRadius: BorderRadius.circular(8),
+                        borderRadius: BorderRadius.circular(8.r),
                       ),
                       child: Text(
                         'CURRENT STATUS',
                         style: GoogleFonts.inter(
-                          fontSize: 10,
+                          fontSize: 10.sp,
                           fontWeight: FontWeight.w700,
                           letterSpacing: 1.5,
                           color: CommonUI().onSecondaryContainer,
                         ),
                       ),
                     ),
-                    const SizedBox(height: 16),
+                    SizedBox(height: 16.h),
                     Row(
                       crossAxisAlignment: CrossAxisAlignment.baseline,
                       textBaseline: TextBaseline.alphabetic,
@@ -244,34 +246,34 @@ class _DashboardTabState extends State<DashboardTab> {
                               ? currentWeight.toStringAsFixed(3)
                               : '',
                           style: GoogleFonts.manrope(
-                            fontSize: 64,
+                            fontSize: 64.sp,
                             fontWeight: FontWeight.w800,
                             letterSpacing: -2,
                           ),
                         ),
-                        const SizedBox(width: 8),
+                        SizedBox(width: 8.w),
                         Text(
                           currentWeight != null ? 'kg' : '',
                           style: GoogleFonts.inter(
-                            fontSize: 20,
+                            fontSize: 20.sp,
                             fontWeight: FontWeight.bold,
                             color: CommonUI().onSurfaceVariant,
                           ),
                         ),
                       ],
                     ),
-                    const SizedBox(height: 8),
+                    SizedBox(height: 8.h),
                     Text(
                       'Keep logging to see your progress trends.',
                       style: GoogleFonts.inter(
-                        fontSize: 14,
+                        fontSize: 14.sp,
                         fontWeight: FontWeight.w500,
                         color: CommonUI().onSurfaceVariant,
                       ),
                     ),
-                    const SizedBox(height: 24),
+                    SizedBox(height: 24.h),
                     SizedBox(
-                      height: 80,
+                      height: 80.h,
                       child: Row(
                         crossAxisAlignment: CrossAxisAlignment.end,
                         children: [
@@ -280,23 +282,23 @@ class _DashboardTabState extends State<DashboardTab> {
                               weightList.isEmpty)
                             Expanded(
                               child: Container(
-                                margin: const EdgeInsets.symmetric(
-                                  horizontal: 2,
+                                margin: EdgeInsets.symmetric(
+                                  horizontal: 2.w,
                                 ),
-                                height: 60,
+                                height: 60.h,
                                 decoration: BoxDecoration(
                                   color: CommonUI().primary,
-                                  borderRadius: const BorderRadius.all(
-                                    Radius.circular(8),
+                                  borderRadius: BorderRadius.all(
+                                    Radius.circular(8.r),
                                   ),
                                 ),
                                 child: Center(
                                   child: TextButton(
-                                    onPressed: () => widget.onSwitchTab(3),
+                                    onPressed: () => widget.onSwitchTab(4),
                                     child: Text(
                                       'Setup your profile',
                                       style: GoogleFonts.inter(
-                                        fontSize: 16, fontWeight: FontWeight.bold,
+                                        fontSize: 16.sp, fontWeight: FontWeight.bold,
                                         color: Colors.white,
                                       ),
                                     ),
@@ -307,14 +309,14 @@ class _DashboardTabState extends State<DashboardTab> {
                           if (goalWeight != null && goalWeight > 0.0)
                             Expanded(
                               child: Container(
-                                margin: const EdgeInsets.symmetric(
-                                  horizontal: 2,
+                                margin: EdgeInsets.symmetric(
+                                  horizontal: 2.w,
                                 ),
                                 height: goalWeight,
                                 decoration: BoxDecoration(
                                   color: CommonUI().primary,
-                                  borderRadius: const BorderRadius.vertical(
-                                    top: Radius.circular(8),
+                                  borderRadius: BorderRadius.vertical(
+                                    top: Radius.circular(8.r),
                                   ),
                                 ),
                                 child: Center(
@@ -324,7 +326,7 @@ class _DashboardTabState extends State<DashboardTab> {
                                         : '$goalWeight',
                                     style: GoogleFonts.inter(
                                       color: Colors.white,
-                                      fontSize: 16, fontWeight: FontWeight.bold,
+                                      fontSize: 16.sp, fontWeight: FontWeight.bold,
                                     ),
                                   ),
                                 ),
@@ -333,16 +335,16 @@ class _DashboardTabState extends State<DashboardTab> {
                           for (var i in weightList)
                             Expanded(
                               child: Container(
-                                margin: const EdgeInsets.symmetric(
-                                  horizontal: 2,
+                                margin: EdgeInsets.symmetric(
+                                  horizontal: 2.w,
                                 ),
                                 height: i.toDouble(),
                                 decoration: BoxDecoration(
                                   color: i > goalWeight
                                       ? CommonUI().error
                                       : CommonUI().onSecondaryContainer,
-                                  borderRadius: const BorderRadius.vertical(
-                                    top: Radius.circular(8),
+                                  borderRadius: BorderRadius.vertical(
+                                    top: Radius.circular(8.r),
                                   ),
                                 ),
                                 child: Center(
@@ -350,7 +352,7 @@ class _DashboardTabState extends State<DashboardTab> {
                                     '$i',
                                     style: TextStyle(
                                       color: CommonUI().onError,
-                                      fontSize: 16,
+                                      fontSize: 16.sp,
                                     ),
                                   ),
                                 ),
@@ -362,45 +364,45 @@ class _DashboardTabState extends State<DashboardTab> {
                   ],
                 ),
               ),
-              const SizedBox(height: 16),
+              SizedBox(height: 16.h),
               Row(
                 children: [
                   Expanded(
                     flex: 1,
                     child: Container(
-                      padding: const EdgeInsets.all(20),
+                      padding: EdgeInsets.all(20.w),
                       decoration: BoxDecoration(
                         color: CommonUI().surfaceContainerLow,
-                        borderRadius: BorderRadius.circular(24),
+                        borderRadius: BorderRadius.circular(24.r),
                       ),
                       child: Column(
                         children: [
                           Container(
-                            width: 64,
-                            height: 64,
+                            width: 64.w,
+                            height: 64.h,
                             decoration: BoxDecoration(
                               shape: BoxShape.circle,
                               border: Border.all(
                                 color: CommonUI().secondaryFixedDim,
-                                width: 4,
+                                width: 4.w,
                               ),
                             ),
                             child: Center(
                               child: Text(
                                 bmi != null ? bmi.toStringAsFixed(1) : '',
                                 style: GoogleFonts.manrope(
-                                  fontSize: 18,
+                                  fontSize: 18.sp,
                                   fontWeight: FontWeight.w800,
                                   color: CommonUI().secondary,
                                 ),
                               ),
                             ),
                           ),
-                          const SizedBox(height: 12),
+                          SizedBox(height: 12.h),
                           Text(
                             bmiLabel,
                             style: GoogleFonts.inter(
-                              fontSize: 14,
+                              fontSize: 14.sp,
                               fontWeight: FontWeight.bold,
                               color: CommonUI().onSurface,
                             ),
@@ -410,7 +412,7 @@ class _DashboardTabState extends State<DashboardTab> {
                                 ? 'height: ${userHeight}cm'
                                 : '',
                             style: GoogleFonts.inter(
-                              fontSize: 12,
+                              fontSize: 12.sp,
                               color: CommonUI().onSurfaceVariant,
                             ),
                           ),
@@ -418,11 +420,11 @@ class _DashboardTabState extends State<DashboardTab> {
                       ),
                     ),
                   ),
-                  const SizedBox(width: 16),
+                  SizedBox(width: 16.w),
                   Expanded(
                     flex: 1,
                     child: Container(
-                      padding: const EdgeInsets.all(20),
+                      padding: EdgeInsets.all(20.w),
                       decoration: CommonUI().cardDecorator,
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
@@ -432,35 +434,35 @@ class _DashboardTabState extends State<DashboardTab> {
                             child: Icon(
                               Icons.calendar_today,
                               color: CommonUI().primary,
-                              size: 18,
+                              size: 18.sp,
                             ),
                           ),
-                          const SizedBox(height: 16),
+                          SizedBox(height: 16.h),
                           Text(
                             'LAST ENTRY',
                             style: GoogleFonts.inter(
-                              fontSize: 10,
+                              fontSize: 10.sp,
                               fontWeight: FontWeight.w700,
                               letterSpacing: 1.5,
                               color: CommonUI().onSurfaceVariant,
                             ),
                           ),
-                          const SizedBox(height: 4),
+                          SizedBox(height: 4.h),
                           Text(
                             currentWeight != null
                                 ? '${currentWeight.toStringAsFixed(3)} kg'
                                 : 'No data available',
                             style: GoogleFonts.manrope(
-                              fontSize: 18,
+                              fontSize: 18.sp,
                               fontWeight: FontWeight.bold,
                             ),
                           ),
                           Text(
                             lastEntryDate != null
-                                ? '${lastEntryDate.day}-${lastEntryDate.month}-${lastEntryDate.year}'
+                                ? DateFormat('yyyy MMMM d').format(lastEntryDate) // '${lastEntryDate.day}-${lastEntryDate.month}-${lastEntryDate.year}'
                                 : '',
                             style: GoogleFonts.inter(
-                              fontSize: 12,
+                              fontSize: 12.sp,
                               color: CommonUI().onSurfaceVariant,
                             ),
                           ),
@@ -470,13 +472,13 @@ class _DashboardTabState extends State<DashboardTab> {
                   ),
                 ],
               ),
-              const SizedBox(height: 16),
+              SizedBox(height: 16.h),
               Container(
                 width: double.infinity,
-                padding: const EdgeInsets.all(20),
+                padding: EdgeInsets.all(20.w),
                 decoration: BoxDecoration(
                   color: CommonUI().surfaceContainerLow,
-                  borderRadius: BorderRadius.circular(24),
+                  borderRadius: BorderRadius.circular(24.r),
                 ),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -484,18 +486,18 @@ class _DashboardTabState extends State<DashboardTab> {
                     Text(
                       'CONSISTENCY',
                       style: GoogleFonts.inter(
-                        fontSize: 10,
+                        fontSize: 10.sp,
                         fontWeight: FontWeight.w700,
                         letterSpacing: 1.5,
                         color: CommonUI().onSurfaceVariant,
                       ),
                     ),
-                    const SizedBox(height: 12),
+                    SizedBox(height: 12.h),
                     Row(
                       children: [
                         Expanded(
                           child: ClipRRect(
-                            borderRadius: BorderRadius.circular(9999),
+                            borderRadius: BorderRadius.circular(9999.r),
                             child: LinearProgressIndicator(
                               value: consistencyPercent / 100,
                               minHeight: 8,
@@ -506,24 +508,24 @@ class _DashboardTabState extends State<DashboardTab> {
                             ),
                           ),
                         ),
-                        const SizedBox(width: 16),
+                        SizedBox(width: 16.w),
                         Text(
                           '$consistencyPercent%',
                           style: GoogleFonts.manrope(
-                            fontSize: 20,
+                            fontSize: 20.sp,
                             fontWeight: FontWeight.bold,
                             color: CommonUI().secondary,
                           ),
                         ),
                       ],
                     ),
-                    const SizedBox(height: 8),
+                    SizedBox(height: 8.h),
                     Text(
                       consistencyPercent >= 80
                           ? 'Great job logging consistently!'
                           : 'Log daily to improve consistency.',
                       style: GoogleFonts.inter(
-                        fontSize: 12,
+                        fontSize: 12.sp,
                         color: CommonUI().onSurfaceVariant,
                       ),
                     ),
@@ -545,11 +547,11 @@ class _DashboardTabState extends State<DashboardTab> {
         final w = widget.weightStorage.weights[date];
         historyItems.add(
           Container(
-            margin: const EdgeInsets.only(bottom: 12),
-            padding: const EdgeInsets.all(16),
+            margin: EdgeInsets.only(bottom: 12.h),
+            padding: EdgeInsets.all(16.w),
             decoration: BoxDecoration(
               color: CommonUI().surfaceContainerLowest,
-              borderRadius: BorderRadius.circular(16),
+              borderRadius: BorderRadius.circular(16.r),
             ),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -557,14 +559,14 @@ class _DashboardTabState extends State<DashboardTab> {
                 Row(
                   children: [
                     Container(
-                      width: 8,
-                      height: 8,
+                      width: 8.w,
+                      height: 8.h,
                       decoration: BoxDecoration(
                         shape: BoxShape.circle,
                         color: CommonUI().secondary,
                       ),
                     ),
-                    const SizedBox(width: 16),
+                    SizedBox(width: 16.w),
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
@@ -578,7 +580,7 @@ class _DashboardTabState extends State<DashboardTab> {
                         Text(
                           'Recorded Entry',
                           style: GoogleFonts.inter(
-                            fontSize: 12,
+                            fontSize: 12.sp,
                             color: CommonUI().onSurfaceVariant,
                           ),
                         ),
@@ -590,7 +592,7 @@ class _DashboardTabState extends State<DashboardTab> {
                   '${w?.toStringAsFixed(1)} kg',
                   style: GoogleFonts.manrope(
                     fontWeight: FontWeight.bold,
-                    fontSize: 16,
+                    fontSize: 16.sp,
                   ),
                 ),
               ],
@@ -599,11 +601,11 @@ class _DashboardTabState extends State<DashboardTab> {
         );
       }
     } else {
-      historyItems.add(const Text("No history available."));
+      historyItems.add(Text("No history available."));
     }
 
     Widget historySection = Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 24),
+      padding: EdgeInsets.symmetric(horizontal: 24.0.w, vertical: 24.h),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -613,7 +615,7 @@ class _DashboardTabState extends State<DashboardTab> {
               Text(
                 'Weekly History',
                 style: GoogleFonts.manrope(
-                  fontSize: 20,
+                  fontSize: 20.sp,
                   fontWeight: FontWeight.bold,
                 ),
               ),
@@ -631,9 +633,9 @@ class _DashboardTabState extends State<DashboardTab> {
               ),
             ],
           ),
-          const SizedBox(height: 16),
+          SizedBox(height: 16.h),
           ...historyItems,
-          const SizedBox(height: 100),
+          SizedBox(height: 100.h),
         ],
       ),
     );

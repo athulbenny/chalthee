@@ -3,6 +3,7 @@ import 'package:chalthee/storage/session_router.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import 'screens/splash_screen.dart';
 import 'firebase_options.dart';
@@ -79,9 +80,16 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      home: SplashScreen(isLoggedIn: loggedIn),
+    return ScreenUtilInit(
+      designSize: const Size(360, 800), // Android baseline
+      minTextAdapt: true,
+      splitScreenMode: true,
+      builder: (context, child) {
+        return MaterialApp(
+          debugShowCheckedModeBanner: false,
+          home: SplashScreen(isLoggedIn: loggedIn),
+        );
+      },
     );
   }
 }

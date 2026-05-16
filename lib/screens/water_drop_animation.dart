@@ -1,6 +1,7 @@
 import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:vector_math/vector_math_64.dart' as vmath;
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class RainLoader extends StatefulWidget {
   const RainLoader({super.key});
@@ -43,7 +44,7 @@ class _RainLoaderState extends State<RainLoader>
             random.nextDouble() * size.height,
           ),
           speed: 4 + random.nextDouble() * 6,
-          size: 6 + random.nextDouble() * 6,
+          size: 6.sp + random.nextDouble() * 6,
         ),
       );
     }

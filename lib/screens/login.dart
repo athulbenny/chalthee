@@ -6,6 +6,7 @@ import 'package:google_fonts/google_fonts.dart';
 
 import '../constants/constant_values.dart';
 import '../storage/session_router.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -24,7 +25,7 @@ class _LoginPageState extends State<LoginPage> {
   @override
   Widget build(BuildContext context) {
     Widget header = Container(
-      padding: const EdgeInsets.only(left: 24, right: 24, top: 80, bottom: 20),
+      padding: EdgeInsets.only(left: 24.w, right: 24.w, top: 80.h, bottom: 20.h),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -33,11 +34,11 @@ class _LoginPageState extends State<LoginPage> {
             backgroundImage: AssetImage(ConstantValues.logo),
             radius: 20,
           ),
-          const SizedBox(height: 24),
+          SizedBox(height: 24.h),
           Text(
             'Welcome to',
             style: GoogleFonts.inter(
-              fontSize: 16,
+              fontSize: 16.sp,
               fontWeight: FontWeight.w600,
               color: uiVariables.onSurfaceVariant,
             ),
@@ -45,17 +46,17 @@ class _LoginPageState extends State<LoginPage> {
           Text(
             'The Chalthee Verse',
             style: GoogleFonts.manrope(
-              fontSize: 36,
+              fontSize: 36.sp,
               fontWeight: FontWeight.w800,
               color: uiVariables.primary,
               letterSpacing: -1.0,
             ),
           ),
-          const SizedBox(height: 8),
+          SizedBox(height: 8.h),
           Text(
             'Sign in to continue your wellness journey.',
             style: GoogleFonts.inter(
-              fontSize: 14,
+              fontSize: 14.sp,
               color: uiVariables.onSurfaceVariant,
             ),
           ),
@@ -64,7 +65,7 @@ class _LoginPageState extends State<LoginPage> {
     );
 
     Widget form = Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 24),
+      padding: EdgeInsets.symmetric(horizontal: 24.w),
       child: Form(
         key: _formKey,
         child: Column(
@@ -80,28 +81,28 @@ class _LoginPageState extends State<LoginPage> {
                   Icons.person_outline,
                   color: uiVariables.primary,
                 ),
-                contentPadding: const EdgeInsets.symmetric(
-                  vertical: 20,
-                  horizontal: 20,
+                contentPadding: EdgeInsets.symmetric(
+                  vertical: 20.h,
+                  horizontal: 20.w,
                 ),
                 border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(16),
+                  borderRadius: BorderRadius.circular(16.r),
                   borderSide: BorderSide.none,
                 ),
                 enabledBorder: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(16),
+                  borderRadius: BorderRadius.circular(16.r),
                   borderSide: BorderSide.none,
                 ),
                 focusedBorder: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(16),
-                  borderSide: BorderSide(color: uiVariables.primary, width: 2),
+                  borderRadius: BorderRadius.circular(16.r),
+                  borderSide: BorderSide(color: uiVariables.primary, width: 2.w),
                 ),
               ),
               validator: (val) => (val == null || val.trim().isEmpty)
                   ? "Enter your name"
                   : null,
             ),
-            const SizedBox(height: 16),
+            SizedBox(height: 16.h),
             TextFormField(
               controller: _emailController,
               decoration: InputDecoration(
@@ -113,28 +114,28 @@ class _LoginPageState extends State<LoginPage> {
                   Icons.email_outlined,
                   color: uiVariables.primary,
                 ),
-                contentPadding: const EdgeInsets.symmetric(
-                  vertical: 20,
-                  horizontal: 20,
+                contentPadding: EdgeInsets.symmetric(
+                  vertical: 20.h,
+                  horizontal: 20.w,
                 ),
                 border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(16),
+                  borderRadius: BorderRadius.circular(16.r),
                   borderSide: BorderSide.none,
                 ),
                 enabledBorder: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(16),
+                  borderRadius: BorderRadius.circular(16.r),
                   borderSide: BorderSide.none,
                 ),
                 focusedBorder: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(16),
-                  borderSide: BorderSide(color: uiVariables.primary, width: 2),
+                  borderRadius: BorderRadius.circular(16.r),
+                  borderSide: BorderSide(color: uiVariables.primary, width: 2.w),
                 ),
               ),
               validator: (val) => (val == null || !val.contains("@") || val.length<2)
                   ? "Enter valid email"
                   : null,
             ),
-            const SizedBox(height: 32),
+            SizedBox(height: 32.h),
             InkWell(
               onTap: () async {
                 if (_formKey.currentState!.validate()) {
@@ -182,12 +183,12 @@ class _LoginPageState extends State<LoginPage> {
               },
               child: Container(
                 width: double.infinity,
-                padding: const EdgeInsets.symmetric(vertical: 20),
+                padding: EdgeInsets.symmetric(vertical: 20.h),
                 decoration: BoxDecoration(
                   gradient: LinearGradient(
                     colors: [uiVariables.primary, uiVariables.primaryContainer],
                   ),
-                  borderRadius: BorderRadius.circular(9999),
+                  borderRadius: BorderRadius.circular(9999.r),
                   boxShadow: [
                     BoxShadow(
                       color: uiVariables.primary.withOpacity(0.3),
@@ -198,9 +199,9 @@ class _LoginPageState extends State<LoginPage> {
                 ),
                 child: Center(
                   child: _isLoading
-                      ? const SizedBox(
-                          width: 20,
-                          height: 20,
+                      ? SizedBox(
+                          width: 20.w,
+                          height: 20.h,
                           child: CircularProgressIndicator(
                             color: Colors.white,
                             strokeWidth: 2,
@@ -211,7 +212,7 @@ class _LoginPageState extends State<LoginPage> {
                           style: GoogleFonts.inter(
                             color: Colors.white,
                             fontWeight: FontWeight.bold,
-                            fontSize: 16,
+                            fontSize: 16.sp,
                           ),
                         ),
                 ),

@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:table_calendar/table_calendar.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class CalendarPage extends StatefulWidget {
   const CalendarPage({super.key});
@@ -191,7 +192,7 @@ class _CalendarPageState extends State<CalendarPage> {
       builder: (context) {
         return AlertDialog(
           backgroundColor: Colors.deepOrange[100],
-          title: const Text('Target Weight'),
+          title: Text('Target Weight'),
           content: TextField(
             controller: controller,
             keyboardType: const TextInputType.numberWithOptions(decimal: true),
@@ -202,7 +203,7 @@ class _CalendarPageState extends State<CalendarPage> {
           actions: [
             TextButton(
               onPressed: () => Navigator.pop(context),
-              child: const Text('Cancel'),
+              child: Text('Cancel'),
             ),
             ElevatedButton(
               onPressed: () {
@@ -211,7 +212,7 @@ class _CalendarPageState extends State<CalendarPage> {
                   _showPredictionResult(target);
                 }
               },
-              child: const Text('Predict'),
+              child: Text('Predict'),
             ),
           ],
         );
@@ -227,18 +228,18 @@ class _CalendarPageState extends State<CalendarPage> {
       builder: (context) {
         return AlertDialog(
           backgroundColor: Colors.deepOrange[100],
-          title: const Text('Prediction Result'),
+          title: Text('Prediction Result'),
           content: Text(
             predictedDate == null
                 ? 'Not enough data to predict.'
                 : 'You may reach $targetWeight kg on\n'
                       '${predictedDate.toLocal().toString().split(' ')[0]}',
-            style: const TextStyle(fontSize: 16),
+            style: TextStyle(fontSize: 16.sp),
           ),
           actions: [
             ElevatedButton(
               onPressed: () => Navigator.pop(context),
-              child: const Text('OK'),
+              child: Text('OK'),
             ),
           ],
         );
@@ -353,9 +354,9 @@ class _CalendarPageState extends State<CalendarPage> {
       builder: (context) {
         return AlertDialog(
           backgroundColor: Colors.deepOrange[100],
-          title: const Text('Select Month & Year'),
+          title: Text('Select Month & Year'),
           content: SizedBox(
-            height: 50,
+            height: 50.h,
             child: Row(
               children: [
                 // Month picker
@@ -411,7 +412,7 @@ class _CalendarPageState extends State<CalendarPage> {
           actions: [
             TextButton(
               onPressed: () => Navigator.pop(context),
-              child: const Text('Cancel'),
+              child: Text('Cancel'),
             ),
             ElevatedButton(
               onPressed: () {
@@ -420,7 +421,7 @@ class _CalendarPageState extends State<CalendarPage> {
                 });
                 Navigator.pop(context);
               },
-              child: const Text('OK'),
+              child: Text('OK'),
             ),
           ],
         );
@@ -450,12 +451,12 @@ class _CalendarPageState extends State<CalendarPage> {
       appBar: PreferredSize(
         preferredSize: const Size.fromHeight(80),
         child: ClipRRect(
-          borderRadius: const BorderRadius.vertical(
-            bottom: Radius.circular(30),
+          borderRadius: BorderRadius.vertical(
+            bottom: Radius.circular(30.r),
           ),
           child: AppBar(
             centerTitle: true,
-            title: const Text(
+            title: Text(
               'Weight Calendar',
               style: TextStyle(
                 color: Colors.black,
@@ -464,7 +465,7 @@ class _CalendarPageState extends State<CalendarPage> {
             ),
             actions: [
               PopupMenuButton<AppBarAction>(
-                icon: const Icon(Icons.more_vert, color: Colors.black),
+                icon: Icon(Icons.more_vert, color: Colors.black),
                 onSelected: (action) {
                   switch (action) {
                     case AppBarAction.weekly:
@@ -480,7 +481,7 @@ class _CalendarPageState extends State<CalendarPage> {
                       break;
                   }
                 },
-                itemBuilder: (context) => const [
+                itemBuilder: (context) => [
                   PopupMenuItem(
                     value: AppBarAction.weekly,
                     child: Text('Weekly Progress'),
@@ -525,10 +526,10 @@ class _CalendarPageState extends State<CalendarPage> {
               lastDay: DateTime.utc(2030, 12, 31),
               focusedDay: _focusedDay,
 
-              headerStyle: const HeaderStyle(
+              headerStyle: HeaderStyle(
                 formatButtonVisible: false,
                 titleTextStyle: TextStyle(
-                  fontSize: 22, // 👈 increase size here
+                  fontSize: 22.sp, // 👈 increase size here
                   fontWeight: FontWeight.bold,
                   color: Colors.black,
                 ),
@@ -538,14 +539,14 @@ class _CalendarPageState extends State<CalendarPage> {
                 _showMonthYearPicker(context);
               },
 
-              daysOfWeekStyle: const DaysOfWeekStyle(
+              daysOfWeekStyle: DaysOfWeekStyle(
                 weekdayStyle: TextStyle(
-                  fontSize: 16, // Mon–Fri
+                  fontSize: 16.sp, // Mon–Fri
                   fontWeight: FontWeight.w600,
                   color: Colors.black,
                 ),
                 weekendStyle: TextStyle(
-                  fontSize: 16, // Sun
+                  fontSize: 16.sp, // Sun
                   fontWeight: FontWeight.w600,
                   color: Colors.red,
                 ),
@@ -587,13 +588,13 @@ class _CalendarPageState extends State<CalendarPage> {
               calendarBuilders: CalendarBuilders(
                 defaultBuilder: (context, day, focusedDay) {
                   return Container(
-                    margin: const EdgeInsets.all(6),
+                    margin: EdgeInsets.all(6.w),
                     alignment: Alignment.center,
                     decoration: BoxDecoration(
                       color: isSameDay(day, _selectedDay)
                           ? Colors.blue
                           : Colors.transparent,
-                      borderRadius: BorderRadius.circular(8),
+                      borderRadius: BorderRadius.circular(8.r),
                     ),
                     child: Text(
                       '${day.day}',
@@ -619,10 +620,10 @@ class _CalendarPageState extends State<CalendarPage> {
                           : Colors.red;
                     }
                     return Positioned(
-                      bottom: 4,
+                      bottom: 4.h,
                       child: Container(
-                        width: 6,
-                        height: 6,
+                        width: 6.w,
+                        height: 6.h,
                         decoration: BoxDecoration(
                           shape: BoxShape.circle,
                           color: dotColor,
@@ -635,25 +636,25 @@ class _CalendarPageState extends State<CalendarPage> {
               ),
             ),
 
-            const SizedBox(height: 16),
+            SizedBox(height: 16.h),
 
             // -------- Single day view --------
             if (_selectedDay != null)
               Padding(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 16,
-                  vertical: 6,
+                padding: EdgeInsets.symmetric(
+                  horizontal: 16.w,
+                  vertical: 6.h,
                 ),
                 child: ConstrainedBox(
-                  constraints: const BoxConstraints(maxWidth: 500),
+                  constraints: BoxConstraints(maxWidth: 500),
                   // max width for larger screens
                   child: Card(
                     shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(12),
+                      borderRadius: BorderRadius.circular(12.r),
                     ),
                     elevation: 4,
                     child: Container(
-                      decoration: const BoxDecoration(
+                      decoration:  BoxDecoration(
                         gradient: LinearGradient(
                           begin: Alignment.topLeft,
                           end: Alignment.bottomRight,
@@ -664,35 +665,35 @@ class _CalendarPageState extends State<CalendarPage> {
                           ],
                           stops: [0.0, 0.7, 1.0],
                         ),
-                        borderRadius: BorderRadius.all(Radius.circular(12)),
+                        borderRadius: BorderRadius.all(Radius.circular(12.r)),
                       ),
-                      padding: const EdgeInsets.all(12),
+                      padding: EdgeInsets.all(12.w),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
                             'Selected: ${_selectedDay!.toLocal().toString().split(' ')[0]}',
-                            style: const TextStyle(
-                              fontSize: 19,
+                            style: TextStyle(
+                              fontSize: 19.sp,
                               fontWeight: FontWeight.bold,
                               color: Colors.black,
                             ),
                           ),
-                          const SizedBox(height: 6),
+                          SizedBox(height: 6.h),
                           Text(
                             _weights.containsKey(_normalizeDate(_selectedDay!))
                                 ? 'Weight: ${_weights[_normalizeDate(_selectedDay!)]} kg'
                                 : 'No weight recorded',
-                            style: const TextStyle(
-                              fontSize: 18,
+                            style: TextStyle(
+                              fontSize: 18.sp,
                               color: Colors.black87,
                             ),
                           ),
                           if (_getPreviousDayWeight(_selectedDay!) != null)
                             Text(
                               'Yesterday: ${_getPreviousDayWeight(_selectedDay!)} kg',
-                              style: const TextStyle(
-                                fontSize: 16,
+                              style: TextStyle(
+                                fontSize: 16.sp,
                                 color: Colors.black54,
                               ),
                             ),
@@ -702,18 +703,18 @@ class _CalendarPageState extends State<CalendarPage> {
                                   ? '↓ ${_getDayDifference(_selectedDay!)!.abs().toStringAsFixed(3)} kg'
                                   : '↑ +${_getDayDifference(_selectedDay!)!.toStringAsFixed(3)} kg',
                               style: TextStyle(
-                                fontSize: 20,
+                                fontSize: 20.sp,
                                 color: _getDayDifference(_selectedDay!)! < 0
                                     ? Colors.greenAccent
                                     : Colors.red[900],
                                 fontWeight: FontWeight.bold,
                               ),
                             ),
-                          const SizedBox(height: 10),
+                          SizedBox(height: 10.h),
                           !_isEditingWeight
                               ? ElevatedButton(
                                   onPressed: _startEditingWeight,
-                                  child: const Text('Add / Edit Weight'),
+                                  child: Text('Add / Edit Weight'),
                                 )
                               : Row(
                                   children: [
@@ -729,7 +730,7 @@ class _CalendarPageState extends State<CalendarPage> {
                                             RegExp(r'^\d*\.?\d{0,3}$'),
                                           ),
                                         ],
-                                        decoration: const InputDecoration(
+                                        decoration: InputDecoration(
                                           hintText: 'Weight (kg)',
                                           hintStyle: TextStyle(
                                             color: Colors.black87,
@@ -737,15 +738,15 @@ class _CalendarPageState extends State<CalendarPage> {
                                           isDense: true,
                                           // smaller height
                                           contentPadding: EdgeInsets.symmetric(
-                                            vertical: 8,
-                                            horizontal: 8,
+                                            vertical: 8.h,
+                                            horizontal: 8.w,
                                           ),
                                           enabledBorder: OutlineInputBorder(
                                             borderSide: BorderSide(
                                               color: Colors.white54,
                                             ),
                                             borderRadius: BorderRadius.all(
-                                              Radius.circular(8),
+                                              Radius.circular(8.r),
                                             ),
                                           ),
                                           focusedBorder: OutlineInputBorder(
@@ -753,25 +754,25 @@ class _CalendarPageState extends State<CalendarPage> {
                                               color: Colors.black,
                                             ),
                                             borderRadius: BorderRadius.all(
-                                              Radius.circular(8),
+                                              Radius.circular(8.r),
                                             ),
                                           ),
                                         ),
-                                        style: const TextStyle(
+                                        style: TextStyle(
                                           color: Colors.black,
                                         ),
                                       ),
                                     ),
-                                    const SizedBox(width: 8),
+                                    SizedBox(width: 8.w),
                                     IconButton(
-                                      icon: const Icon(
+                                      icon: Icon(
                                         Icons.check,
                                         color: Colors.green,
                                       ),
                                       onPressed: _saveWeight,
                                     ),
                                     IconButton(
-                                      icon: const Icon(
+                                      icon: Icon(
                                         Icons.close,
                                         color: Colors.red,
                                       ),
@@ -794,20 +795,20 @@ class _CalendarPageState extends State<CalendarPage> {
             // -------- Smart range view --------
             if (_rangeStart != null && _rangeEnd != null)
               Padding(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 16,
-                  vertical: 16,
+                padding: EdgeInsets.symmetric(
+                  horizontal: 16.w,
+                  vertical: 16.h,
                 ),
                 child: ConstrainedBox(
-                  constraints: const BoxConstraints(maxWidth: 500),
+                  constraints: BoxConstraints(maxWidth: 500),
                   // limit width
                   child: Card(
                     shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(12),
+                      borderRadius: BorderRadius.circular(12.r),
                     ),
                     elevation: 4,
                     child: Container(
-                      decoration: const BoxDecoration(
+                      decoration: BoxDecoration(
                         gradient: LinearGradient(
                           begin: Alignment.topLeft,
                           end: Alignment.bottomRight,
@@ -818,9 +819,9 @@ class _CalendarPageState extends State<CalendarPage> {
                           ],
                           stops: [0.0, 0.5, 1.0],
                         ),
-                        borderRadius: BorderRadius.all(Radius.circular(12)),
+                        borderRadius: BorderRadius.all(Radius.circular(12.r)),
                       ),
-                      padding: const EdgeInsets.all(12),
+                      padding: EdgeInsets.all(12.w),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
@@ -828,22 +829,22 @@ class _CalendarPageState extends State<CalendarPage> {
                             smartStart != null && smartEnd != null
                                 ? 'Effective Range: ${smartStart.toLocal().toString().split(' ')[0]} → ${smartEnd.toLocal().toString().split(' ')[0]}'
                                 : 'No data in selected range',
-                            style: const TextStyle(
-                              fontSize: 18,
+                            style: TextStyle(
+                              fontSize: 18.sp,
                               fontWeight: FontWeight.bold,
                               color: Colors.black,
                             ),
                           ),
-                          const SizedBox(height: 6),
+                          SizedBox(height: 6.h),
                           if (avg != null)
                             Text(
                               'Average Weight: ${avg.toStringAsFixed(3)} kg',
-                              style: const TextStyle(
-                                fontSize: 18,
+                              style: TextStyle(
+                                fontSize: 18.sp,
                                 color: Colors.black87,
                               ),
                             ),
-                          const SizedBox(height: 4),
+                          SizedBox(height: 4.h),
                           if (diff != null && smartRangePercentage != null)
                             Text(
                               diff < 0
@@ -852,7 +853,7 @@ class _CalendarPageState extends State<CalendarPage> {
                                   : 'Weight Gain: ${diff.toStringAsFixed(3)} kg '
                                         '(+${smartRangePercentage.toStringAsFixed(2)}%)',
                               style: TextStyle(
-                                fontSize: 20,
+                                fontSize: 20.sp,
                                 fontWeight: FontWeight.bold,
                                 color: diff < 0
                                     ? Colors.greenAccent
@@ -860,7 +861,7 @@ class _CalendarPageState extends State<CalendarPage> {
                               ),
                             )
                           else
-                            const Text(
+                            Text(
                               'Not enough data to calculate change',
                               style: TextStyle(color: Colors.black),
                             ),
@@ -873,17 +874,17 @@ class _CalendarPageState extends State<CalendarPage> {
 
             if (progressAvg != null)
               Padding(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 16,
-                  vertical: 6,
+                padding: EdgeInsets.symmetric(
+                  horizontal: 16.w,
+                  vertical: 6.h,
                 ),
                 child: Card(
                   elevation: 4,
                   shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(12),
+                    borderRadius: BorderRadius.circular(12.r),
                   ),
                   child: Container(
-                    decoration: const BoxDecoration(
+                    decoration: BoxDecoration(
                       gradient: LinearGradient(
                         begin: Alignment.topLeft,
                         end: Alignment.bottomRight,
@@ -894,24 +895,24 @@ class _CalendarPageState extends State<CalendarPage> {
                         ],
                         stops: [0.0, 0.7, 1.0],
                       ),
-                      borderRadius: BorderRadius.all(Radius.circular(12)),
+                      borderRadius: BorderRadius.all(Radius.circular(12.r)),
                     ),
                     child: Padding(
-                      padding: const EdgeInsets.all(12),
+                      padding: EdgeInsets.all(12.w),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
                             '$label Progress',
-                            style: const TextStyle(
-                              fontSize: 20,
+                            style: TextStyle(
+                              fontSize: 20.sp,
                               fontWeight: FontWeight.bold,
                             ),
                           ),
-                          const SizedBox(height: 6),
+                          SizedBox(height: 6.h),
                           Text(
                             'Average Weight: ${progressAvg.toStringAsFixed(3)} kg',
-                            style: const TextStyle(fontSize: 18),
+                            style: TextStyle(fontSize: 18.sp),
                           ),
                           if (progressDiff != null &&
                               progressPercentage != null)
@@ -922,7 +923,7 @@ class _CalendarPageState extends State<CalendarPage> {
                                   : 'Gain: ${progressDiff.toStringAsFixed(3)} kg '
                                         '(+${progressPercentage.toStringAsFixed(2)}%)',
                               style: TextStyle(
-                                fontSize: 18,
+                                fontSize: 18.sp,
                                 fontWeight: FontWeight.bold,
                                 color: progressDiff < 0
                                     ? Colors.greenAccent
@@ -930,7 +931,7 @@ class _CalendarPageState extends State<CalendarPage> {
                               ),
                             )
                           else
-                            const Text('Not enough data'),
+                            Text('Not enough data'),
                         ],
                       ),
                     ),

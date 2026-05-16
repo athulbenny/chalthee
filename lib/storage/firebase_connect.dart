@@ -95,10 +95,46 @@ class DbConnect {
     users.add({
       "username": name,
       "usermail": email,
-      "isloggedin": 1,
+      // "isloggedin": 1,
       "weightMap": {},
     });
     data['users'] = users;
     await usersCollection.doc(uuid).set(data);
+  }
+
+  Future<void> addExerciseForADate(String uuid, String date, Map<String, dynamic> exerciseMap) async {
+    await usersCollection
+        .doc(uuid)
+        .collection(date)
+        .doc(ConstantValues.exerciseDocIdFirestore).set(exerciseMap);
+  }
+
+  Future<Map<String, dynamic>> fetchExerciseForADate(String uuid, String date) async {
+    final exerciseDocSnapshot = await usersCollection
+        .doc(uuid)
+        .collection(date)
+        .doc(ConstantValues.exerciseDocIdFirestore)
+        .get();
+    if (!exerciseDocSnapshot.exists) return {};
+    return exerciseDocSnapshot.data() ?? {};
+  }
+
+  Future<void> addFoodForADate(String uuid, String date, Map<String, dynamic> foodMap) async {
+    await usersCollection
+        .doc(uuid)
+        .collection(date)
+        .doc(ConstantValues.foodDocIdFirestore)
+        .set(foodMap);
+    ///Food: {morning : {inKCal:0, inProt:0,}
+  }
+
+  Future<Map<String, dynamic>> fetchFoodForADate(String uuid, String date) async {
+    final foodDocSnapshot = await usersCollection
+        .doc(uuid)
+        .collection(date)
+        .doc(ConstantValues.foodDocIdFirestore)
+        .get();
+    if (!foodDocSnapshot.exists) return {};
+    return foodDocSnapshot.data() ?? {};
   }
 }

@@ -5,6 +5,7 @@ import 'package:google_fonts/google_fonts.dart';
 import '../constants/CommonUI.dart';
 import '../constants/constant_values.dart';
 import '../helpers/WeightCalculator.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class AddWeightScreen extends StatefulWidget {
   final WeightStorage weightStorage;
@@ -46,12 +47,12 @@ class _AddWeightScreenState extends State<AddWeightScreen> {
       backgroundColor: const Color(0xFFEFF3F3),
       body: SafeArea(
         child: SingleChildScrollView(
-          padding: const EdgeInsets.all(16),
+          padding: EdgeInsets.all(16.w),
           child: Container(
-            padding: const EdgeInsets.all(20),
+            padding: EdgeInsets.all(20.w),
             decoration: BoxDecoration(
               color: Colors.white,
-              borderRadius: BorderRadius.circular(20),
+              borderRadius: BorderRadius.circular(20.r),
             ),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -76,11 +77,11 @@ class _AddWeightScreenState extends State<AddWeightScreen> {
                             ),
                           ),
                         ),
-                        const SizedBox(width: 12),
+                        SizedBox(width: 12.w),
                         Text(
                           ConstantValues.appName,
                           style: GoogleFonts.manrope(
-                            fontSize: 20,
+                            fontSize: 20.sp,
                             fontWeight: FontWeight.w800,
                             color: CommonUI().primary,
                             letterSpacing: -0.5,
@@ -98,31 +99,31 @@ class _AddWeightScreenState extends State<AddWeightScreen> {
                   child: Text(
                     "CURRENT WEIGHT",
                     style: GoogleFonts.manrope(
-                      fontSize: 32,
+                      fontSize: 32.sp,
                       fontWeight: FontWeight.w800,
                       color: CommonUI().onSurface,
-                      height: 1.1,
+                      height: 1.1.h,
                     ),
                   ),
                 ),
-                const SizedBox(height: 20),
+                SizedBox(height: 20.h),
                 Center(
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       Text(
                         weight.toStringAsFixed(3),
-                        style: const TextStyle(
-                          fontSize: 48,
+                        style: TextStyle(
+                          fontSize: 48.sp,
                           fontWeight: FontWeight.bold,
                           color: Colors.grey,
                         ),
                       ),
-                      const SizedBox(width: 10),
+                      SizedBox(width: 10.w),
                       Column(
                         children: [
                           IconButton(
-                            icon: const Icon(Icons.keyboard_arrow_up),
+                            icon: Icon(Icons.keyboard_arrow_up),
                             onPressed: () {
                               setState(() {
                                 weight += 0.05;
@@ -130,7 +131,7 @@ class _AddWeightScreenState extends State<AddWeightScreen> {
                             },
                           ),
                           IconButton(
-                            icon: const Icon(Icons.keyboard_arrow_down),
+                            icon: Icon(Icons.keyboard_arrow_down),
                             onPressed: () {
                               setState(() {
                                 if (weight > 0) weight -= 0.05;
@@ -139,71 +140,71 @@ class _AddWeightScreenState extends State<AddWeightScreen> {
                           ),
                         ],
                       ),
-                      const SizedBox(width: 5),
+                      SizedBox(width: 5.w),
                       Text(
                         isKg ? "kg" : "lbs",
-                        style: const TextStyle(
-                          fontSize: 20,
+                        style: TextStyle(
+                          fontSize: 20.sp,
                           color: Colors.teal,
                         ),
                       ),
                     ],
                   ),
                 ),
-                const SizedBox(height: 20),
+                SizedBox(height: 20.h),
                 Center(
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       _unitButton("kg", isKg),
-                      const SizedBox(width: 10),
+                      SizedBox(width: 10.w),
                       _unitButton("lbs", !isKg),
                     ],
                   ),
                 ),
-                const SizedBox(height: 20),
+                SizedBox(height: 20.h),
                 Text(
                   "MEASUREMENT DATE",
                   style: GoogleFonts.inter(
-                    fontSize: 12,
+                    fontSize: 12.sp,
                     fontWeight: FontWeight.w800,
                     letterSpacing: 2.0,
                     color: Colors.grey[700],
                   ),
                 ),
-                const SizedBox(height: 10),
+                SizedBox(height: 10.h),
                 GestureDetector(
                   onTap: _pickDate,
                   child: Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 16),
-                    height: 60,
+                    padding: EdgeInsets.symmetric(horizontal: 16.w),
+                    height: 60.h,
                     decoration: BoxDecoration(
                       color: const Color(0xFFF5F7F7),
-                      borderRadius: BorderRadius.circular(12),
+                      borderRadius: BorderRadius.circular(12.r),
                     ),
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Row(
                           children: [
-                            const Icon(
+                            Icon(
                               Icons.calendar_today,
                               color: Colors.teal,
                             ),
-                            const SizedBox(width: 10),
+                            SizedBox(width: 10.w),
                             Text(
                               "${selectedDate.year}-${selectedDate.month.toString().padLeft(2, '0')}-${selectedDate.day.toString().padLeft(2, '0')}",
                             ),
                           ],
                         ),
-                        const Icon(Icons.calendar_today),
+                        Icon(Icons.calendar_today),
                       ],
                     ),
                   ),
                 ),
-                const SizedBox(height: 20),
-                const Text("HOW DO YOU FEEL?"),
-                const SizedBox(height: 10),
+                SizedBox(height: 20.h),
+                Text("HOW DO YOU FEEL?"),
+                SizedBox(height: 10.h),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: List.generate(5, (index) {
@@ -215,12 +216,12 @@ class _AddWeightScreenState extends State<AddWeightScreen> {
                       },
                       child: AnimatedContainer(
                         duration: const Duration(milliseconds: 200),
-                        padding: const EdgeInsets.all(12),
+                        padding: EdgeInsets.all(12.w),
                         decoration: BoxDecoration(
                           color: selectedMood == index
                               ? Colors.teal
                               : Colors.grey[200],
-                          borderRadius: BorderRadius.circular(12),
+                          borderRadius: BorderRadius.circular(12.r),
                         ),
                         child: Icon(
                           _getMoodIcon(index),
@@ -232,15 +233,15 @@ class _AddWeightScreenState extends State<AddWeightScreen> {
                     );
                   }),
                 ),
-                const SizedBox(height: 20),
-                const Text("NOTES (OPTIONAL)"),
-                const SizedBox(height: 10),
+                SizedBox(height: 20.h),
+                Text("NOTES (OPTIONAL)"),
+                SizedBox(height: 10.h),
                 Container(
-                  padding: const EdgeInsets.all(12),
-                  height: 100,
+                  padding: EdgeInsets.all(12.w),
+                  height: 100.h,
                   decoration: BoxDecoration(
                     color: const Color(0xFFF5F7F7),
-                    borderRadius: BorderRadius.circular(12),
+                    borderRadius: BorderRadius.circular(12.r),
                   ),
                   child: TextField(
                     controller: notesController,
@@ -251,22 +252,22 @@ class _AddWeightScreenState extends State<AddWeightScreen> {
                     ),
                   ),
                 ),
-                const SizedBox(height: 30),
+                SizedBox(height: 30.h),
                 SizedBox(
                   width: double.infinity,
-                  height: 55,
+                  height: 55.h,
                   child: ElevatedButton(
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Colors.teal,
                       shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(30),
+                        borderRadius: BorderRadius.circular(30.r),
                       ),
                     ),
                     onPressed: _saveEntry,
-                    child: const Text(
+                    child: Text(
                       "Save Entry",
                       style: TextStyle(
-                        fontSize: 18,
+                        fontSize: 18.sp,
                         color: Colors.white,
                         fontWeight: FontWeight.bold,
                       ),
@@ -289,10 +290,10 @@ class _AddWeightScreenState extends State<AddWeightScreen> {
         });
       },
       child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+        padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 10.h),
         decoration: BoxDecoration(
           color: selected ? Colors.tealAccent : Colors.grey[300],
-          borderRadius: BorderRadius.circular(20),
+          borderRadius: BorderRadius.circular(20.r),
         ),
         child: Text(label),
       ),

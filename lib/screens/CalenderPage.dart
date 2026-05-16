@@ -1,4 +1,5 @@
 import 'package:chalthee/constants/CommonUI.dart';
+import 'package:chalthee/screens/activity_tab.dart';
 import 'package:flutter/material.dart';
 
 import '../helpers/WeightCalculator.dart';
@@ -10,6 +11,7 @@ import 'dashboard_tab.dart';
 import 'logs_tab.dart';
 import 'trends_tab.dart';
 import 'profile_tab.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class CalendarPage extends StatefulWidget {
   final WeightStorage? preloadedStorage;
@@ -87,20 +89,19 @@ class _CalendarPageState extends State<CalendarPage> {
               DashboardTab(
                 userName: _userName,
                 weightStorage: _weightStorage,
-                // userHeight: currentHeight,
-                // goalWeight : goalWeight,
                 onSwitchTab: _onSwitchTab,
               ),
               LogsTab(
                 userName: _userName,
                 weightStorage: _weightStorage,
                 calculator: _calculator,
-                onOpenProfile: () => _onSwitchTab(3),
+                onOpenProfile: () => _onSwitchTab(4),
               ),
+              ActivityTab(onOpenProfile: ()=>_onSwitchTab(4)),
               TrendsTab(
                 userName: _userName,
                 weightStorage: _weightStorage,
-                onOpenProfile: () => _onSwitchTab(3),
+                onOpenProfile: () => _onSwitchTab(4),
                 calculator: _calculator,
               ),
               ProfileTab(userName: _userName, email: _email),
@@ -116,7 +117,7 @@ class _CalendarPageState extends State<CalendarPage> {
     return Container(
       decoration: CommonUI().floatingNavDecorator,
       child: ClipRRect(
-        borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
+        borderRadius: BorderRadius.vertical(top: Radius.circular(24.r)),
         child: BottomNavigationBar(
           backgroundColor: CommonUI().surface.withOpacity(0.8),
           elevation: 0,
@@ -125,15 +126,15 @@ class _CalendarPageState extends State<CalendarPage> {
           selectedItemColor: CommonUI().primary,
           unselectedItemColor: CommonUI().onSurfaceVariant,
           selectedLabelStyle: GoogleFonts.inter(
-            fontSize: 11,
+            fontSize: 11.sp,
             fontWeight: FontWeight.w600,
           ),
           unselectedLabelStyle: GoogleFonts.inter(
-            fontSize: 11,
+            fontSize: 11.sp,
             fontWeight: FontWeight.normal,
           ),
           onTap: _onSwitchTab,
-          items: const [
+          items: [
             BottomNavigationBarItem(
               icon: Icon(Icons.dashboard_outlined),
               activeIcon: Icon(Icons.dashboard),
@@ -143,6 +144,11 @@ class _CalendarPageState extends State<CalendarPage> {
               icon: Icon(Icons.add_circle_outline),
               activeIcon: Icon(Icons.add_circle),
               label: 'LOGS',
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.hourglass_bottom_outlined),
+              activeIcon: Icon(Icons.hourglass_top),
+              label: 'ACTIVITY',
             ),
             BottomNavigationBarItem(
               icon: Icon(Icons.insights_outlined),

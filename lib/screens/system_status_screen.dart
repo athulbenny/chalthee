@@ -4,6 +4,7 @@ import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import '../constants/CommonUI.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class SystemStatusScreen extends StatelessWidget {
   const SystemStatusScreen({super.key});
@@ -24,24 +25,24 @@ class SystemStatusScreen extends StatelessWidget {
           child: Column(
             children: [
               _buildHeader(),
-              const SizedBox(height: 20),
+              SizedBox(height: 20.h),
               Expanded(
                 child: SingleChildScrollView(
-                  padding: const EdgeInsets.symmetric(horizontal: 24),
+                  padding: EdgeInsets.symmetric(horizontal: 24.w),
                   child: Column(
                     children: [
                       _statusBadge(),
-                      const SizedBox(height: 24),
+                      SizedBox(height: 24.h),
                       _iconCard(),
-                      const SizedBox(height: 32),
+                      SizedBox(height: 32.h),
                       _titleText(),
-                      const SizedBox(height: 12),
+                      SizedBox(height: 12.h),
                       _subtitleText(),
-                      const SizedBox(height: 32),
+                      SizedBox(height: 32.h),
                       _retryButton(),
-                      const SizedBox(height: 12),
+                      SizedBox(height: 12.h),
                       _backButton(),
-                      const SizedBox(height: 20),
+                      SizedBox(height: 20.h),
                       _errorRow(),
                     ],
                   ),
@@ -57,20 +58,20 @@ class SystemStatusScreen extends StatelessWidget {
   // HEADER
   Widget _buildHeader() {
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 24),
+      padding: EdgeInsets.symmetric(horizontal: 30.w, vertical: 24.h),
       child: Row(
         children: [
-          // const Icon(Icons.arrow_back, color: Colors.teal),
-          const SizedBox(width: 18),
+          // Icon(Icons.arrow_back, color: Colors.teal),
+          SizedBox(width: 18.w),
           Text(
             "System Status",
             style: GoogleFonts.manrope(
-              fontSize: 24,
+              fontSize: 24.sp,
               fontWeight: FontWeight.w700,
               color: CommonUI().secondary,
             ),
           ),
-          const Spacer(),
+          Spacer(),
           CircleAvatar(
             backgroundColor: Colors.transparent,
             backgroundImage: AssetImage(ConstantValues.logo),
@@ -79,7 +80,7 @@ class SystemStatusScreen extends StatelessWidget {
           Text(
             ConstantValues.appName,
             style: GoogleFonts.manrope(
-              fontSize: 20,
+              fontSize: 20.sp,
               fontWeight: FontWeight.w800,
               color: CommonUI().primary,
               letterSpacing: -0.5,
@@ -93,16 +94,16 @@ class SystemStatusScreen extends StatelessWidget {
   // STATUS BADGE
   Widget _statusBadge() {
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+      padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 10.h),
       decoration: BoxDecoration(
         color: CommonUI().primary,
-        borderRadius: BorderRadius.circular(12),
+        borderRadius: BorderRadius.circular(12.r),
       ),
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Icon(Icons.bolt, size: 18, color: CommonUI().outlineVariant),
-          SizedBox(width: 6),
+          Icon(Icons.bolt, size: 18.sp, color: CommonUI().outlineVariant),
+          SizedBox(width: 6.w),
           Text(
             "Service Disruption",
             style: TextStyle(
@@ -118,14 +119,14 @@ class SystemStatusScreen extends StatelessWidget {
   // ICON CARD
   Widget _iconCard() {
     return Container(
-      height: 140,
-      width: 140,
+      height: 140.h,
+      width: 140.w,
       decoration: BoxDecoration(
         color: CommonUI().surfaceContainerHigh,
-        borderRadius: BorderRadius.circular(20),
+        borderRadius: BorderRadius.circular(20.r),
       ),
-      child: const Center(
-        child: Icon(Icons.cloud_off, size: 60, color: Colors.teal),
+      child: Center(
+        child: Icon(Icons.cloud_off, size: 60.sp, color: Colors.teal),
       ),
     );
   }
@@ -135,7 +136,7 @@ class SystemStatusScreen extends StatelessWidget {
     return Text(
       "OOPS! \nSomething went wrong",
       textAlign: TextAlign.center,
-      style: GoogleFonts.manrope(fontSize: 26, fontWeight: FontWeight.w800),
+      style: GoogleFonts.manrope(fontSize: 26.sp, fontWeight: FontWeight.w800),
     );
   }
 
@@ -146,9 +147,9 @@ class SystemStatusScreen extends StatelessWidget {
       "Please check your connection or try again later.",
       textAlign: TextAlign.center,
       style: GoogleFonts.inter(
-        fontSize: 15,
+        fontSize: 15.sp,
         color: Colors.grey[600],
-        height: 1.8,
+        height: 1.8.h,
       ),
     );
   }
@@ -157,20 +158,20 @@ class SystemStatusScreen extends StatelessWidget {
   Widget _retryButton() {
     return Container(
       width: double.infinity,
-      height: 56,
+      height: 56.h,
       decoration: BoxDecoration(
         color: Colors.teal,
-        borderRadius: BorderRadius.circular(30),
+        borderRadius: BorderRadius.circular(30.r),
       ),
       child: InkWell(
         onTap: () {},
         child: Container(
-          padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
+          padding: EdgeInsets.symmetric(horizontal: 24.w, vertical: 16.h),
           decoration: BoxDecoration(
             gradient: LinearGradient(
               colors: [CommonUI().primary, CommonUI().primaryContainer],
             ),
-            borderRadius: BorderRadius.circular(9999),
+            borderRadius: BorderRadius.circular(9999.r),
             boxShadow: [
               BoxShadow(
                 color: CommonUI().primary.withOpacity(0.3),
@@ -182,8 +183,8 @@ class SystemStatusScreen extends StatelessWidget {
           child: Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              const Icon(Icons.refresh, color: Colors.white, size: 20),
-              const SizedBox(width: 8),
+              Icon(Icons.refresh, color: Colors.white, size: 20.sp),
+              SizedBox(width: 8.w),
               Text(
                 'Retry Connection',
                 style: GoogleFonts.inter(
@@ -202,10 +203,10 @@ class SystemStatusScreen extends StatelessWidget {
   Widget _backButton() {
     return Container(
       width: double.infinity,
-      height: 56,
+      height: 56.h,
       decoration: BoxDecoration(
         color: Colors.grey.shade300,
-        borderRadius: BorderRadius.circular(30),
+        borderRadius: BorderRadius.circular(30.r),
       ),
       child: ElevatedButton(
         onPressed: () => SystemNavigator.pop(),
@@ -213,10 +214,10 @@ class SystemStatusScreen extends StatelessWidget {
           backgroundColor: Colors.transparent,
           shadowColor: Colors.transparent,
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(30),
+            borderRadius: BorderRadius.circular(30.r),
           ),
         ),
-        child: const Text(
+        child: Text(
           "Close Application",
           style: TextStyle(color: Colors.black),
         ),
@@ -227,22 +228,22 @@ class SystemStatusScreen extends StatelessWidget {
   // ERROR ROW
   Widget _errorRow() {
     return Container(
-      padding: const EdgeInsets.all(16),
+      padding: EdgeInsets.all(16.w),
       decoration: BoxDecoration(
         color: Colors.grey.shade100,
-        borderRadius: BorderRadius.circular(12),
+        borderRadius: BorderRadius.circular(12.r),
       ),
       child: Row(
         children: [
           const CircleAvatar(radius: 5, backgroundColor: Colors.red),
-          const SizedBox(width: 10),
-          const Text("Error Code: 503_SERVICE_UNAVAILABLE"),
-          const Spacer(),
+          SizedBox(width: 10.w),
+          Text("Error Code: 503_SERVICE_UNAVAILABLE"),
+          Spacer(),
           Text(
             "REPORT ISSUE",
             style: GoogleFonts.inter(
               color: Colors.teal.shade700,
-              fontSize: 12,
+              fontSize: 12.sp,
               fontWeight: FontWeight.bold,
             ),
           ),

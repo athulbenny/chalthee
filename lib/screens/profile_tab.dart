@@ -8,6 +8,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../main.dart';
 import '../storage/session_router.dart';
 import 'login.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class ProfileTab extends StatefulWidget {
   final String userName;
@@ -61,68 +62,82 @@ class _ProfileTabState extends State<ProfileTab> {
 
   Future<void> _editGoalWeight() async {
     final controller = TextEditingController(text: _goalWeight.toString());
-    final result = await showDialog<double>(
+    final result = await showModalBottomSheet<double>(
       context: context,
-      builder: (context) => AlertDialog(
-        backgroundColor: uiVariables.surfaceContainerHigh,
-        title: Text(
-          (_goalWeight == 0.0) ? "Add Goal Weight" : "Edit Goal Weight",
-          style: GoogleFonts.inter(fontWeight: FontWeight.w600, fontSize: 20),
-        ),
-        content: TextField(
-          controller: controller,
-          keyboardType: TextInputType.numberWithOptions(decimal: true),
-          decoration: const InputDecoration(suffixText: 'kg'),
-        ),
-        actions: [
-          Row(
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (context) => Padding(
+        padding: EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
+        child: Container(
+          decoration: BoxDecoration(
+            color: uiVariables.surfaceContainerHigh,
+            borderRadius: BorderRadius.vertical(top: Radius.circular(24.r)),
+          ),
+          padding: EdgeInsets.all(24.w),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              TextButton(
-                onPressed: () => Navigator.pop(context),
-                child: Text(
-                  "Cancel",
-                  style: GoogleFonts.inter(
-                    fontWeight: FontWeight.w600,
-                    color: uiVariables.error,
-                    fontSize: 15,
-                  ),
-                ),
+              Text(
+                (_goalWeight == 0.0) ? "Add Goal Weight" : "Edit Goal Weight",
+                style: GoogleFonts.inter(fontWeight: FontWeight.w600, fontSize: 20.sp),
               ),
-              InkWell(
-                onTap: () {
-                  final val = double.tryParse(controller.text);
-                  if (val != null) Navigator.pop(context, val);
-                },
-                child: Container(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 24,
-                    vertical: 16,
-                  ),
-                  decoration: BoxDecoration(
-                    gradient: LinearGradient(
-                      colors: [CommonUI().primary, CommonUI().primaryContainer],
-                    ),
-                    borderRadius: BorderRadius.circular(9999),
-                    boxShadow: [
-                      BoxShadow(
-                        color: CommonUI().primary.withOpacity(0.3),
-                        blurRadius: 10,
-                        offset: const Offset(0, 4),
+              SizedBox(height: 16.h),
+              TextField(
+                controller: controller,
+                keyboardType: const TextInputType.numberWithOptions(decimal: true),
+                decoration: const InputDecoration(suffixText: 'kg'),
+              ),
+              SizedBox(height: 24.h),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  TextButton(
+                    onPressed: () => Navigator.pop(context),
+                    child: Text(
+                      "Cancel",
+                      style: GoogleFonts.inter(
+                        fontWeight: FontWeight.w600,
+                        color: uiVariables.error,
+                        fontSize: 15.sp,
                       ),
-                    ],
-                  ),
-                  child: Text(
-                    'Save',
-                    style: GoogleFonts.inter(
-                      color: Colors.white,
-                      fontWeight: FontWeight.bold,
                     ),
                   ),
-                ),
+                  SizedBox(width: 16.w),
+                  InkWell(
+                    onTap: () {
+                      final val = double.tryParse(controller.text);
+                      if (val != null) Navigator.pop(context, val);
+                    },
+                    child: Container(
+                      padding: EdgeInsets.symmetric(horizontal: 24.w, vertical: 12.h),
+                      decoration: BoxDecoration(
+                        gradient: LinearGradient(
+                          colors: [CommonUI().primary, CommonUI().primaryContainer],
+                        ),
+                        borderRadius: BorderRadius.circular(9999.r),
+                        boxShadow: [
+                          BoxShadow(
+                            color: CommonUI().primary.withOpacity(0.3),
+                            blurRadius: 10,
+                            offset: const Offset(0, 4),
+                          ),
+                        ],
+                      ),
+                      child: Text(
+                        'Save',
+                        style: GoogleFonts.inter(
+                          color: Colors.white,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
               ),
             ],
           ),
-        ],
+        ),
       ),
     );
 
@@ -135,68 +150,82 @@ class _ProfileTabState extends State<ProfileTab> {
 
   Future<void> _editHeight() async {
     final controller = TextEditingController(text: _currentHeight.toString());
-    final height = await showDialog<double>(
+    final height = await showModalBottomSheet<double>(
       context: context,
-      builder: (context) => AlertDialog(
-        backgroundColor: uiVariables.surfaceContainerHigh,
-        title: Text(
-          "Add Current Height",
-          style: GoogleFonts.inter(fontWeight: FontWeight.w600, fontSize: 20),
-        ),
-        content: TextField(
-          controller: controller,
-          keyboardType: TextInputType.numberWithOptions(decimal: true),
-          decoration: const InputDecoration(suffixText: 'cm'),
-        ),
-        actions: [
-          Row(
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (context) => Padding(
+        padding: EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
+        child: Container(
+          decoration: BoxDecoration(
+            color: uiVariables.surfaceContainerHigh,
+            borderRadius: BorderRadius.vertical(top: Radius.circular(24.r)),
+          ),
+          padding: EdgeInsets.all(24.w),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              TextButton(
-                onPressed: () => Navigator.pop(context),
-                child: Text(
-                  "Cancel",
-                  style: GoogleFonts.inter(
-                    fontWeight: FontWeight.w600,
-                    color: uiVariables.error,
-                    fontSize: 15,
-                  ),
-                ),
+              Text(
+                "Add Current Height",
+                style: GoogleFonts.inter(fontWeight: FontWeight.w600, fontSize: 20.sp),
               ),
-              InkWell(
-                onTap: () {
-                  final val = double.tryParse(controller.text);
-                  if (val != null) Navigator.pop(context, val);
-                },
-                child: Container(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 24,
-                    vertical: 16,
-                  ),
-                  decoration: BoxDecoration(
-                    gradient: LinearGradient(
-                      colors: [CommonUI().primary, CommonUI().primaryContainer],
-                    ),
-                    borderRadius: BorderRadius.circular(9999),
-                    boxShadow: [
-                      BoxShadow(
-                        color: CommonUI().primary.withOpacity(0.3),
-                        blurRadius: 10,
-                        offset: const Offset(0, 4),
+              SizedBox(height: 16.h),
+              TextField(
+                controller: controller,
+                keyboardType: const TextInputType.numberWithOptions(decimal: true),
+                decoration: const InputDecoration(suffixText: 'cm'),
+              ),
+              SizedBox(height: 24.h),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  TextButton(
+                    onPressed: () => Navigator.pop(context),
+                    child: Text(
+                      "Cancel",
+                      style: GoogleFonts.inter(
+                        fontWeight: FontWeight.w600,
+                        color: uiVariables.error,
+                        fontSize: 15.sp,
                       ),
-                    ],
-                  ),
-                  child: Text(
-                    'Save',
-                    style: GoogleFonts.inter(
-                      color: Colors.white,
-                      fontWeight: FontWeight.bold,
                     ),
                   ),
-                ),
+                  SizedBox(width: 16.w),
+                  InkWell(
+                    onTap: () {
+                      final val = double.tryParse(controller.text);
+                      if (val != null) Navigator.pop(context, val);
+                    },
+                    child: Container(
+                      padding: EdgeInsets.symmetric(horizontal: 24.w, vertical: 12.h),
+                      decoration: BoxDecoration(
+                        gradient: LinearGradient(
+                          colors: [CommonUI().primary, CommonUI().primaryContainer],
+                        ),
+                        borderRadius: BorderRadius.circular(9999.r),
+                        boxShadow: [
+                          BoxShadow(
+                            color: CommonUI().primary.withOpacity(0.3),
+                            blurRadius: 10,
+                            offset: const Offset(0, 4),
+                          ),
+                        ],
+                      ),
+                      child: Text(
+                        'Save',
+                        style: GoogleFonts.inter(
+                          color: Colors.white,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
               ),
             ],
           ),
-        ],
+        ),
       ),
     );
 
@@ -220,6 +249,15 @@ class _ProfileTabState extends State<ProfileTab> {
     final time = await showTimePicker(
       context: context,
       initialTime: selectedTime,
+      builder: (context, child) {
+        return MediaQuery(
+          data: MediaQuery.of(context).copyWith(
+            // Reset text scaling so the internal dialog constraints don't break
+            textScaler: const TextScaler.linear(1.0),
+          ),
+          child: child!,
+        );
+      },
     );
     if (time != null) {
       setState(() => selectedTime = time);
@@ -256,7 +294,7 @@ class _ProfileTabState extends State<ProfileTab> {
       backgroundColor: Colors.transparent,
       body: SafeArea(
         child: SingleChildScrollView(
-          padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 16),
+          padding: EdgeInsets.symmetric(horizontal: 24.0.w, vertical: 16.h),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -270,11 +308,11 @@ class _ProfileTabState extends State<ProfileTab> {
                         backgroundImage: AssetImage(ConstantValues.logo),
                         radius: 20,
                       ),
-                      const SizedBox(width: 12),
+                      SizedBox(width: 12.w),
                       Text(
                         ConstantValues.appName,
                         style: GoogleFonts.manrope(
-                          fontSize: 20,
+                          fontSize: 20.sp,
                           fontWeight: FontWeight.w800,
                           color: CommonUI().primary,
                           letterSpacing: -0.5,
@@ -284,25 +322,25 @@ class _ProfileTabState extends State<ProfileTab> {
                   ),
                 ],
               ),
-              const SizedBox(height: 32),
+              SizedBox(height: 32.h),
               Text(
                 'Settings',
                 style: GoogleFonts.manrope(
-                  fontSize: 32,
+                  fontSize: 32.sp,
                   fontWeight: FontWeight.w800,
                   color: CommonUI().onSurface,
                 ),
               ),
-              const SizedBox(height: 8),
+              SizedBox(height: 8.h),
               Text(
                 'Manage your clinical profile and app\npreferences.',
                 style: GoogleFonts.inter(
-                  fontSize: 16,
+                  fontSize: 16.sp,
                   color: CommonUI().onSurfaceVariant,
-                  height: 1.4,
+                  height: 1.4.h,
                 ),
               ),
-              const SizedBox(height: 32),
+              SizedBox(height: 32.h),
               _buildSectionTitle('PROFILE'),
               _buildCardContainer(
                 items: [
@@ -321,9 +359,9 @@ class _ProfileTabState extends State<ProfileTab> {
                     title: 'Goal Weight',
                     subtitle: '${_goalWeight > 0 ? _goalWeight : 'Add target weight in'} ${_isKg ? 'kg' : 'lbs'}',
                     trailing: IconButton(
-                      icon: const Icon(
+                      icon: Icon(
                         Icons.edit,
-                        size: 18,
+                        size: 18.sp,
                         color: Colors.grey,
                       ),
                       onPressed: _editGoalWeight,
@@ -331,7 +369,7 @@ class _ProfileTabState extends State<ProfileTab> {
                   ),
                 ],
               ),
-              const SizedBox(height: 24),
+              SizedBox(height: 24.h),
               _buildSectionTitle('PREFERENCES'),
               _buildCardContainer(
                 items: [
@@ -344,7 +382,7 @@ class _ProfileTabState extends State<ProfileTab> {
                     trailing: Container(
                       decoration: BoxDecoration(
                         color: Colors.grey[200],
-                        borderRadius: BorderRadius.circular(20),
+                        borderRadius: BorderRadius.circular(20.r),
                       ),
                       child: Row(
                         mainAxisSize: MainAxisSize.min,
@@ -352,22 +390,22 @@ class _ProfileTabState extends State<ProfileTab> {
                           GestureDetector(
                             // onTap: () => _updateUnits(true),
                             child: Container(
-                              padding: const EdgeInsets.symmetric(
-                                horizontal: 16,
-                                vertical: 6,
+                              padding: EdgeInsets.symmetric(
+                                horizontal: 16.w,
+                                vertical: 6.h,
                               ),
                               decoration: BoxDecoration(
                                 color: _isKg
                                     ? CommonUI().primary
                                     : Colors.transparent,
-                                borderRadius: BorderRadius.circular(20),
+                                borderRadius: BorderRadius.circular(20.r),
                               ),
                               child: Text(
                                 'kg',
                                 style: TextStyle(
                                   color: _isKg ? Colors.white : Colors.black,
                                   fontWeight: FontWeight.bold,
-                                  fontSize: 12,
+                                  fontSize: 12.sp,
                                 ),
                               ),
                             ),
@@ -399,9 +437,9 @@ class _ProfileTabState extends State<ProfileTab> {
                     title: 'Current Height',
                     subtitle: '${_currentHeight > 0 ? _currentHeight : 'Add height in '}cm',
                     trailing: IconButton(
-                      icon: const Icon(
+                      icon: Icon(
                         Icons.edit,
-                        size: 18,
+                        size: 18.sp,
                         color: Colors.grey,
                       ),
                       onPressed: _editHeight,
@@ -410,7 +448,7 @@ class _ProfileTabState extends State<ProfileTab> {
                 ],
               ),
 
-              const SizedBox(height: 24),
+              SizedBox(height: 24.h),
 
               // ACCOUNT SECTION
               _buildSectionTitle('ACCOUNT'),
@@ -433,17 +471,17 @@ class _ProfileTabState extends State<ProfileTab> {
                   ),
                   _buildDivider(),
                   ListTile(
-                    contentPadding: const EdgeInsets.symmetric(
-                      horizontal: 16,
-                      vertical: 4,
+                    contentPadding: EdgeInsets.symmetric(
+                      horizontal: 16.w,
+                      vertical: 4.h,
                     ),
                     leading: Container(
-                      padding: const EdgeInsets.all(8),
+                      padding: EdgeInsets.all(8.w),
                       decoration: BoxDecoration(
                         color: Colors.red.withOpacity(0.15),
                         shape: BoxShape.circle,
                       ),
-                      child: const Icon(Icons.exit_to_app, color: Colors.red),
+                      child: Icon(Icons.exit_to_app, color: Colors.red),
                     ),
                     title: Text(
                       'Sign Out',
@@ -458,7 +496,7 @@ class _ProfileTabState extends State<ProfileTab> {
                         Navigator.pushAndRemoveUntil(
                           context,
                           MaterialPageRoute(builder: (_) => const LoginPage()),
-                          (route) => false,
+                              (route) => false,
                         );
                       }
                     },
@@ -466,15 +504,15 @@ class _ProfileTabState extends State<ProfileTab> {
                 ],
               ),
 
-              const SizedBox(height: 32),
+              SizedBox(height: 32.h),
 
               // DANGER ZONE
               Container(
-                padding: const EdgeInsets.all(24),
+                padding: EdgeInsets.all(24.w),
                 decoration: BoxDecoration(
                   color: Colors.red.withOpacity(0.05),
                   border: Border.all(color: Colors.red.withOpacity(0.1)),
-                  borderRadius: BorderRadius.circular(16),
+                  borderRadius: BorderRadius.circular(16.r),
                 ),
                 child: Column(
                   children: [
@@ -483,28 +521,28 @@ class _ProfileTabState extends State<ProfileTab> {
                       style: GoogleFonts.inter(
                         fontWeight: FontWeight.bold,
                         color: Colors.red,
-                        fontSize: 16,
+                        fontSize: 16.sp,
                       ),
                     ),
-                    const SizedBox(height: 12),
+                    SizedBox(height: 12.h),
                     Text(
                       'Deleting your account will permanently erase all tracking history and health data.',
                       textAlign: TextAlign.center,
                       style: GoogleFonts.inter(
-                        fontSize: 13,
+                        fontSize: 13.sp,
                         color: Colors.black87,
                       ),
                     ),
-                    const SizedBox(height: 20),
+                    SizedBox(height: 20.h),
                     OutlinedButton(
                       style: OutlinedButton.styleFrom(
                         side: const BorderSide(color: Colors.red),
                         shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(30),
+                          borderRadius: BorderRadius.circular(30.r),
                         ),
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 32,
-                          vertical: 12,
+                        padding: EdgeInsets.symmetric(
+                          horizontal: 32.w,
+                          vertical: 12.h,
                         ),
                       ),
                       onPressed: () {},
@@ -520,7 +558,7 @@ class _ProfileTabState extends State<ProfileTab> {
                 ),
               ),
 
-              const SizedBox(height: 80),
+              SizedBox(height: 80.h),
             ],
           ),
         ),
@@ -530,11 +568,11 @@ class _ProfileTabState extends State<ProfileTab> {
 
   Widget _buildSectionTitle(String title) {
     return Padding(
-      padding: const EdgeInsets.only(left: 8, bottom: 8),
+      padding: EdgeInsets.only(left: 8.w, bottom: 8.h),
       child: Text(
         title,
         style: GoogleFonts.inter(
-          fontSize: 12,
+          fontSize: 12.sp,
           fontWeight: FontWeight.w800,
           letterSpacing: 2.0,
           color: Colors.grey[700],
@@ -547,7 +585,7 @@ class _ProfileTabState extends State<ProfileTab> {
     return Container(
       decoration: BoxDecoration(
         color: Colors.white,
-        borderRadius: BorderRadius.circular(16),
+        borderRadius: BorderRadius.circular(16.r),
         boxShadow: [
           BoxShadow(
             color: Colors.black.withOpacity(0.02),
@@ -569,19 +607,19 @@ class _ProfileTabState extends State<ProfileTab> {
     Widget? trailing,
   }) {
     return ListTile(
-      contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+      contentPadding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 4.h),
       leading: Container(
-        padding: const EdgeInsets.all(8),
+        padding: EdgeInsets.all(8.w),
         decoration: BoxDecoration(color: iconBg, shape: BoxShape.circle),
         child: Icon(iconData, color: iconColor),
       ),
       title: Text(
         title,
-        style: GoogleFonts.inter(fontWeight: FontWeight.w600, fontSize: 15),
+        style: GoogleFonts.inter(fontWeight: FontWeight.w600, fontSize: 15.sp),
       ),
       subtitle: Text(
         subtitle,
-        style: GoogleFonts.inter(color: Colors.grey[600], fontSize: 13),
+        style: GoogleFonts.inter(color: Colors.grey[600], fontSize: 13.sp),
       ),
       trailing: trailing ?? Text(''),
       onTap: trailing != null && trailing is Switch ? null : () {},
@@ -589,8 +627,8 @@ class _ProfileTabState extends State<ProfileTab> {
   }
 
   Widget _buildDivider() {
-    return const Divider(
-      height: 1,
+    return Divider(
+      height: 1.h,
       indent: 64,
       thickness: 0.5,
       color: Color(0xFFEEEEEE),

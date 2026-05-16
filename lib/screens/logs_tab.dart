@@ -3,8 +3,11 @@ import 'package:chalthee/helpers/WeightCalculator.dart';
 import 'package:chalthee/storage/weight_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:intl/intl.dart';
 import 'package:table_calendar/table_calendar.dart';
 import '../constants/constant_values.dart';
+import 'activity_summary_page.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class LogsTab extends StatefulWidget {
   final WeightStorage weightStorage;
@@ -38,6 +41,58 @@ class _LogsTabState extends State<LogsTab> {
   void dispose() {
     _weightController.dispose();
     super.dispose();
+  }
+
+  void _showTopConfirmation({
+    required String message,
+    required VoidCallback onConfirm,
+  }) {
+    final messenger = ScaffoldMessenger.of(context);
+    messenger.hideCurrentMaterialBanner();
+
+    messenger.showMaterialBanner(
+      MaterialBanner(
+        margin: EdgeInsetsGeometry.symmetric(horizontal: 25.w),
+        content: Text(
+          message,
+          style: GoogleFonts.inter(
+            fontWeight: FontWeight.w800,
+            color: Colors.white,
+            fontSize: 16.sp,
+          ),
+        ),
+        backgroundColor: uiVariables.primary,
+        elevation: 5,
+        leading: Icon(Icons.info_outline, color: Colors.white),
+        actions: [
+          TextButton(
+            onPressed: () {
+              messenger.hideCurrentMaterialBanner();
+            },
+            child: Text(
+              'CANCEL',
+              style: GoogleFonts.inter(
+                color: Colors.white70,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+          ),
+          TextButton(
+            onPressed: () {
+              messenger.hideCurrentMaterialBanner();
+              onConfirm();
+            },
+            child: Text(
+              'OK',
+              style: GoogleFonts.inter(
+                color: Colors.white,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
   }
 
   List<MapEntry<DateTime, double>> _getWeekEntries(DateTime anchor) {
@@ -101,28 +156,37 @@ class _LogsTabState extends State<LogsTab> {
 
   void _saveWeight() {
     if (_selectedDay == null) return;
-    final key = WeightCalculatorHelper.normalizeDate(_selectedDay!);
     final text = _weightController.text.trim();
-    setState(() {
-      if (text.isNotEmpty) {
-        final value = double.tryParse(text);
-        if (value != null && value > 0) {
+    final value = double.tryParse(text);
+    if (value == null || value <= 0) return;
+
+    _showTopConfirmation(
+      message: 'Save weight entry ($value kg)?',
+      onConfirm: () {
+        final key = WeightCalculatorHelper.normalizeDate(_selectedDay!);
+        setState(() {
           widget.weightStorage.saveWeight(key, value);
-        }
-      }
-      _isEditingWeight = false;
-      _weightController.clear();
-    });
+          _isEditingWeight = false;
+          _weightController.clear();
+        });
+      },
+    );
   }
 
   void _dltWeight() {
     if (_selectedDay == null) return;
-    final key = WeightCalculatorHelper.normalizeDate(_selectedDay!);
-    setState(() {
-      widget.weightStorage.deleteWeight(key);
-      _isEditingWeight = false;
-      _weightController.clear();
-    });
+    _showTopConfirmation(
+      message:
+          'Delete weight entry of ${_selectedDay?.toIso8601String().split("T").first}?',
+      onConfirm: () {
+        final key = WeightCalculatorHelper.normalizeDate(_selectedDay!);
+        setState(() {
+          widget.weightStorage.deleteWeight(key);
+          _isEditingWeight = false;
+          _weightController.clear();
+        });
+      },
+    );
   }
 
   Widget _dayCell(
@@ -151,7 +215,7 @@ class _LogsTabState extends State<LogsTab> {
       alignment: Alignment.center,
       children: [
         Container(
-          margin: const EdgeInsets.all(6),
+          margin: EdgeInsets.all(6.w),
           alignment: Alignment.center,
           decoration: BoxDecoration(
             shape: BoxShape.circle,
@@ -177,10 +241,10 @@ class _LogsTabState extends State<LogsTab> {
         ),
         if (hasWeight)
           Positioned(
-            bottom: 4,
+            bottom: 4.h,
             child: Container(
-              width: 6,
-              height: 6,
+              width: 6.w,
+              height: 6.h,
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
                 color: dotColor,
@@ -215,7 +279,7 @@ class _LogsTabState extends State<LogsTab> {
             ),
           ),
           content: SizedBox(
-            height: 80,
+            height: 80.h,
             child: Row(
               children: [
                 Expanded(
@@ -252,7 +316,7 @@ class _LogsTabState extends State<LogsTab> {
                               child: Text(
                                 DateTime(0, index + 1).month.toString(),
                                 style: TextStyle(
-                                  fontSize: 20,
+                                  fontSize: 20.sp,
                                   color: uiVariables.textColorDefault,
                                   fontWeight: FontWeight.bold,
                                 ),
@@ -298,7 +362,7 @@ class _LogsTabState extends State<LogsTab> {
                               child: Text(
                                 (2020 + index).toString(),
                                 style: TextStyle(
-                                  fontSize: 20,
+                                  fontSize: 20.sp,
                                   color: uiVariables.textColorDefault,
                                   fontWeight: FontWeight.bold,
                                 ),
@@ -349,6 +413,12 @@ class _LogsTabState extends State<LogsTab> {
   @override
   Widget build(BuildContext context) {
     final entries = _getSelectedEntries();
+    final highestEntry = entries.isNotEmpty
+        ? entries.reduce((a, b) => a.value > b.value ? a : b)
+        : null;
+    final lowestEntry = entries.isNotEmpty
+        ? entries.reduce((a, b) => a.value < b.value ? a : b)
+        : null;
     final smartStart = entries.isNotEmpty ? entries.first.key : null;
     final smartEnd = entries.length > 1 ? entries.last.key : null;
     final avg = entries.isNotEmpty
@@ -407,11 +477,11 @@ class _LogsTabState extends State<LogsTab> {
         child: Column(
           children: [
             Container(
-              padding: const EdgeInsets.only(
-                left: 24,
-                right: 24,
-                top: 48,
-                bottom: 16,
+              padding: EdgeInsets.only(
+                left: 24.w,
+                right: 24.w,
+                top: 48.h,
+                bottom: 16.h,
               ),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -423,11 +493,11 @@ class _LogsTabState extends State<LogsTab> {
                         backgroundImage: AssetImage(ConstantValues.logo),
                         radius: 20,
                       ),
-                      const SizedBox(width: 12),
+                      SizedBox(width: 12.w),
                       Text(
                         ConstantValues.appName,
                         style: GoogleFonts.manrope(
-                          fontSize: 20,
+                          fontSize: 20.sp,
                           fontWeight: FontWeight.w800,
                           color: CommonUI().primary,
                           letterSpacing: -0.5,
@@ -443,9 +513,9 @@ class _LogsTabState extends State<LogsTab> {
               ),
             ),
             Padding(
-              padding: const EdgeInsets.symmetric(
-                horizontal: 24.0,
-                vertical: 16,
+              padding: EdgeInsets.symmetric(
+                horizontal: 24.0.w,
+                vertical: 16.h,
               ),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -453,12 +523,12 @@ class _LogsTabState extends State<LogsTab> {
                   Text(
                     'Track your weight',
                     style: GoogleFonts.manrope(
-                      fontSize: 32,
+                      fontSize: 32.sp,
                       fontWeight: FontWeight.w800,
                       color: CommonUI().onSurface,
                     ),
                   ),
-                  const SizedBox(height: 20),
+                  SizedBox(height: 20.h),
                   Card(
                     child: Container(
                       decoration: uiVariables.bodyBoxDecorator,
@@ -473,7 +543,7 @@ class _LogsTabState extends State<LogsTab> {
                         headerStyle: HeaderStyle(
                           formatButtonVisible: false,
                           titleTextStyle: TextStyle(
-                            fontSize: 22,
+                            fontSize: 22.sp,
                             fontWeight: FontWeight.bold,
                             color: uiVariables.textColorDefault,
                           ),
@@ -530,30 +600,30 @@ class _LogsTabState extends State<LogsTab> {
                     ),
                   ),
 
-                  SizedBox(height: 20),
+                  SizedBox(height: 20.h),
 
                   //DAILY
                   if (_selectedDay != null)
                     _buildCardContainer(
                       items: [
-                        SizedBox(height: 10),
+                        SizedBox(height: 10.h),
                         Padding(
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: 24.0,
-                            vertical: 16,
+                          padding: EdgeInsets.symmetric(
+                            horizontal: 24.0.w,
+                            vertical: 16.h,
                           ),
                           child: Column(
                             children: [
                               Row(
                                 children: [
                                   Text(
-                                    'Weight on ${_focusedDay.toIso8601String().split("T").first}',
+                                    'Weight on ${DateFormat('MMMM d, yyyy').format(_focusedDay)}',
                                     style: GoogleFonts.manrope(
-                                      fontSize: 18,
+                                      fontSize: 16.sp,
                                       fontWeight: FontWeight.bold,
                                     ),
                                   ),
-                                  const SizedBox(width: 12),
+                                  SizedBox(width: 12.w),
                                   Expanded(
                                     child: TextField(
                                       controller: _weightController,
@@ -571,7 +641,7 @@ class _LogsTabState extends State<LogsTab> {
                                 ],
                               ),
 
-                              const SizedBox(height: 16),
+                              SizedBox(height: 16.h),
                               Row(
                                 mainAxisAlignment:
                                     MainAxisAlignment.spaceAround,
@@ -588,7 +658,7 @@ class _LogsTabState extends State<LogsTab> {
                                     ),
                                   ),
 
-                                  const SizedBox(width: 12),
+                                  SizedBox(width: 12.w),
 
                                   InkWell(
                                     onTap: () {
@@ -614,7 +684,7 @@ class _LogsTabState extends State<LogsTab> {
                           iconColor: Colors.blue[700]!,
                           iconBg: Colors.blue[200]!,
                           title:
-                              "Day weight [${_focusedDay.toIso8601String().split("T").first}]",
+                              "Day weight [${DateFormat('MMMM d, yyyy').format(_focusedDay)}]",
                           trailing: Text(
                             widget.weightStorage.weights.containsKey(
                                   selectedKey,
@@ -622,7 +692,7 @@ class _LogsTabState extends State<LogsTab> {
                                 ? '${widget.weightStorage.weights[selectedKey]} kg'
                                 : 'Not recorded',
                             style: GoogleFonts.manrope(
-                              fontSize: 16,
+                              fontSize: 16.sp,
                               fontWeight: FontWeight.bold,
                             ),
                           ),
@@ -630,7 +700,7 @@ class _LogsTabState extends State<LogsTab> {
                               (widget.weightStorage.weights.containsKey(
                                 selectedKey?.subtract(const Duration(days: 1)),
                               ))
-                              ? 'Yesterday: ${widget.weightStorage.weights[selectedKey?.subtract(const Duration(days: 1))]} Kg'
+                              ? 'Previous Day: ${widget.weightStorage.weights[selectedKey?.subtract(const Duration(days: 1))]} Kg'
                               : '',
                         ),
                         _buildListItem(
@@ -646,14 +716,14 @@ class _LogsTabState extends State<LogsTab> {
                                       ? '↑ +${dailyDiff!.toStringAsFixed(3)} kg'
                                       : '${dailyDiff!.toStringAsFixed(3)} kg',
                                   style: GoogleFonts.manrope(
-                                    fontSize: 16,
+                                    fontSize: 16.sp,
                                     fontWeight: FontWeight.bold,
                                   ),
                                 )
                               : Text(
                                   'No enough data',
                                   style: GoogleFonts.manrope(
-                                    fontSize: 16,
+                                    fontSize: 16.sp,
                                     fontWeight: FontWeight.bold,
                                   ),
                                 ),
@@ -665,6 +735,53 @@ class _LogsTabState extends State<LogsTab> {
                                     : 'No change'
                               : "",
                         ),
+                        SizedBox(height: 16.h),
+                        Padding(
+                          padding: EdgeInsets.symmetric(
+                            horizontal: 16.0.w,
+                            vertical: 8.0.h,
+                          ),
+                          child: InkWell(
+                            onTap: () => Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (ctx) =>
+                                    DailySummaryPage(date: _selectedDay!),
+                              ),
+                            ),
+                            borderRadius: BorderRadius.circular(12.r),
+                            child: Container(
+                              width: double.infinity,
+                              padding: EdgeInsets.symmetric(vertical: 16.h),
+                              decoration: BoxDecoration(
+                                color: uiVariables.primary.withOpacity(0.1),
+                                borderRadius: BorderRadius.circular(12.r),
+                                border: Border.all(
+                                  color: uiVariables.primary.withOpacity(0.3),
+                                ),
+                              ),
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Icon(
+                                    Icons.insights,
+                                    color: uiVariables.primary,
+                                  ),
+                                  SizedBox(width: 8.w),
+                                  Text(
+                                    'View Activity Summary',
+                                    style: GoogleFonts.inter(
+                                      color: uiVariables.primary,
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 16.sp,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                        ),
+                        SizedBox(height: 8.h),
                       ],
                     ),
 
@@ -677,7 +794,7 @@ class _LogsTabState extends State<LogsTab> {
                           iconColor: Colors.blue[700]!,
                           iconBg: Colors.blue[200]!,
                           title: smartStart != null && smartEnd != null
-                              ? 'Range: ${smartStart.toLocal().toString().split(' ')[0]} → ${smartEnd.toLocal().toString().split(' ')[0]}'
+                              ? 'Range: ${DateFormat('MMMM d, yyyy').format(smartStart)} -> ${DateFormat('MMMM d, yyyy').format(smartEnd)}'
                               : 'No data in selected range',
                           trailing:
                               (diff != null && smartRangePercentage != null)
@@ -686,7 +803,7 @@ class _LogsTabState extends State<LogsTab> {
                                       ? 'Loss: ${diff.abs().toStringAsFixed(3)} kg (${smartRangePercentage.abs().toStringAsFixed(2)}%)'
                                       : 'Gain: ${diff.toStringAsFixed(3)} kg (+${smartRangePercentage.toStringAsFixed(2)}%)',
                                   style: GoogleFonts.manrope(
-                                    fontSize: 16,
+                                    fontSize: 14.sp,
                                     fontWeight: FontWeight.bold,
                                     color: diff < 0
                                         ? uiVariables.weightGainColor
@@ -696,19 +813,55 @@ class _LogsTabState extends State<LogsTab> {
                               : Text(
                                   'No enough data',
                                   style: GoogleFonts.manrope(
-                                    fontSize: 16,
+                                    fontSize: 16.sp,
                                     fontWeight: FontWeight.bold,
                                     color: uiVariables.textColorDefault,
                                   ),
                                 ),
                           subtitle: '',
                         ),
+                        if (highestEntry != null)
+                          _buildListItem(
+                            iconData: Icons.trending_up,
+                            iconColor: uiVariables.weightGainColor,
+                            iconBg: uiVariables.weightGainColor.withOpacity(
+                              0.2,
+                            ),
+                            title: 'Highest Weight',
+                            trailing: Text(
+                              '${highestEntry.value} kg',
+                              style: GoogleFonts.manrope(
+                                fontSize: 16.sp,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                            subtitle:
+                                'On ${DateFormat('MMMM d, yyyy').format(highestEntry.key)}',
+                          ),
+                        if (lowestEntry != null)
+                          _buildListItem(
+                            iconData: Icons.trending_down,
+                            iconColor: uiVariables.weightLossColor,
+                            iconBg: uiVariables.weightLossColor.withOpacity(
+                              0.2,
+                            ),
+                            title: 'Lowest Weight',
+                            trailing: Text(
+                              '${lowestEntry.value} kg',
+                              style: GoogleFonts.manrope(
+                                fontSize: 16.sp,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                            subtitle:
+                                'On ${DateFormat('MMMM d, yyyy').format(lowestEntry.key)}',
+                          ),
                       ],
                     ),
-                  SizedBox(height: 20),
+                  SizedBox(height: 20.h),
 
                   //MONTHLY/WEEKLY
-                  if (progressWeeklyAvg != null)
+                  if (progressWeeklyAvg != null && !(_rangeStart != null && _rangeEnd != null))
                     _buildCardContainer(
                       items: [
                         _buildListItem(
@@ -724,7 +877,7 @@ class _LogsTabState extends State<LogsTab> {
                                       ? 'Loss: ${progressWeeklyDiff.abs().toStringAsFixed(3)} kg (${progressWeeklyPercentage.abs().toStringAsFixed(2)}%)'
                                       : 'Gain: ${progressWeeklyDiff.toStringAsFixed(3)} kg (+${progressWeeklyPercentage.toStringAsFixed(2)}%)',
                                   style: GoogleFonts.manrope(
-                                    fontSize: 16,
+                                    fontSize: 14.sp,
                                     fontWeight: FontWeight.bold,
                                     color: progressWeeklyDiff < 0
                                         ? uiVariables.weightLossColor
@@ -734,12 +887,12 @@ class _LogsTabState extends State<LogsTab> {
                               : Text(
                                   'Not enough data',
                                   style: GoogleFonts.manrope(
-                                    fontSize: 16,
+                                    fontSize: 16.sp,
                                     fontWeight: FontWeight.bold,
                                   ),
                                 ),
-                          subtitle:
-                              'Weekly Average Weight: ${progressWeeklyAvg.toStringAsFixed(3)} kg',
+                          subtitle: ''
+                              // 'Weekly Average Weight: ${progressWeeklyAvg.toStringAsFixed(3)} kg',
                         ),
                         _buildListItem(
                           iconData: Icons.calendar_month_outlined,
@@ -754,7 +907,7 @@ class _LogsTabState extends State<LogsTab> {
                                       ? 'Loss: ${progressMonthlyDiff.abs().toStringAsFixed(3)} kg (${progressMonthlyPercentage.abs().toStringAsFixed(2)}%)'
                                       : 'Gain: ${progressMonthlyDiff.toStringAsFixed(3)} kg (+${progressMonthlyPercentage.toStringAsFixed(2)}%)',
                                   style: GoogleFonts.manrope(
-                                    fontSize: 16,
+                                    fontSize: 14.sp,
                                     fontWeight: FontWeight.bold,
                                     color: progressMonthlyDiff < 0
                                         ? uiVariables.weightLossColor
@@ -764,12 +917,12 @@ class _LogsTabState extends State<LogsTab> {
                               : Text(
                                   'No enough data',
                                   style: GoogleFonts.manrope(
-                                    fontSize: 16,
+                                    fontSize: 14.sp,
                                     fontWeight: FontWeight.bold,
                                   ),
                                 ),
-                          subtitle:
-                              'Monthly Average Weight: ${progressMonthlyAvg?.toStringAsFixed(3)} kg',
+                          subtitle: ''
+                              // 'Monthly Average: ${progressMonthlyAvg?.toStringAsFixed(3)} kg',
                         ),
                       ],
                     ),
@@ -786,7 +939,7 @@ class _LogsTabState extends State<LogsTab> {
     return Container(
       decoration: BoxDecoration(
         color: Colors.white,
-        borderRadius: BorderRadius.circular(16),
+        borderRadius: BorderRadius.circular(16.r),
         boxShadow: [
           BoxShadow(
             color: Colors.black.withOpacity(0.02),
@@ -808,21 +961,21 @@ class _LogsTabState extends State<LogsTab> {
     Widget? trailing,
   }) {
     return ListTile(
-      contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+      contentPadding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 4.h),
       leading: Container(
-        padding: const EdgeInsets.all(8),
+        padding: EdgeInsets.all(8.w),
         decoration: BoxDecoration(color: iconBg, shape: BoxShape.circle),
         child: Icon(iconData, color: iconColor),
       ),
       title: Text(
         title,
-        style: GoogleFonts.inter(fontWeight: FontWeight.w600, fontSize: 15),
+        style: GoogleFonts.inter(fontWeight: FontWeight.w600, fontSize: 15.sp),
       ),
       subtitle: Text(
         subtitle,
-        style: GoogleFonts.inter(color: Colors.grey[600], fontSize: 13),
+        style: GoogleFonts.inter(color: Colors.grey[600], fontSize: 13.sp),
       ),
-      trailing: trailing ?? const Icon(Icons.chevron_right, color: Colors.grey),
+      trailing: trailing ?? Icon(Icons.chevron_right, color: Colors.grey),
       onTap: trailing != null && trailing is Switch ? null : () {},
     );
   }
@@ -833,10 +986,10 @@ class _LogsTabState extends State<LogsTab> {
     required List<Color> colors,
   }) {
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 12),
+      padding: EdgeInsets.symmetric(horizontal: 18.w, vertical: 12.h),
       decoration: BoxDecoration(
         gradient: LinearGradient(colors: colors),
-        borderRadius: BorderRadius.circular(9999),
+        borderRadius: BorderRadius.circular(9999.r),
         boxShadow: [
           BoxShadow(
             color: colors.first.withOpacity(0.3),
@@ -847,8 +1000,8 @@ class _LogsTabState extends State<LogsTab> {
       ),
       child: Row(
         children: [
-          Icon(icon, color: Colors.white, size: 20),
-          const SizedBox(width: 8),
+          Icon(icon, color: Colors.white, size: 20.sp),
+          SizedBox(width: 8.w),
           Text(
             text,
             style: GoogleFonts.inter(

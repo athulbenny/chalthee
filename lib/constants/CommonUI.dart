@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class CommonUI {
   CommonUI();
@@ -37,8 +38,8 @@ class CommonUI {
 
   BoxDecoration get cardDecorator => BoxDecoration(
     color: surfaceContainerLowest,
-    borderRadius: BorderRadius.circular(24),
-    boxShadow: const [
+    borderRadius: BorderRadius.circular(24.r),
+    boxShadow: [
       BoxShadow(
         color: Color.fromRGBO(0, 96, 103, 0.06),
         blurRadius: 32,
@@ -49,8 +50,8 @@ class CommonUI {
 
   BoxDecoration get floatingNavDecorator => BoxDecoration(
     color: const Color(0xCCF6FAFA),
-    borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
-    boxShadow: const [
+    borderRadius: BorderRadius.vertical(top: Radius.circular(24.r)),
+    boxShadow: [
       BoxShadow(
         color: Color.fromRGBO(0, 96, 103, 0.06),
         blurRadius: 32,
@@ -65,19 +66,19 @@ class CommonUI {
     isDense: true,
     filled: true,
     fillColor: const Color(0xFFFFFFFF),
-    contentPadding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
-    enabledBorder: const UnderlineInputBorder(
+    contentPadding: EdgeInsets.symmetric(vertical: 12.h, horizontal: 16.w),
+    enabledBorder: UnderlineInputBorder(
       borderSide: BorderSide(color: Colors.black),
       borderRadius: BorderRadius.only(
-        topLeft: Radius.circular(8),
-        topRight: Radius.circular(8),
+        topLeft: Radius.circular(8.r),
+        topRight: Radius.circular(8.r),
       ),
     ),
-    focusedBorder: const UnderlineInputBorder(
-      borderSide: BorderSide(color: Color(0xFF006067), width: 2),
+    focusedBorder: UnderlineInputBorder(
+      borderSide: BorderSide(color: Color(0xFF006067), width: 2.w),
       borderRadius: BorderRadius.only(
-        topLeft: Radius.circular(8),
-        topRight: Radius.circular(8),
+        topLeft: Radius.circular(8.r),
+        topRight: Radius.circular(8.r),
       ),
     ),
   );
@@ -109,7 +110,7 @@ class CommonUI {
     backgroundColor: primary,
     foregroundColor: Colors.white,
     elevation: 4,
-    padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
-    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(9999)),
+    padding: EdgeInsets.symmetric(horizontal: 24.w, vertical: 12.h),
+    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(9999.r)),
   );
 }

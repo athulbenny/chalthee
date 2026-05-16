@@ -24,11 +24,9 @@ class WeightStorage {
   /// ---------------- SAVE ----------------
   Future<void> saveWeight(DateTime date, double weight) async {
     final normalized = DateTime(date.year, date.month, date.day);
-    print("added as part of saveweight test(TBR) --start");
     if (_weights.containsKey(normalized) && _weights[normalized] == weight) {
       return;
     }
-    print("added as part of saveweight test(TBR) --end");
     _weights[normalized] = weight;
     await _saveToFirebase();
   }
@@ -36,9 +34,7 @@ class WeightStorage {
   /// ---------------- DELETE ----------------
   Future<void> deleteWeight(DateTime date) async {
     final normalized = DateTime(date.year, date.month, date.day);
-    print("added as part of deleteweight test(TBR) --start");
     if (!_weights.containsKey(normalized)) return;
-    print("added as part of deleteweight test(TBR) --end");
     _weights.remove(normalized);
     await _saveToFirebase();
   }
@@ -55,7 +51,6 @@ class WeightStorage {
 
   /// ---------------- SAVE TO FIREBASE ----------------
   Future<void> _saveToFirebase() async {
-    print("added as part of save/dlt weight test(TBR)");
     final mapToSave = _weights.map(
       (k, v) => MapEntry(k.toIso8601String().split('T')[0], v),
     );

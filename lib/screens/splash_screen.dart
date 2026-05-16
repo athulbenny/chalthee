@@ -6,6 +6,7 @@ import 'package:chalthee/storage/session_router.dart';
 import 'package:chalthee/screens/system_status_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class SplashScreen extends StatefulWidget {
   final bool isLoggedIn;
@@ -129,12 +130,12 @@ class _SplashScreenState extends State<SplashScreen>
                 opacity: _fadeAnimation,
                 child: Image.asset(
                   ConstantValues.logo,
-                  width: 120,
-                  height: 120,
+                  width: 120.w,
+                  height: 120.h,
                 ),
               ),
             ),
-            const SizedBox(height: 24),
+            SizedBox(height: 24.h),
             SlideTransition(
               position: _slideAnimation,
               child: FadeTransition(
@@ -147,7 +148,7 @@ class _SplashScreenState extends State<SplashScreen>
                 child: Text(
                   ConstantValues.appName,
                   style: GoogleFonts.manrope(
-                    fontSize: 32,
+                    fontSize: 32.sp,
                     fontWeight: FontWeight.w800,
                     color: CommonUI().primary,
                     letterSpacing: -0.5,

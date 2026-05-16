@@ -5,6 +5,7 @@ import 'package:chalthee/storage/weight_storage.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class TrendsTab extends StatelessWidget {
   final String userName;
@@ -91,7 +92,7 @@ class TrendsTab extends StatelessWidget {
       backgroundColor: Colors.transparent,
       body: SafeArea(
         child: SingleChildScrollView(
-          padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 16),
+          padding: EdgeInsets.symmetric(horizontal: 24.0.w, vertical: 16.h),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -106,11 +107,11 @@ class TrendsTab extends StatelessWidget {
                         backgroundImage: AssetImage(ConstantValues.logo),
                         radius: 20,
                       ),
-                      const SizedBox(width: 12),
+                      SizedBox(width: 12.w),
                       Text(
                         ConstantValues.appName,
                         style: GoogleFonts.manrope(
-                          fontSize: 20,
+                          fontSize: 20.sp,
                           fontWeight: FontWeight.w800,
                           color: CommonUI().primary,
                           letterSpacing: -0.5,
@@ -124,35 +125,35 @@ class TrendsTab extends StatelessWidget {
                   ),
                 ],
               ),
-              const SizedBox(height: 32),
+              SizedBox(height: 32.h),
 
               // Trends Title
               Text(
                 'Trends',
                 style: GoogleFonts.manrope(
-                  fontSize: 32,
+                  fontSize: 32.sp,
                   fontWeight: FontWeight.w800,
                   color: CommonUI().onSurface,
                 ),
               ),
-              const SizedBox(height: 8),
+              SizedBox(height: 8.h),
               Text(
                 'Analyze your weight milestones and progress\nover time.',
                 style: GoogleFonts.inter(
-                  fontSize: 16,
+                  fontSize: 16.sp,
                   color: CommonUI().onSurfaceVariant,
-                  height: 1.4,
+                  height: 1.4.h,
                 ),
               ),
-              const SizedBox(height: 32),
+              SizedBox(height: 32.h),
 
               // OVERVIEW SECTION
               Padding(
-                padding: const EdgeInsets.only(left: 8, bottom: 8),
+                padding: EdgeInsets.only(left: 8.w, bottom: 8.h),
                 child: Text(
                   'OVERVIEW',
                   style: GoogleFonts.inter(
-                    fontSize: 12,
+                    fontSize: 12.sp,
                     fontWeight: FontWeight.w800,
                     letterSpacing: 2.0,
                     color: Colors.grey[700],
@@ -161,10 +162,10 @@ class TrendsTab extends StatelessWidget {
               ),
               Container(
                 width: double.infinity,
-                padding: const EdgeInsets.all(24),
+                padding: EdgeInsets.all(24.w),
                 decoration: BoxDecoration(
                   color: Colors.white,
-                  borderRadius: BorderRadius.circular(16),
+                  borderRadius: BorderRadius.circular(16.r),
                   boxShadow: [
                     BoxShadow(
                       color: Colors.black.withOpacity(0.02),
@@ -183,7 +184,7 @@ class TrendsTab extends StatelessWidget {
                         fontWeight: FontWeight.w600,
                       ),
                     ),
-                    const SizedBox(height: 12),
+                    SizedBox(height: 12.h),
                     Row(
                       crossAxisAlignment: CrossAxisAlignment.baseline,
                       textBaseline: TextBaseline.alphabetic,
@@ -193,50 +194,50 @@ class TrendsTab extends StatelessWidget {
                               ? monthlyDiff.toStringAsFixed(1)
                               : '+${monthlyDiff.toStringAsFixed(1)}',
                           style: GoogleFonts.manrope(
-                            fontSize: 48,
+                            fontSize: 48.sp,
                             fontWeight: FontWeight.w800,
                             color: monthlyDiff <= 0
                                 ? CommonUI().weightLossColor
                                 : CommonUI().weightGainColor,
                           ),
                         ),
-                        const SizedBox(width: 8),
+                        SizedBox(width: 8.w),
                         Text(
                           'kg',
                           style: GoogleFonts.inter(
-                            fontSize: 18,
+                            fontSize: 18.sp,
                             fontWeight: FontWeight.bold,
                             color: Colors.grey[600],
                           ),
                         ),
                       ],
                     ),
-                    const SizedBox(height: 16),
+                    SizedBox(height: 16.h),
                     // Placeholder for a beautiful chart
                     Container(
-                      height: 120,
+                      height: 120.h,
                       width: double.infinity,
                       decoration: BoxDecoration(
                         color: CommonUI().surfaceContainerLowest,
-                        borderRadius: BorderRadius.circular(12),
+                        borderRadius: BorderRadius.circular(12.r),
                         border: Border.all(color: Colors.grey[200]!),
                       ),
                       child: (spotList.isEmpty)
                           ? Center(
                               child: Column(
                                 children: [
-                                  SizedBox(height: 10),
+                                  SizedBox(height: 10.h),
                                   Icon(
                                     Icons.show_chart,
-                                    size: 55,
+                                    size: 55.sp,
                                     color: uiVariables.primary,
                                   ),
-                                  SizedBox(height: 10),
+                                  SizedBox(height: 10.h),
                                   Text(
                                     'No data available',
                                     style: GoogleFonts.inter(
                                       fontWeight: FontWeight.w600,
-                                      fontSize: 15,
+                                      fontSize: 15.sp,
                                     ),
                                   ),
                                 ],
@@ -262,7 +263,7 @@ class TrendsTab extends StatelessWidget {
                                       getTitlesWidget: (value, meta) {
                                         return Text(
                                           value.toStringAsFixed(0),
-                                          style: const TextStyle(fontSize: 12),
+                                          style: TextStyle(fontSize: 12.sp),
                                         );
                                       },
                                     ),
@@ -274,13 +275,13 @@ class TrendsTab extends StatelessWidget {
                                       interval: 5,
                                       getTitlesWidget: (value, meta) {
                                         return Padding(
-                                          padding: const EdgeInsets.only(
-                                            top: 8,
+                                          padding: EdgeInsets.only(
+                                            top: 8.h,
                                           ),
                                           child: Text(
                                             '${value.toInt()}',
-                                            style: const TextStyle(
-                                              fontSize: 12,
+                                            style: TextStyle(
+                                              fontSize: 12.sp,
                                             ),
                                           ),
                                         );
@@ -305,15 +306,15 @@ class TrendsTab extends StatelessWidget {
                 ),
               ),
 
-              const SizedBox(height: 24),
+              SizedBox(height: 24.h),
 
               // MILESTONES SECTION
               Padding(
-                padding: const EdgeInsets.only(left: 8, bottom: 8),
+                padding: EdgeInsets.only(left: 8.w, bottom: 8.h),
                 child: Text(
                   'MILESTONES',
                   style: GoogleFonts.inter(
-                    fontSize: 12,
+                    fontSize: 12.sp,
                     fontWeight: FontWeight.w800,
                     letterSpacing: 2.0,
                     color: Colors.grey[700],
@@ -323,7 +324,7 @@ class TrendsTab extends StatelessWidget {
               Container(
                 decoration: BoxDecoration(
                   color: Colors.white,
-                  borderRadius: BorderRadius.circular(16),
+                  borderRadius: BorderRadius.circular(16.r),
                   boxShadow: [
                     BoxShadow(
                       color: Colors.black.withOpacity(0.02),
@@ -336,17 +337,17 @@ class TrendsTab extends StatelessWidget {
                   children: [
                     if (hasLost5kg)
                       ListTile(
-                        contentPadding: const EdgeInsets.symmetric(
-                          horizontal: 16,
-                          vertical: 8,
+                        contentPadding: EdgeInsets.symmetric(
+                          horizontal: 16.w,
+                          vertical: 8.h,
                         ),
                         leading: Container(
-                          padding: const EdgeInsets.all(10),
+                          padding: EdgeInsets.all(10.w),
                           decoration: BoxDecoration(
                             color: Colors.orange.withOpacity(0.2),
                             shape: BoxShape.circle,
                           ),
-                          child: const Icon(
+                          child: Icon(
                             Icons.workspace_premium,
                             color: Colors.orange,
                           ),
@@ -355,37 +356,37 @@ class TrendsTab extends StatelessWidget {
                           'First 5kg Lost!',
                           style: GoogleFonts.inter(
                             fontWeight: FontWeight.w600,
-                            fontSize: 15,
+                            fontSize: 15.sp,
                           ),
                         ),
                         subtitle: Text(
                           'Achieved on $first5kgDate',
                           style: GoogleFonts.inter(
                             color: Colors.grey[600],
-                            fontSize: 13,
+                            fontSize: 13.sp,
                           ),
                         ),
                       ),
                     if (hasLost5kg && currentStreak >= 3)
-                      const Divider(
-                        height: 1,
+                      Divider(
+                        height: 1.h,
                         indent: 64,
                         thickness: 0.5,
                         color: Color(0xFFEEEEEE),
                       ),
                     if (currentStreak >= 3)
                       ListTile(
-                        contentPadding: const EdgeInsets.symmetric(
-                          horizontal: 16,
-                          vertical: 8,
+                        contentPadding: EdgeInsets.symmetric(
+                          horizontal: 16.w,
+                          vertical: 8.h,
                         ),
                         leading: Container(
-                          padding: const EdgeInsets.all(10),
+                          padding: EdgeInsets.all(10.w),
                           decoration: BoxDecoration(
                             color: Colors.purple.withOpacity(0.2),
                             shape: BoxShape.circle,
                           ),
-                          child: const Icon(
+                          child: Icon(
                             Icons.local_fire_department,
                             color: Colors.purple,
                           ),
@@ -394,20 +395,20 @@ class TrendsTab extends StatelessWidget {
                           '$currentStreak Day Streak',
                           style: GoogleFonts.inter(
                             fontWeight: FontWeight.w600,
-                            fontSize: 15,
+                            fontSize: 15.sp,
                           ),
                         ),
                         subtitle: Text(
                           'Consistent daily logging.',
                           style: GoogleFonts.inter(
                             color: Colors.grey[600],
-                            fontSize: 13,
+                            fontSize: 13.sp,
                           ),
                         ),
                       ),
                     if (!hasLost5kg && currentStreak < 3)
                       Padding(
-                        padding: const EdgeInsets.all(24.0),
+                        padding: EdgeInsets.all(24.0.w),
                         child: Center(
                           child: Text(
                             "Keep logging entries to unlock achievements and streaks!",
@@ -420,14 +421,14 @@ class TrendsTab extends StatelessWidget {
                 ),
               ),
 
-              SizedBox(height: 10),
+              SizedBox(height: 10.h),
               if (weightEntry.isNotEmpty)
                 Padding(
-                  padding: const EdgeInsets.only(left: 8, bottom: 8),
+                  padding: EdgeInsets.only(left: 8.w, bottom: 8.h),
                   child: Text(
                     'TURNAROUNDS',
                     style: GoogleFonts.inter(
-                      fontSize: 12,
+                      fontSize: 12.sp,
                       fontWeight: FontWeight.w800,
                       letterSpacing: 2.0,
                       color: Colors.grey[700],
@@ -438,7 +439,7 @@ class TrendsTab extends StatelessWidget {
                 Container(
                   decoration: BoxDecoration(
                     color: Colors.white,
-                    borderRadius: BorderRadius.circular(16),
+                    borderRadius: BorderRadius.circular(16.r),
                     boxShadow: [
                       BoxShadow(
                         color: Colors.black.withOpacity(0.02),
@@ -450,12 +451,12 @@ class TrendsTab extends StatelessWidget {
                   child: Column(
                     children: [
                       ListTile(
-                        contentPadding: const EdgeInsets.symmetric(
-                          horizontal: 16,
-                          vertical: 8,
+                        contentPadding: EdgeInsets.symmetric(
+                          horizontal: 16.w,
+                          vertical: 8.h,
                         ),
                         leading: Container(
-                          padding: const EdgeInsets.all(10),
+                          padding: EdgeInsets.all(10.w),
                           decoration: BoxDecoration(
                             color: Colors.orange.withOpacity(0.2),
                             shape: BoxShape.circle,
@@ -466,35 +467,35 @@ class TrendsTab extends StatelessWidget {
                           'Highest Weight Recorded ${weightEntry.values.first}',
                           style: GoogleFonts.inter(
                             fontWeight: FontWeight.w600,
-                            fontSize: 15,
+                            fontSize: 15.sp,
                           ),
                         ),
                         subtitle: Text(
                           'Achieved on ${weightEntry.keys.first.toIso8601String().split("T").first}',
                           style: GoogleFonts.inter(
                             color: Colors.grey[600],
-                            fontSize: 13,
+                            fontSize: 13.sp,
                           ),
                         ),
                       ),
-                      const Divider(
-                        height: 1,
+                      Divider(
+                        height: 1.h,
                         indent: 64,
                         thickness: 0.5,
                         color: Color(0xFFEEEEEE),
                       ),
                       ListTile(
-                        contentPadding: const EdgeInsets.symmetric(
-                          horizontal: 16,
-                          vertical: 8,
+                        contentPadding: EdgeInsets.symmetric(
+                          horizontal: 16.w,
+                          vertical: 8.h,
                         ),
                         leading: Container(
-                          padding: const EdgeInsets.all(10),
+                          padding: EdgeInsets.all(10.w),
                           decoration: BoxDecoration(
                             color: Colors.purple.withOpacity(0.2),
                             shape: BoxShape.circle,
                           ),
-                          child: const Icon(
+                          child: Icon(
                             Icons.flight_land_rounded,
                             color: Colors.lightGreen,
                           ),
@@ -503,14 +504,14 @@ class TrendsTab extends StatelessWidget {
                           'Minimum Weight Recorded ${weightEntry.values.last}',
                           style: GoogleFonts.inter(
                             fontWeight: FontWeight.w600,
-                            fontSize: 15,
+                            fontSize: 15.sp,
                           ),
                         ),
                         subtitle: Text(
                           'Achieved on ${weightEntry.keys.last.toIso8601String().split("T").first}',
                           style: GoogleFonts.inter(
                             color: Colors.grey[600],
-                            fontSize: 13,
+                            fontSize: 13.sp,
                           ),
                         ),
                       ),
@@ -518,12 +519,12 @@ class TrendsTab extends StatelessWidget {
                   ),
                 ),
 
-              const SizedBox(height: 30),
+              SizedBox(height: 30.h),
               Container(
-                padding: const EdgeInsets.all(16),
+                padding: EdgeInsets.all(16.w),
                 decoration: BoxDecoration(
                   color: Colors.white,
-                  borderRadius: BorderRadius.circular(16),
+                  borderRadius: BorderRadius.circular(16.r),
                   boxShadow: [
                     BoxShadow(
                       color: Colors.black.withOpacity(0.02),
@@ -540,11 +541,11 @@ class TrendsTab extends StatelessWidget {
                         Text(
                           'Target Weight',
                           style: GoogleFonts.manrope(
-                            fontSize: 18,
+                            fontSize: 18.sp,
                             fontWeight: FontWeight.bold,
                           ),
                         ),
-                        const SizedBox(width: 12),
+                        SizedBox(width: 12.w),
                         Expanded(
                           child: TextField(
                             controller: controller,
@@ -559,7 +560,7 @@ class TrendsTab extends StatelessWidget {
                       ],
                     ),
 
-                    const SizedBox(height: 16),
+                    SizedBox(height: 16.h),
 
                     SizedBox(
                       width: double.infinity,
@@ -577,13 +578,13 @@ class TrendsTab extends StatelessWidget {
                             builder: (_) => AlertDialog(
                               backgroundColor:
                                   uiVariables.scaffoldBackgroundColor,
-                              title: const Text('Prediction Result'),
+                              title: Text('Prediction Result'),
                               content: Text(
                                 predicted == null
                                     ? 'Not enough data to predict.'
                                     : 'You may reach $target kg on\n${predicted.toLocal().toString().split(' ')[0]}',
                                 style: GoogleFonts.manrope(
-                                  fontSize: 16,
+                                  fontSize: 16.sp,
                                   fontWeight: FontWeight.bold,
                                 ),
                               ),
@@ -594,7 +595,7 @@ class TrendsTab extends StatelessWidget {
                                   child: Text(
                                     'OK',
                                     style: GoogleFonts.manrope(
-                                      fontSize: 16,
+                                      fontSize: 16.sp,
                                       fontWeight: FontWeight.bold,
                                     ),
                                   ),
@@ -607,7 +608,7 @@ class TrendsTab extends StatelessWidget {
                         child: Text(
                           'Predict',
                           style: GoogleFonts.manrope(
-                            fontSize: 18,
+                            fontSize: 18.sp,
                             fontWeight: FontWeight.bold,
                           ),
                         ),
