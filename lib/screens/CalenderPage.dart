@@ -1,5 +1,9 @@
+import 'dart:async';
+
 import 'package:chalthee/constants/CommonUI.dart';
 import 'package:chalthee/screens/activity_tab.dart';
+import 'package:chalthee/screens/system_status_screen.dart';
+import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
 
 import '../helpers/WeightCalculator.dart';
@@ -37,11 +41,13 @@ class _CalendarPageState extends State<CalendarPage> {
   // We no longer strictly need this ScaffoldKey for drawer handling,
   // but we keep it in case we need to show Snackbars or other scaffold traits in the future.
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+  final Connectivity _connectivity = Connectivity();
+  StreamSubscription<List<ConnectivityResult>>? _subscription;
 
   @override
   void initState() {
     super.initState();
-
+    startListening(onStatusChanged);
     updateUserIfNull();
 
     _weightStorage = widget.preloadedStorage ?? WeightStorage();
@@ -53,6 +59,12 @@ class _CalendarPageState extends State<CalendarPage> {
         if (mounted) setState(() {});
       });
     }
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    _subscription?.cancel();
   }
 
   void _onSwitchTab(int index) {
@@ -97,7 +109,7 @@ class _CalendarPageState extends State<CalendarPage> {
                 calculator: _calculator,
                 onOpenProfile: () => _onSwitchTab(4),
               ),
-              ActivityTab(onOpenProfile: ()=>_onSwitchTab(4)),
+              ActivityTab(onOpenProfile: () => _onSwitchTab(4)),
               TrendsTab(
                 userName: _userName,
                 weightStorage: _weightStorage,
@@ -164,5 +176,35 @@ class _CalendarPageState extends State<CalendarPage> {
         ),
       ),
     );
+  }
+
+  void startListening(Function(bool) onStatusChanged) {
+    _subscription = _connectivity.onConnectivityChanged.listen((
+        List<ConnectivityResult> results) {
+      bool statusMessage = _evaluateStatus(results);
+      onStatusChanged(statusMessage);
+    });
+  }
+
+  bool _evaluateStatus(List<ConnectivityResult> results) {
+    if (results.contains(ConnectivityResult.none) || results.isEmpty) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+  Widget? onStatusChanged(bool status){
+    if (status) {
+      Navigator.of(context).pushReplacement(
+        PageRouteBuilder(
+          pageBuilder: (_, __, ___) => const SystemStatusScreen(),
+          transitionDuration: const Duration(milliseconds: 10),
+          transitionsBuilder: (_, animation, __, child) {
+            return FadeTransition(opacity: animation, child: child);
+          },
+        ),
+      );
+    }
   }
 }

@@ -1,10 +1,14 @@
+import 'dart:async';
+
 import 'package:chalthee/constants/CommonUI.dart';
 import 'package:chalthee/constants/constant_values.dart';
 import 'package:chalthee/route_decider.dart';
 import 'package:chalthee/storage/weight_storage.dart';
 import 'package:chalthee/storage/session_router.dart';
 import 'package:chalthee/screens/system_status_screen.dart';
+import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
@@ -23,6 +27,7 @@ class _SplashScreenState extends State<SplashScreen>
   late Animation<double> _scaleAnimation;
   late Animation<double> _fadeAnimation;
   late Animation<Offset> _slideAnimation;
+  final Connectivity _connectivity = Connectivity();
 
   @override
   void initState() {
@@ -63,6 +68,7 @@ class _SplashScreenState extends State<SplashScreen>
     final weightStorage = WeightStorage();
     Map<String, dynamic>? user;
     bool dbStatus = true;
+    await checkCurrentNetwork();
 
     Future<bool>? initFuture;
     Future<Map<String, dynamic>?>? userFuture;
@@ -107,6 +113,26 @@ class _SplashScreenState extends State<SplashScreen>
           ),
         );
       }
+    }
+  }
+
+  // 1. One-time Network Status Check
+  Future<void> checkCurrentNetwork() async {
+    try {
+      final List<ConnectivityResult> results = await _connectivity.checkConnectivity();
+      if (results.contains(ConnectivityResult.none) || results.isEmpty) {
+        Navigator.of(context).pushReplacement(
+          PageRouteBuilder(
+            pageBuilder: (_, __, ___) => const SystemStatusScreen(),
+            transitionDuration: const Duration(milliseconds: 10),
+            transitionsBuilder: (_, animation, __, child) {
+              return FadeTransition(opacity: animation, child: child);
+            },
+          ),
+        );
+      }
+    } on PlatformException catch (e) {
+      debugPrint('Could not check network status: $e');
     }
   }
 

@@ -1,7 +1,11 @@
+import 'dart:async';
+
 import 'package:chalthee/constants/CommonUI.dart';
 import 'package:chalthee/screens/CalenderPage.dart';
 import 'package:chalthee/screens/system_status_screen.dart';
+import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import '../constants/constant_values.dart';
@@ -21,6 +25,7 @@ class _LoginPageState extends State<LoginPage> {
   final _formKey = GlobalKey<FormState>();
   final CommonUI uiVariables = CommonUI();
   bool _isLoading = false;
+  final Connectivity _connectivity = Connectivity();
 
   @override
   Widget build(BuildContext context) {
@@ -138,6 +143,7 @@ class _LoginPageState extends State<LoginPage> {
             SizedBox(height: 32.h),
             InkWell(
               onTap: () async {
+                await checkCurrentNetwork();
                 if (_formKey.currentState!.validate()) {
                   setState(() {
                     _isLoading = true;
@@ -237,4 +243,25 @@ class _LoginPageState extends State<LoginPage> {
       ),
     );
   }
+
+  // 1. One-time Network Status Check
+  Future<void> checkCurrentNetwork() async {
+    try {
+      final List<ConnectivityResult> results = await _connectivity.checkConnectivity();
+      if (results.contains(ConnectivityResult.none) || results.isEmpty) {
+        Navigator.of(context).pushReplacement(
+          PageRouteBuilder(
+            pageBuilder: (_, __, ___) => const SystemStatusScreen(),
+            transitionDuration: const Duration(milliseconds: 10),
+            transitionsBuilder: (_, animation, __, child) {
+              return FadeTransition(opacity: animation, child: child);
+            },
+          ),
+        );
+      }
+    } on PlatformException catch (e) {
+      debugPrint('Could not check network status: $e');
+    }
+  }
+
 }

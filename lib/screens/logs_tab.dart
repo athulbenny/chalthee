@@ -27,7 +27,7 @@ class LogsTab extends StatefulWidget {
   State<LogsTab> createState() => _LogsTabState();
 }
 
-class _LogsTabState extends State<LogsTab> {
+class _LogsTabState extends State<LogsTab> with TickerProviderStateMixin {
   DateTime _focusedDay = DateTime.now();
   DateTime? _selectedDay = DateTime.now();
   DateTime? _rangeStart;
@@ -36,6 +36,9 @@ class _LogsTabState extends State<LogsTab> {
   final TextEditingController _weightController = TextEditingController();
   bool _isEditingWeight = false;
   final CommonUI uiVariables = CommonUI();
+
+  final GlobalKey _selectedDayKey = GlobalKey();
+  final GlobalKey _addButtonKey = GlobalKey();
 
   @override
   void dispose() {
@@ -154,6 +157,102 @@ class _LogsTabState extends State<LogsTab> {
     setState(() => _isEditingWeight = true);
   }
 
+  void _playAddBubbleAnimation(double value, VoidCallback onComplete) {
+    final RenderBox? buttonBox = _addButtonKey.currentContext?.findRenderObject() as RenderBox?;
+    final RenderBox? dayBox = _selectedDayKey.currentContext?.findRenderObject() as RenderBox?;
+
+    if (buttonBox == null || dayBox == null) {
+      onComplete();
+      return;
+    }
+
+    final startPosition = buttonBox.localToGlobal(buttonBox.size.center(Offset.zero));
+    final endPosition = dayBox.localToGlobal(Offset(dayBox.size.width / 2, dayBox.size.height - 4.h));
+
+    OverlayEntry? entry;
+    final controller = AnimationController(vsync: this, duration: const Duration(milliseconds: 600));
+    final animationX = Tween<double>(begin: startPosition.dx, end: endPosition.dx).animate(CurvedAnimation(parent: controller, curve: Curves.easeInOut));
+    final animationY = Tween<double>(begin: startPosition.dy, end: endPosition.dy).animate(CurvedAnimation(parent: controller, curve: Curves.easeInOut));
+    final scaleAnimation = Tween<double>(begin: 30.0, end: 6.w).animate(CurvedAnimation(parent: controller, curve: Curves.easeIn));
+
+    entry = OverlayEntry(
+      builder: (context) {
+        return AnimatedBuilder(
+          animation: controller,
+          builder: (context, child) {
+            return Positioned(
+              left: animationX.value - scaleAnimation.value / 2,
+              top: animationY.value - scaleAnimation.value / 2,
+              child: Container(
+                width: scaleAnimation.value,
+                height: scaleAnimation.value,
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  color: uiVariables.primary,
+                ),
+              ),
+            );
+          },
+        );
+      },
+    );
+
+    Overlay.of(context).insert(entry);
+    controller.forward().then((_) {
+      entry?.remove();
+      controller.dispose();
+      onComplete();
+    });
+  }
+
+  void _playDeleteBubbleAnimation(VoidCallback onComplete) {
+    final RenderBox? dayBox = _selectedDayKey.currentContext?.findRenderObject() as RenderBox?;
+
+    if (dayBox == null) {
+      onComplete();
+      return;
+    }
+
+    final position = dayBox.localToGlobal(Offset(dayBox.size.width / 2, dayBox.size.height - 4.h));
+
+    OverlayEntry? entry;
+    final controller = AnimationController(vsync: this, duration: const Duration(milliseconds: 600));
+    final scaleAnimation = Tween<double>(begin: 6.w, end: 30.0).animate(CurvedAnimation(parent: controller, curve: Curves.easeOut));
+    final opacityAnimation = Tween<double>(begin: 1.0, end: 0.0).animate(CurvedAnimation(parent: controller, curve: Curves.easeOut));
+
+    entry = OverlayEntry(
+      builder: (context) {
+        return AnimatedBuilder(
+          animation: controller,
+          builder: (context, child) {
+            return Positioned(
+              left: position.dx - scaleAnimation.value / 2,
+              top: position.dy - scaleAnimation.value / 2,
+              child: Opacity(
+                opacity: opacityAnimation.value,
+                child: Container(
+                  width: scaleAnimation.value,
+                  height: scaleAnimation.value,
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    color: uiVariables.weightGainColor,
+                  ),
+                ),
+              ),
+            );
+          },
+        );
+      },
+    );
+
+    Overlay.of(context).insert(entry);
+    controller.forward().then((_) {
+      entry?.remove();
+      controller.dispose();
+      onComplete();
+    });
+  }
+
   void _saveWeight() {
     if (_selectedDay == null) return;
     final text = _weightController.text.trim();
@@ -164,10 +263,12 @@ class _LogsTabState extends State<LogsTab> {
       message: 'Save weight entry ($value kg)?',
       onConfirm: () {
         final key = WeightCalculatorHelper.normalizeDate(_selectedDay!);
-        setState(() {
-          widget.weightStorage.saveWeight(key, value);
-          _isEditingWeight = false;
-          _weightController.clear();
+        _playAddBubbleAnimation(value, () {
+          setState(() {
+            widget.weightStorage.saveWeight(key, value);
+            _isEditingWeight = false;
+            _weightController.clear();
+          });
         });
       },
     );
@@ -177,26 +278,28 @@ class _LogsTabState extends State<LogsTab> {
     if (_selectedDay == null) return;
     _showTopConfirmation(
       message:
-          'Delete weight entry of ${_selectedDay?.toIso8601String().split("T").first}?',
+      'Delete weight entry of ${_selectedDay?.toIso8601String().split("T").first}?',
       onConfirm: () {
         final key = WeightCalculatorHelper.normalizeDate(_selectedDay!);
-        setState(() {
-          widget.weightStorage.deleteWeight(key);
-          _isEditingWeight = false;
-          _weightController.clear();
+        _playDeleteBubbleAnimation(() {
+          setState(() {
+            widget.weightStorage.deleteWeight(key);
+            _isEditingWeight = false;
+            _weightController.clear();
+          });
         });
       },
     );
   }
 
   Widget _dayCell(
-    DateTime day, {
-    bool isSelected = false,
-    bool isToday = false,
-    bool isRangeStart = false,
-    bool isRangeEnd = false,
-    bool isWithinRange = false,
-  }) {
+      DateTime day, {
+        bool isSelected = false,
+        bool isToday = false,
+        bool isRangeStart = false,
+        bool isRangeEnd = false,
+        bool isWithinRange = false,
+      }) {
     final key = WeightCalculatorHelper.normalizeDate(day);
     final hasWeight = widget.weightStorage.weights.containsKey(key);
     final yesterdayKey = WeightCalculatorHelper.normalizeDate(
@@ -207,11 +310,12 @@ class _LogsTabState extends State<LogsTab> {
     if (hasWeight) {
       dotColor = yesterday != null
           ? (widget.weightStorage.weights[key]! < yesterday
-                ? uiVariables.weightLossColor
-                : uiVariables.weightGainColor)
+          ? uiVariables.weightLossColor
+          : uiVariables.weightGainColor)
           : uiVariables.weightLossColor;
     }
     return Stack(
+      key: isSelected ? _selectedDayKey : null,
       alignment: Alignment.center,
       children: [
         Container(
@@ -452,19 +556,19 @@ class _LogsTabState extends State<LogsTab> {
         ? widget.calculator.calculateDiff(monthlyProgress)
         : null;
     final progressWeeklyPercentage =
-        (progressWeeklyAvg != null &&
-            progressWeeklyDiff != null &&
-            progressWeeklyAvg != 0 &&
-            progressInitialWeeklyWeight != null &&
-            progressInitialWeeklyWeight != 0)
+    (progressWeeklyAvg != null &&
+        progressWeeklyDiff != null &&
+        progressWeeklyAvg != 0 &&
+        progressInitialWeeklyWeight != null &&
+        progressInitialWeeklyWeight != 0)
         ? (progressWeeklyDiff / progressInitialWeeklyWeight) * 100
         : null;
     final progressMonthlyPercentage =
-        (progressMonthlyAvg != null &&
-            progressMonthlyDiff != null &&
-            progressMonthlyAvg != 0 &&
-            progressInitialMonthlyWeight != null &&
-            progressInitialWeeklyWeight != 0)
+    (progressMonthlyAvg != null &&
+        progressMonthlyDiff != null &&
+        progressMonthlyAvg != 0 &&
+        progressInitialMonthlyWeight != null &&
+        progressInitialWeeklyWeight != 0)
         ? (progressMonthlyDiff / progressInitialMonthlyWeight) * 100
         : null;
     final selectedKey = _selectedDay != null
@@ -564,7 +668,7 @@ class _LogsTabState extends State<LogsTab> {
                           ),
                         ),
                         enabledDayPredicate: (day) =>
-                            !day.isAfter(DateTime.now()),
+                        !day.isAfter(DateTime.now()),
                         onDaySelected: (day, focused) {
                           setState(() {
                             _weightController.clear();
@@ -619,7 +723,7 @@ class _LogsTabState extends State<LogsTab> {
                                   Text(
                                     'Weight on ${DateFormat('MMMM d, yyyy').format(_focusedDay)}',
                                     style: GoogleFonts.manrope(
-                                      fontSize: 16.sp,
+                                      fontSize: 18.sp,
                                       fontWeight: FontWeight.bold,
                                     ),
                                   ),
@@ -628,9 +732,9 @@ class _LogsTabState extends State<LogsTab> {
                                     child: TextField(
                                       controller: _weightController,
                                       keyboardType:
-                                          uiVariables.textEditingField,
+                                      uiVariables.textEditingField,
                                       inputFormatters:
-                                          uiVariables.inputFormatter,
+                                      uiVariables.inputFormatter,
                                       decoration: uiVariables
                                           .textEditingFieldDecoration,
                                       style: TextStyle(
@@ -644,9 +748,10 @@ class _LogsTabState extends State<LogsTab> {
                               SizedBox(height: 16.h),
                               Row(
                                 mainAxisAlignment:
-                                    MainAxisAlignment.spaceAround,
+                                MainAxisAlignment.spaceAround,
                                 children: [
                                   InkWell(
+                                    key: _addButtonKey,
                                     onTap: _saveWeight,
                                     child: _button(
                                       icon: Icons.add,
@@ -684,11 +789,11 @@ class _LogsTabState extends State<LogsTab> {
                           iconColor: Colors.blue[700]!,
                           iconBg: Colors.blue[200]!,
                           title:
-                              "Day weight [${DateFormat('MMMM d, yyyy').format(_focusedDay)}]",
+                          "Day weight [${DateFormat('MMMM d, yyyy').format(_focusedDay)}]",
                           trailing: Text(
                             widget.weightStorage.weights.containsKey(
-                                  selectedKey,
-                                )
+                              selectedKey,
+                            )
                                 ? '${widget.weightStorage.weights[selectedKey]} kg'
                                 : 'Not recorded',
                             style: GoogleFonts.manrope(
@@ -697,9 +802,9 @@ class _LogsTabState extends State<LogsTab> {
                             ),
                           ),
                           subtitle:
-                              (widget.weightStorage.weights.containsKey(
-                                selectedKey?.subtract(const Duration(days: 1)),
-                              ))
+                          (widget.weightStorage.weights.containsKey(
+                            selectedKey?.subtract(const Duration(days: 1)),
+                          ))
                               ? 'Previous Day: ${widget.weightStorage.weights[selectedKey?.subtract(const Duration(days: 1))]} Kg'
                               : '',
                         ),
@@ -710,29 +815,29 @@ class _LogsTabState extends State<LogsTab> {
                           title: "Daily progress",
                           trailing: (dailyDiff != null)
                               ? Text(
-                                  dailyDiff! < 0
-                                      ? '↓ ${dailyDiff!.abs().toStringAsFixed(3)} kg'
-                                      : dailyDiff! > 0
-                                      ? '↑ +${dailyDiff!.toStringAsFixed(3)} kg'
-                                      : '${dailyDiff!.toStringAsFixed(3)} kg',
-                                  style: GoogleFonts.manrope(
-                                    fontSize: 16.sp,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                )
+                            dailyDiff! < 0
+                                ? '↓ ${dailyDiff!.abs().toStringAsFixed(3)} kg'
+                                : dailyDiff! > 0
+                                ? '↑ +${dailyDiff!.toStringAsFixed(3)} kg'
+                                : '${dailyDiff!.toStringAsFixed(3)} kg',
+                            style: GoogleFonts.manrope(
+                              fontSize: 16.sp,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          )
                               : Text(
-                                  'No enough data',
-                                  style: GoogleFonts.manrope(
-                                    fontSize: 16.sp,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
+                            'No enough data',
+                            style: GoogleFonts.manrope(
+                              fontSize: 16.sp,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
                           subtitle: dailyDiff != null
                               ? dailyDiff! < 0
-                                    ? 'Loss'
-                                    : dailyDiff! > 0
-                                    ? 'Gain'
-                                    : 'No change'
+                              ? 'Loss'
+                              : dailyDiff! > 0
+                              ? 'Gain'
+                              : 'No change'
                               : "",
                         ),
                         SizedBox(height: 16.h),
@@ -797,27 +902,27 @@ class _LogsTabState extends State<LogsTab> {
                               ? 'Range: ${DateFormat('MMMM d, yyyy').format(smartStart)} -> ${DateFormat('MMMM d, yyyy').format(smartEnd)}'
                               : 'No data in selected range',
                           trailing:
-                              (diff != null && smartRangePercentage != null)
+                          (diff != null && smartRangePercentage != null)
                               ? Text(
-                                  diff < 0
-                                      ? 'Loss: ${diff.abs().toStringAsFixed(3)} kg (${smartRangePercentage.abs().toStringAsFixed(2)}%)'
-                                      : 'Gain: ${diff.toStringAsFixed(3)} kg (+${smartRangePercentage.toStringAsFixed(2)}%)',
-                                  style: GoogleFonts.manrope(
-                                    fontSize: 14.sp,
-                                    fontWeight: FontWeight.bold,
-                                    color: diff < 0
-                                        ? uiVariables.weightGainColor
-                                        : uiVariables.weightLossColor,
-                                  ),
-                                )
+                            diff < 0
+                                ? 'Loss: ${diff.abs().toStringAsFixed(3)} kg (${smartRangePercentage.abs().toStringAsFixed(2)}%)'
+                                : 'Gain: ${diff.toStringAsFixed(3)} kg (+${smartRangePercentage.toStringAsFixed(2)}%)',
+                            style: GoogleFonts.manrope(
+                              fontSize: 16.sp,
+                              fontWeight: FontWeight.bold,
+                              color: diff < 0
+                                  ? uiVariables.weightGainColor
+                                  : uiVariables.weightLossColor,
+                            ),
+                          )
                               : Text(
-                                  'No enough data',
-                                  style: GoogleFonts.manrope(
-                                    fontSize: 16.sp,
-                                    fontWeight: FontWeight.bold,
-                                    color: uiVariables.textColorDefault,
-                                  ),
-                                ),
+                            'No enough data',
+                            style: GoogleFonts.manrope(
+                              fontSize: 16.sp,
+                              fontWeight: FontWeight.bold,
+                              color: uiVariables.textColorDefault,
+                            ),
+                          ),
                           subtitle: '',
                         ),
                         if (highestEntry != null)
@@ -836,7 +941,7 @@ class _LogsTabState extends State<LogsTab> {
                               ),
                             ),
                             subtitle:
-                                'On ${DateFormat('MMMM d, yyyy').format(highestEntry.key)}',
+                            'On ${DateFormat('MMMM d, yyyy').format(highestEntry.key)}',
                           ),
                         if (lowestEntry != null)
                           _buildListItem(
@@ -854,7 +959,7 @@ class _LogsTabState extends State<LogsTab> {
                               ),
                             ),
                             subtitle:
-                                'On ${DateFormat('MMMM d, yyyy').format(lowestEntry.key)}',
+                            'On ${DateFormat('MMMM d, yyyy').format(lowestEntry.key)}',
                           ),
                       ],
                     ),
@@ -870,29 +975,29 @@ class _LogsTabState extends State<LogsTab> {
                           iconBg: Colors.blue[200]!,
                           title: "Weekly progress",
                           trailing:
-                              (progressWeeklyDiff != null &&
-                                  progressWeeklyPercentage != null)
+                          (progressWeeklyDiff != null &&
+                              progressWeeklyPercentage != null)
                               ? Text(
-                                  progressWeeklyDiff < 0
-                                      ? 'Loss: ${progressWeeklyDiff.abs().toStringAsFixed(3)} kg (${progressWeeklyPercentage.abs().toStringAsFixed(2)}%)'
-                                      : 'Gain: ${progressWeeklyDiff.toStringAsFixed(3)} kg (+${progressWeeklyPercentage.toStringAsFixed(2)}%)',
-                                  style: GoogleFonts.manrope(
-                                    fontSize: 14.sp,
-                                    fontWeight: FontWeight.bold,
-                                    color: progressWeeklyDiff < 0
-                                        ? uiVariables.weightLossColor
-                                        : uiVariables.weightGainColor,
-                                  ),
-                                )
+                            progressWeeklyDiff < 0
+                                ? 'Loss: ${progressWeeklyDiff.abs().toStringAsFixed(3)} kg (${progressWeeklyPercentage.abs().toStringAsFixed(2)}%)'
+                                : 'Gain: ${progressWeeklyDiff.toStringAsFixed(3)} kg (+${progressWeeklyPercentage.toStringAsFixed(2)}%)',
+                            style: GoogleFonts.manrope(
+                              fontSize: 16.sp,
+                              fontWeight: FontWeight.bold,
+                              color: progressWeeklyDiff < 0
+                                  ? uiVariables.weightLossColor
+                                  : uiVariables.weightGainColor,
+                            ),
+                          )
                               : Text(
-                                  'Not enough data',
-                                  style: GoogleFonts.manrope(
-                                    fontSize: 16.sp,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
-                          subtitle: ''
-                              // 'Weekly Average Weight: ${progressWeeklyAvg.toStringAsFixed(3)} kg',
+                            'Not enough data',
+                            style: GoogleFonts.manrope(
+                              fontSize: 16.sp,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                          subtitle:
+                          'Weekly Average Weight: ${progressWeeklyAvg.toStringAsFixed(3)} kg',
                         ),
                         _buildListItem(
                           iconData: Icons.calendar_month_outlined,
@@ -900,29 +1005,29 @@ class _LogsTabState extends State<LogsTab> {
                           iconBg: Colors.blue[200]!,
                           title: "Monthly progress",
                           trailing:
-                              (progressMonthlyDiff != null &&
-                                  progressMonthlyPercentage != null)
+                          (progressMonthlyDiff != null &&
+                              progressMonthlyPercentage != null)
                               ? Text(
-                                  progressMonthlyDiff < 0
-                                      ? 'Loss: ${progressMonthlyDiff.abs().toStringAsFixed(3)} kg (${progressMonthlyPercentage.abs().toStringAsFixed(2)}%)'
-                                      : 'Gain: ${progressMonthlyDiff.toStringAsFixed(3)} kg (+${progressMonthlyPercentage.toStringAsFixed(2)}%)',
-                                  style: GoogleFonts.manrope(
-                                    fontSize: 14.sp,
-                                    fontWeight: FontWeight.bold,
-                                    color: progressMonthlyDiff < 0
-                                        ? uiVariables.weightLossColor
-                                        : uiVariables.weightGainColor,
-                                  ),
-                                )
+                            progressMonthlyDiff < 0
+                                ? 'Loss: ${progressMonthlyDiff.abs().toStringAsFixed(3)} kg (${progressMonthlyPercentage.abs().toStringAsFixed(2)}%)'
+                                : 'Gain: ${progressMonthlyDiff.toStringAsFixed(3)} kg (+${progressMonthlyPercentage.toStringAsFixed(2)}%)',
+                            style: GoogleFonts.manrope(
+                              fontSize: 16.sp,
+                              fontWeight: FontWeight.bold,
+                              color: progressMonthlyDiff < 0
+                                  ? uiVariables.weightLossColor
+                                  : uiVariables.weightGainColor,
+                            ),
+                          )
                               : Text(
-                                  'No enough data',
-                                  style: GoogleFonts.manrope(
-                                    fontSize: 14.sp,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
-                          subtitle: ''
-                              // 'Monthly Average: ${progressMonthlyAvg?.toStringAsFixed(3)} kg',
+                            'No enough data',
+                            style: GoogleFonts.manrope(
+                              fontSize: 16.sp,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                          subtitle:
+                          'Monthly Average Weight: ${progressMonthlyAvg?.toStringAsFixed(3)} kg',
                         ),
                       ],
                     ),

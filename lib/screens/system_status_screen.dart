@@ -1,10 +1,13 @@
 import 'package:chalthee/constants/constant_values.dart';
+import 'package:chalthee/screens/splash_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import '../constants/CommonUI.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+
+import '../storage/session_router.dart';
 
 class SystemStatusScreen extends StatelessWidget {
   const SystemStatusScreen({super.key});
@@ -39,7 +42,7 @@ class SystemStatusScreen extends StatelessWidget {
                       SizedBox(height: 12.h),
                       _subtitleText(),
                       SizedBox(height: 32.h),
-                      _retryButton(),
+                      _retryButton(context),
                       SizedBox(height: 12.h),
                       _backButton(),
                       SizedBox(height: 20.h),
@@ -155,7 +158,7 @@ class SystemStatusScreen extends StatelessWidget {
   }
 
   // RETRY BUTTON
-  Widget _retryButton() {
+  Widget _retryButton(BuildContext context) {
     return Container(
       width: double.infinity,
       height: 56.h,
@@ -164,9 +167,13 @@ class SystemStatusScreen extends StatelessWidget {
         borderRadius: BorderRadius.circular(30.r),
       ),
       child: InkWell(
-        onTap: () {},
+        onTap: () async {
+          bool loggedIn = await SessionManager.isLoggedIn();
+          Navigator.of(context).pushReplacement(
+          PageRouteBuilder(
+            pageBuilder: (_, __, ___) => SplashScreen(isLoggedIn: loggedIn)));},
         child: Container(
-          padding: EdgeInsets.symmetric(horizontal: 24.w, vertical: 16.h),
+          padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 16.h),
           decoration: BoxDecoration(
             gradient: LinearGradient(
               colors: [CommonUI().primary, CommonUI().primaryContainer],
