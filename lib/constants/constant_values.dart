@@ -9,4 +9,6 @@ class ConstantValues {
   static final String userNameCache = "userName";
   static final String userEmailCache = "userEmail";
   static final String loginStatusCache = "loginStatus";
+  static final String gainOrLossStatusCache = "isGain";
+
 }

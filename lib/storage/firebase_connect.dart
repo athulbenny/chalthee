@@ -21,9 +21,9 @@ class DbConnect {
       final currentUser = await SessionManager.getCurrentUser();
       if (currentUser == null) return {};
       final email = currentUser['usermail'];
-
       for (var user in users) {
         if ((user as Map)['usermail'] == email) {
+          SessionManager.setUserName((user as Map)["username"]);
           return Map<String, dynamic>.from(user['weightMap'] ?? {});
         }
       }

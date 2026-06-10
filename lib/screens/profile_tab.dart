@@ -22,7 +22,7 @@ class ProfileTab extends StatefulWidget {
 
 class _ProfileTabState extends State<ProfileTab> {
   double _currentHeight = 0.0;
-  bool _isKg = true; // true for kg, false for lbs
+  bool _isGain = true; // true for kg, false for lbs
   double _goalWeight = 0.0;
   CommonUI uiVariables = CommonUI();
   String _alarmTime = "";
@@ -38,7 +38,7 @@ class _ProfileTabState extends State<ProfileTab> {
     final prefs = await SharedPreferences.getInstance();
     setState(() {
       _currentHeight = prefs.getDouble('height') ?? 0.0;
-      _isKg = prefs.getBool('isKg') ?? true;
+      _isGain = prefs.getBool(ConstantValues.gainOrLossStatusCache) ?? true;
       _goalWeight = prefs.getDouble('goalWeight') ?? 0.0;
       _alarmTime = prefs.getString('alarmTime') ?? "";
       if (_alarmTime.isNotEmpty) {
@@ -58,6 +58,12 @@ class _ProfileTabState extends State<ProfileTab> {
     }
     await prefs.setString('alarmTime', updatedAlarmTimeToCache);
     setState(() => _alarmTime = updatedAlarmTimeToCache);
+  }
+
+  Future<void> _updateUnits(bool status) async{
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setBool(ConstantValues.gainOrLossStatusCache, status);
+    setState(() => _isGain = status);
   }
 
   Future<void> _editGoalWeight() async {
@@ -278,10 +284,11 @@ class _ProfileTabState extends State<ProfileTab> {
     if (nextRun.isBefore(now)) {
       nextRun = nextRun.add(const Duration(days: 1));
     }
-    await AndroidAlarmManager.oneShotAt(
-      nextRun,
+    await AndroidAlarmManager.periodic(
+      const Duration(days: 1),
       1,
       alarmCallback,
+      startAt: nextRun,
       exact: true,
       wakeup: true,
       rescheduleOnReboot: true,
@@ -357,7 +364,7 @@ class _ProfileTabState extends State<ProfileTab> {
                     iconColor: Colors.green,
                     iconBg: Colors.green.withOpacity(0.2),
                     title: 'Goal Weight',
-                    subtitle: '${_goalWeight > 0 ? _goalWeight : 'Add target weight in'} ${_isKg ? 'kg' : 'lbs'}',
+                    subtitle: "${_goalWeight > 0 ? _goalWeight : 'Add target weight in Kg'}",
                     trailing: IconButton(
                       icon: Icon(
                         Icons.edit,
@@ -378,7 +385,7 @@ class _ProfileTabState extends State<ProfileTab> {
                     iconColor: Colors.grey[700]!,
                     iconBg: Colors.grey[300]!,
                     title: 'Measurement Units',
-                    subtitle: 'Metric (kg)',
+                    subtitle: 'Metric (Gain)',
                     trailing: Container(
                       decoration: BoxDecoration(
                         color: Colors.grey[200],
@@ -388,22 +395,45 @@ class _ProfileTabState extends State<ProfileTab> {
                         mainAxisSize: MainAxisSize.min,
                         children: [
                           GestureDetector(
-                            // onTap: () => _updateUnits(true),
+                            onTap: () => _updateUnits(true),
                             child: Container(
                               padding: EdgeInsets.symmetric(
                                 horizontal: 16.w,
                                 vertical: 6.h,
                               ),
                               decoration: BoxDecoration(
-                                color: _isKg
+                                color: _isGain
                                     ? CommonUI().primary
                                     : Colors.transparent,
                                 borderRadius: BorderRadius.circular(20.r),
                               ),
                               child: Text(
-                                'kg',
+                                'Gain',
                                 style: TextStyle(
-                                  color: _isKg ? Colors.white : Colors.black,
+                                  color: _isGain ? Colors.white : Colors.black,
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 12.sp,
+                                ),
+                              ),
+                            ),
+                          ),
+                          GestureDetector(
+                            onTap: () => _updateUnits(false),
+                            child: Container(
+                              padding: EdgeInsets.symmetric(
+                                horizontal: 16.w,
+                                vertical: 6.h,
+                              ),
+                              decoration: BoxDecoration(
+                                color: !_isGain
+                                    ? CommonUI().primary
+                                    : Colors.transparent,
+                                borderRadius: BorderRadius.circular(20.r),
+                              ),
+                              child: Text(
+                                'Loss',
+                                style: TextStyle(
+                                  color: !_isGain ? Colors.white : Colors.black,
                                   fontWeight: FontWeight.bold,
                                   fontSize: 12.sp,
                                 ),

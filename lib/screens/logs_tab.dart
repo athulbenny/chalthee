@@ -4,6 +4,7 @@ import 'package:chalthee/storage/weight_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:table_calendar/table_calendar.dart';
 import '../constants/constant_values.dart';
 import 'activity_summary_page.dart';
@@ -36,7 +37,7 @@ class _LogsTabState extends State<LogsTab> with TickerProviderStateMixin {
   final TextEditingController _weightController = TextEditingController();
   bool _isEditingWeight = false;
   final CommonUI uiVariables = CommonUI();
-
+  bool isUserWantToGainWeight = false;
   final GlobalKey _selectedDayKey = GlobalKey();
   final GlobalKey _addButtonKey = GlobalKey();
 
@@ -44,6 +45,18 @@ class _LogsTabState extends State<LogsTab> with TickerProviderStateMixin {
   void dispose() {
     _weightController.dispose();
     super.dispose();
+  }
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    getWeightGainOrLossStatus();
+  }
+
+  Future<bool?> getWeightGainOrLossStatus() async {
+    final prefs = await SharedPreferences.getInstance();
+    isUserWantToGainWeight =  prefs.getBool(ConstantValues.gainOrLossStatusCache) ?? false;
   }
 
   void _showTopConfirmation({
@@ -308,10 +321,11 @@ class _LogsTabState extends State<LogsTab> with TickerProviderStateMixin {
     final yesterday = widget.weightStorage.weights[yesterdayKey];
     Color? dotColor;
     if (hasWeight) {
-      dotColor = yesterday != null
-          ? (widget.weightStorage.weights[key]! < yesterday
-          ? uiVariables.weightLossColor
-          : uiVariables.weightGainColor)
+      dotColor =
+      yesterday != null ?
+        isUserWantToGainWeight ?
+          widget.weightStorage.weights[key]! < yesterday ? uiVariables.weightGainColor : uiVariables.weightLossColor :
+          widget.weightStorage.weights[key]! < yesterday ? uiVariables.weightLossColor : uiVariables.weightGainColor
           : uiVariables.weightLossColor;
     }
     return Stack(
@@ -516,6 +530,7 @@ class _LogsTabState extends State<LogsTab> with TickerProviderStateMixin {
 
   @override
   Widget build(BuildContext context) {
+    getWeightGainOrLossStatus();
     final entries = _getSelectedEntries();
     final highestEntry = entries.isNotEmpty
         ? entries.reduce((a, b) => a.value > b.value ? a : b)

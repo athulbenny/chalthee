@@ -5,7 +5,6 @@ import 'package:chalthee/storage/firebase_connect.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class SessionManager {
-
   static Future<bool> isLoggedIn() async {
     final prefs = await SharedPreferences.getInstance();
     return prefs.getBool(ConstantValues.loginStatusCache) ?? false;
@@ -21,6 +20,11 @@ class SessionManager {
     return prefs.getString(ConstantValues.userNameCache);
   }
 
+  static void setUserName(String name) async {
+    final prefs = await SharedPreferences.getInstance();
+    prefs.setString(ConstantValues.userNameCache, name);
+  }
+
   static Future<Map<String, dynamic>?> getCurrentUser() async {
     final email = await getUserEmail();
     final name = await getUserName();
@@ -28,24 +32,37 @@ class SessionManager {
       return {
         "usermail": email,
         "username": name ?? "User",
-        // "isloggedin": 1
       };
     }
     return null;
   }
 
-  static Future<bool> loginUser(String name, String mail) async {
+  static Future<bool> loginUser(String mail) async {
     final prefs = await SharedPreferences.getInstance();
     // Check if user exists in Firebase.
     final existingUserMap = await DbConnect().getProductsByMail(mail);
     if (existingUserMap == null) {
-       // Create new user record aligned to this unique device UUID because they aren't in Firebase
-       await DbConnect().createNewUserRecord(name, mail);
+      return false;
     }
     await prefs.setBool(ConstantValues.loginStatusCache, true);
     await prefs.setString(ConstantValues.userEmailCache, mail);
-    await prefs.setString(ConstantValues.userNameCache, name);
     return true;
+  }
+
+  static Future<void> cacheRegistrationDetails(
+    String name,
+    String email,
+    double age,
+    double weight,
+    double height,
+  ) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setBool(ConstantValues.loginStatusCache, true);
+    await prefs.setString(ConstantValues.userEmailCache, email);
+    await prefs.setString(ConstantValues.userNameCache, name);
+    await prefs.setDouble("height", height);
+    await prefs.setDouble("goalWeight", weight);
+    await prefs.setDouble("age", age);
   }
 
   static Future<void> logout() async {
@@ -58,7 +75,7 @@ class SessionManager {
     DeviceMapper().changeSyncStatus(false);
   }
 
-  static Future<void> cleanLocalPreferences(SharedPreferences prefs) async{
+  static Future<void> cleanLocalPreferences(SharedPreferences prefs) async {
     await prefs.remove("syncHealth");
     await prefs.remove("height");
     await prefs.remove("isKg");
@@ -67,14 +84,13 @@ class SessionManager {
     await AndroidAlarmManager.cancel(1);
   }
 
-  static Future<double> getLocalPreferencesHeight() async{
+  static Future<double> getLocalPreferencesHeight() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     return prefs.getDouble("height") ?? 0.0;
   }
 
-  static Future<double> getLocalPreferencesWeight() async{
+  static Future<double> getLocalPreferencesWeight() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     return prefs.getDouble("goalWeight") ?? 0.0;
   }
-
 }
