@@ -4,19 +4,18 @@ import '../constants/CommonUI.dart';
 
 import '../storage/exercise_storage.dart';
 import '../storage/food_storage.dart';
-import 'package:supabase_flutter/supabase_flutter.dart';
 
 import 'package:intl/intl.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 
-class FoodSummaryPage extends StatefulWidget {
+class FoodSummaryPage1 extends StatefulWidget {
   final VoidCallback onAddActivity;
   final Function() onOpenProfile;
   final ExerciseStorage exerciseStorage;
   final FoodStorage foodStorage;
 
-  const FoodSummaryPage({
+  const FoodSummaryPage1({
     super.key,
     required this.onAddActivity,
     required this.onOpenProfile,
@@ -25,14 +24,13 @@ class FoodSummaryPage extends StatefulWidget {
   });
 
   @override
-  State<FoodSummaryPage> createState() => _FoodSummaryPageState();
+  State<FoodSummaryPage1> createState() => _FoodSummaryPageState();
 }
 
-class _FoodSummaryPageState extends State<FoodSummaryPage> {
+class _FoodSummaryPageState extends State<FoodSummaryPage1> {
   bool _isLoading = true;
   Map<String, dynamic> _exerciseData = {};
   Map<String, dynamic> _foodData = {};
-
 
   @override
   void initState() {
@@ -59,7 +57,7 @@ class _FoodSummaryPageState extends State<FoodSummaryPage> {
   int get eatenCalories {
     int total = 0;
     _foodData.forEach((key, value) {
-      if (value is Map && key != 'dailyMacros') {
+      if (value is Map) {
         total += (value['inKCal'] as num?)?.toInt() ?? 0;
       }
     });
@@ -69,7 +67,7 @@ class _FoodSummaryPageState extends State<FoodSummaryPage> {
   int get totalProtein {
     int total = 0;
     _foodData.forEach((key, value) {
-      if (value is Map && key != 'dailyMacros') total += (value['inProt'] as num?)?.toInt() ?? 0;
+      if (value is Map) total += (value['inProt'] as num?)?.toInt() ?? 0;
     });
     return total;
   }
@@ -77,7 +75,7 @@ class _FoodSummaryPageState extends State<FoodSummaryPage> {
   int get totalCarbs {
     int total = 0;
     _foodData.forEach((key, value) {
-      if (value is Map && key != 'dailyMacros') total += (value['inCarb'] as num?)?.toInt() ?? 0;
+      if (value is Map) total += (value['inCarb'] as num?)?.toInt() ?? 0;
     });
     return total;
   }
@@ -85,7 +83,7 @@ class _FoodSummaryPageState extends State<FoodSummaryPage> {
   int get totalFat {
     int total = 0;
     _foodData.forEach((key, value) {
-      if (value is Map && key != 'dailyMacros') total += (value['inFat'] as num?)?.toInt() ?? 0;
+      if (value is Map) total += (value['inFat'] as num?)?.toInt() ?? 0;
     });
     return total;
   }
@@ -312,16 +310,7 @@ class _FoodSummaryPageState extends State<FoodSummaryPage> {
 
             SizedBox(height: 24.h),
 
-            SizedBox(height: 24.h),
-            Text(
-              'Daily Macros',
-              style: GoogleFonts.inter(
-                fontSize: 20.sp,
-                fontWeight: FontWeight.bold,
-                color: ui.onSurface,
-              ),
-            ),
-            SizedBox(height: 12.h),
+            // Macros Card
             Container(
               padding: EdgeInsets.symmetric(vertical: 24.h),
               decoration: ui.cardDecorator.copyWith(
@@ -358,12 +347,6 @@ class _FoodSummaryPageState extends State<FoodSummaryPage> {
   }
 
   Widget _buildMealCard(CommonUI ui, String name, String rec, String cal, IconData icon, Color iconBg, {bool isEmpty = false}) {
-    final foodEatenStr = _foodData[name]?['foodEaten'] as String?;
-    final quantity = _foodData[name]?['quantity'] as num?;
-    final subtitle = (foodEatenStr != null && foodEatenStr.isNotEmpty)
-        ? (quantity != null ? '$foodEatenStr (${quantity.toInt()}g)' : foodEatenStr)
-        : 'Recommended: $rec kcal';
-
     return InkWell(
         onTap: () => _showLogFoodDialog(name),
         borderRadius: BorderRadius.circular(16.r),
@@ -398,11 +381,10 @@ class _FoodSummaryPageState extends State<FoodSummaryPage> {
                       ),
                     ),
                     Text(
-                      subtitle,
+                      'Recommended: $rec kcal',
                       style: GoogleFonts.inter(
-                        fontSize: (foodEatenStr != null && foodEatenStr.isNotEmpty) ? 13.sp : 12.sp,
-                        fontWeight: (foodEatenStr != null && foodEatenStr.isNotEmpty) ? FontWeight.w500 : FontWeight.normal,
-                        color: (foodEatenStr != null && foodEatenStr.isNotEmpty) ? ui.primary : ui.onSurfaceVariant,
+                        fontSize: 12.sp,
+                        color: ui.onSurfaceVariant,
                       ),
                     ),
                   ],
@@ -453,7 +435,7 @@ class _FoodSummaryPageState extends State<FoodSummaryPage> {
             ],
           ),
         ));
-  }
+    }
 
   Widget _buildMacro(CommonUI ui, String name, String amount, Color color, {double progress = 0.5}) {
     return Column(
@@ -502,14 +484,18 @@ class _FoodSummaryPageState extends State<FoodSummaryPage> {
 
   void _showLogFoodDialog(String mealName) {
     final ui = CommonUI();
-    final foodEatenController = TextEditingController();
-    final quantityController = TextEditingController();
+    final kcalController = TextEditingController();
+    final carbsController = TextEditingController();
+    final proteinController = TextEditingController();
+    final fatController = TextEditingController();
 
     // pre-fill if data exists
     final mealData = _foodData[mealName];
     if (mealData != null && mealData is Map) {
-      if (mealData['foodEaten'] != null) foodEatenController.text = mealData['foodEaten'];
-      if (mealData['quantity'] != null) quantityController.text = '${(mealData['quantity'] as num).toInt()}';
+      if (mealData['inKCal'] != null && mealData['inKCal'] != 0) kcalController.text = '${mealData['inKCal']}';
+      if (mealData['inCarb'] != null && mealData['inCarb'] != 0) carbsController.text = '${mealData['inCarb']}';
+      if (mealData['inProt'] != null && mealData['inProt'] != 0) proteinController.text = '${mealData['inProt']}';
+      if (mealData['inFat'] != null && mealData['inFat'] != 0) fatController.text = '${mealData['inFat']}';
     }
 
     showModalBottomSheet(
@@ -540,91 +526,30 @@ class _FoodSummaryPageState extends State<FoodSummaryPage> {
                   ),
                 ),
                 SizedBox(height: 16.h),
-                _buildFoodInput(ui, 'Food Item', foodEatenController, isNumeric: false),
-                _buildFoodInput(ui, 'Quantity (grams)', quantityController, isNumeric: true),
+                _buildFoodInput(ui, 'Calories (kcal)', kcalController),
+                _buildFoodInput(ui, 'Carbs (g)', carbsController),
+                _buildFoodInput(ui, 'Protein (g)', proteinController),
+                _buildFoodInput(ui, 'Fat (g)', fatController),
                 SizedBox(height: 24.h),
                 SizedBox(
                   width: double.infinity,
                   height: 56.h,
                   child: InkWell(
-                    onTap: () async {
-                      final foodName = foodEatenController.text.trim();
-                      final quantityText = quantityController.text.trim();
-                      final quantity = double.tryParse(quantityText) ?? 0.0;
-
-                      if (foodName.isEmpty || quantity <= 0) return;
-
-                      Navigator.pop(context); // close sheet immediately
-
-                      double cal = 0.0;
-                      double carb = 0.0;
-                      double prot = 0.0;
-                      double fat = 0.0;
-                      bool found = false;
-                      String loggedFoodName = foodName;
-
-                      try {
-                        final supabase = Supabase.instance.client;
-                        final response = await supabase
-                            .from('foods')
-                            .select()
-                            .ilike('food_name', '%$foodName%')
-                            .limit(1)
-                            .maybeSingle();
-
-                        if (response != null) {
-                          final data = response;
-                          cal = (data['energy_kcal'] as num?)?.toDouble() ?? 0.0;
-                          carb = (data['carb_g'] as num?)?.toDouble() ?? 0.0;
-                          prot = (data['protein_g'] as num?)?.toDouble() ?? 0.0;
-                          fat = (data['fat_g'] as num?)?.toDouble() ?? 0.0;
-                          loggedFoodName = data['food_name'] ?? foodName;
-                          found = true;
-                        }
-                      } catch (e) {
-                        debugPrint("Supabase query failed: $e");
-                        if (context.mounted) {
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(
-                              content: Text("Error fetching from database: $e"),
-                              backgroundColor: Colors.red,
-                            ),
-                          );
-                        }
-                      }
-
-                      if (!found) {
-                        if (context.mounted) {
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(
-                              content: Text("'$foodName' not found in database. Logged with 0 nutritional metrics."),
-                              backgroundColor: Colors.orange,
-                            ),
-                          );
-                        }
-                      }
-
-                      final double factor = quantity / 100.0;
-                      final int computedCal = (cal * factor).round();
-                      final int computedCarb = (carb * factor).round();
-                      final int computedProt = (prot * factor).round();
-                      final int computedFat = (fat * factor).round();
-
+                    onTap: () async{
                       final now = DateTime.now();
                       final existingData = await widget.foodStorage.getFood(now);
                       final Map<String, dynamic> newData = Map.from(existingData);
 
                       newData[mealName] = {
-                        'inKCal': computedCal,
-                        'inCarb': computedCarb,
-                        'inProt': computedProt,
-                        'inFat': computedFat,
-                        'foodEaten': loggedFoodName,
-                        'quantity': quantity,
+                        'inKCal': int.tryParse(kcalController.text) ?? 0,
+                        'inCarb': int.tryParse(carbsController.text) ?? 0,
+                        'inProt': int.tryParse(proteinController.text) ?? 0,
+                        'inFat': int.tryParse(fatController.text) ?? 0,
                       };
 
                       await widget.foodStorage.saveFood(now, newData);
                       _loadData();
+                      Navigator.pop(context);
                     },
                     child: Container(
                       padding: EdgeInsets.symmetric(
@@ -645,7 +570,6 @@ class _FoodSummaryPageState extends State<FoodSummaryPage> {
                         ],
                       ),
                       child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           Icon(Icons.add, color: Colors.white, size: 20.sp),
                           SizedBox(width: 8.w),
@@ -660,21 +584,19 @@ class _FoodSummaryPageState extends State<FoodSummaryPage> {
                       ),
                     ),
                   ),
-                ),
-              ],
             ),
-          ),
-        );
+          ]),
+        ));
       },
     );
   }
 
-  Widget _buildFoodInput(CommonUI ui, String label, TextEditingController controller, {bool isNumeric = true}) {
+  Widget _buildFoodInput(CommonUI ui, String label, TextEditingController controller) {
     return Padding(
       padding: EdgeInsets.only(bottom: 12.0.h),
       child: TextField(
         controller: controller,
-        keyboardType: isNumeric ? TextInputType.number : TextInputType.text,
+        keyboardType: TextInputType.number,
         decoration: InputDecoration(
           labelText: label,
           labelStyle: GoogleFonts.inter(color: ui.onSurfaceVariant),

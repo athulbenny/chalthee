@@ -308,35 +308,20 @@ class _ProfileTabState extends State<ProfileTab> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Row(
-                    children: [
-                      CircleAvatar(
-                        backgroundColor: Colors.transparent,
-                        backgroundImage: AssetImage(ConstantValues.logo),
-                        radius: 20,
-                      ),
-                      SizedBox(width: 12.w),
-                      Text(
-                        ConstantValues.appName,
-                        style: GoogleFonts.manrope(
-                          fontSize: 20.sp,
-                          fontWeight: FontWeight.w800,
-                          color: CommonUI().primary,
-                          letterSpacing: -0.5,
-                        ),
-                      ),
-                    ],
+                  Text(
+                    'Settings',
+                    style: GoogleFonts.manrope(
+                      fontSize: 32.sp,
+                      fontWeight: FontWeight.w800,
+                      color: CommonUI().onSurface,
+                    ),
                   ),
+                  if (Navigator.canPop(context))
+                    IconButton(
+                      icon: Icon(Icons.close, fontWeight: FontWeight.bold, color: CommonUI().primary),
+                      onPressed: () => Navigator.pop(context),
+                    ),
                 ],
-              ),
-              SizedBox(height: 32.h),
-              Text(
-                'Settings',
-                style: GoogleFonts.manrope(
-                  fontSize: 32.sp,
-                  fontWeight: FontWeight.w800,
-                  color: CommonUI().onSurface,
-                ),
               ),
               SizedBox(height: 8.h),
               Text(

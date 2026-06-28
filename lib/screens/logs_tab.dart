@@ -323,9 +323,9 @@ class _LogsTabState extends State<LogsTab> with TickerProviderStateMixin {
     if (hasWeight) {
       dotColor =
       yesterday != null ?
-        isUserWantToGainWeight ?
-          widget.weightStorage.weights[key]! < yesterday ? uiVariables.weightGainColor : uiVariables.weightLossColor :
-          widget.weightStorage.weights[key]! < yesterday ? uiVariables.weightLossColor : uiVariables.weightGainColor
+      isUserWantToGainWeight ?
+      widget.weightStorage.weights[key]! < yesterday ? uiVariables.weightGainColor : uiVariables.weightLossColor :
+      widget.weightStorage.weights[key]! < yesterday ? uiVariables.weightLossColor : uiVariables.weightGainColor
           : uiVariables.weightLossColor;
     }
     return Stack(
@@ -626,7 +626,7 @@ class _LogsTabState extends State<LogsTab> with TickerProviderStateMixin {
                   ),
                   IconButton(
                     icon: Icon(Icons.settings, color: CommonUI().primary),
-                    onPressed: () => widget.onOpenProfile,
+                    onPressed: widget.onOpenProfile,
                   ),
                 ],
               ),
@@ -738,7 +738,7 @@ class _LogsTabState extends State<LogsTab> with TickerProviderStateMixin {
                                   Text(
                                     'Weight on ${DateFormat('MMMM d, yyyy').format(_focusedDay)}',
                                     style: GoogleFonts.manrope(
-                                      fontSize: 18.sp,
+                                      fontSize: 14.sp,
                                       fontWeight: FontWeight.bold,
                                     ),
                                   ),
@@ -804,7 +804,7 @@ class _LogsTabState extends State<LogsTab> with TickerProviderStateMixin {
                           iconColor: Colors.blue[700]!,
                           iconBg: Colors.blue[200]!,
                           title:
-                          "Day weight [${DateFormat('MMMM d, yyyy').format(_focusedDay)}]",
+                          "Day weight",
                           trailing: Text(
                             widget.weightStorage.weights.containsKey(
                               selectedKey,

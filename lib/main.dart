@@ -4,7 +4,9 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 
+import 'constants/constant_values.dart';
 import 'screens/splash_screen.dart';
 import 'firebase_options.dart';
 
@@ -67,6 +69,17 @@ void main() async {
   );
 
   await notificationsPlugin.initialize(settings: settings);
+
+  try {
+    if (ConstantValues.supabaseUrl.isNotEmpty) {
+      await Supabase.initialize(
+        url: ConstantValues.supabaseUrl,
+        anonKey: ConstantValues.supabaseAnonKey,
+      );
+    }
+  } catch (e) {
+    debugPrint("Supabase initialization failed: $e");
+  }
 
   bool loggedIn = await SessionManager.isLoggedIn();
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);

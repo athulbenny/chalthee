@@ -11,12 +11,14 @@ class DashboardTab extends StatefulWidget {
   final String userName;
   final WeightStorage weightStorage;
   final Function(int) onSwitchTab;
+  final Function() onOpenProfile;
 
   const DashboardTab({
     super.key,
     required this.userName,
     required this.weightStorage,
     required this.onSwitchTab,
+    required this.onOpenProfile,
   });
 
   @override
@@ -43,7 +45,12 @@ class _DashboardTabState extends State<DashboardTab> {
   Widget build(BuildContext context) {
     loadPrefs();
     Widget header = Container(
-      padding: EdgeInsets.only(left: 24.w, right: 24.w, top: 48.h, bottom: 16.h),
+      padding: EdgeInsets.only(
+        left: 24.w,
+        right: 24.w,
+        top: 48.h,
+        bottom: 16.h,
+      ),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
@@ -68,7 +75,7 @@ class _DashboardTabState extends State<DashboardTab> {
           ),
           IconButton(
             icon: Icon(Icons.settings, color: CommonUI().primary),
-            onPressed: () => widget.onSwitchTab(4),
+            onPressed: widget.onOpenProfile,
           ),
         ],
       ),
@@ -111,8 +118,8 @@ class _DashboardTabState extends State<DashboardTab> {
                 },
                 child: Container(
                   padding: EdgeInsets.symmetric(
-                    horizontal: 24.w,
-                    vertical: 16.h,
+                    horizontal: 18.w,
+                    vertical: 12.h,
                   ),
                   decoration: BoxDecoration(
                     gradient: LinearGradient(
@@ -243,10 +250,20 @@ class _DashboardTabState extends State<DashboardTab> {
                       children: [
                         Text(
                           currentWeight != null
-                              ? currentWeight.toStringAsFixed(3)
+                              ? '${currentWeight.toStringAsFixed(2).split('.').first}.'
                               : '',
                           style: GoogleFonts.manrope(
                             fontSize: 64.sp,
+                            fontWeight: FontWeight.w800,
+                            letterSpacing: -2,
+                          ),
+                        ),
+                        Text(
+                          currentWeight != null
+                              ? currentWeight.toStringAsFixed(2).split('.').last
+                              : '',
+                          style: GoogleFonts.manrope(
+                            fontSize: 48.sp,
                             fontWeight: FontWeight.w800,
                             letterSpacing: -2,
                           ),
@@ -278,13 +295,10 @@ class _DashboardTabState extends State<DashboardTab> {
                         crossAxisAlignment: CrossAxisAlignment.end,
                         children: [
                           if (goalWeight == null ||
-                              goalWeight == 0.0 &&
-                              weightList.isEmpty)
+                              goalWeight == 0.0 && weightList.isEmpty)
                             Expanded(
                               child: Container(
-                                margin: EdgeInsets.symmetric(
-                                  horizontal: 2.w,
-                                ),
+                                margin: EdgeInsets.symmetric(horizontal: 2.w),
                                 height: 60.h,
                                 decoration: BoxDecoration(
                                   color: CommonUI().primary,
@@ -294,11 +308,12 @@ class _DashboardTabState extends State<DashboardTab> {
                                 ),
                                 child: Center(
                                   child: TextButton(
-                                    onPressed: () => widget.onSwitchTab(4),
+                                    onPressed: widget.onOpenProfile,
                                     child: Text(
                                       'Setup your profile',
                                       style: GoogleFonts.inter(
-                                        fontSize: 16.sp, fontWeight: FontWeight.bold,
+                                        fontSize: 16.sp,
+                                        fontWeight: FontWeight.bold,
                                         color: Colors.white,
                                       ),
                                     ),
@@ -309,9 +324,7 @@ class _DashboardTabState extends State<DashboardTab> {
                           if (goalWeight != null && goalWeight > 0.0)
                             Expanded(
                               child: Container(
-                                margin: EdgeInsets.symmetric(
-                                  horizontal: 2.w,
-                                ),
+                                margin: EdgeInsets.symmetric(horizontal: 2.w),
                                 height: goalWeight,
                                 decoration: BoxDecoration(
                                   color: CommonUI().primary,
@@ -326,7 +339,8 @@ class _DashboardTabState extends State<DashboardTab> {
                                         : '$goalWeight',
                                     style: GoogleFonts.inter(
                                       color: Colors.white,
-                                      fontSize: 16.sp, fontWeight: FontWeight.bold,
+                                      fontSize: 16.sp,
+                                      fontWeight: FontWeight.bold,
                                     ),
                                   ),
                                 ),
@@ -335,9 +349,7 @@ class _DashboardTabState extends State<DashboardTab> {
                           for (var i in weightList)
                             Expanded(
                               child: Container(
-                                margin: EdgeInsets.symmetric(
-                                  horizontal: 2.w,
-                                ),
+                                margin: EdgeInsets.symmetric(horizontal: 2.w),
                                 height: i.toDouble(),
                                 decoration: BoxDecoration(
                                   color: i > goalWeight
@@ -439,7 +451,9 @@ class _DashboardTabState extends State<DashboardTab> {
                           ),
                           SizedBox(height: 16.h),
                           Text(
-                            'LAST ENTRY',
+                            (goalWeight != null && goalWeight > 0)
+                                ? 'TARGET '
+                                : 'LAST ENTRY',
                             style: GoogleFonts.inter(
                               fontSize: 10.sp,
                               fontWeight: FontWeight.w700,
@@ -449,7 +463,9 @@ class _DashboardTabState extends State<DashboardTab> {
                           ),
                           SizedBox(height: 4.h),
                           Text(
-                            currentWeight != null
+                            (goalWeight != null && goalWeight > 0)
+                                ? '$goalWeight Kg'
+                                : currentWeight != null
                                 ? '${currentWeight.toStringAsFixed(3)} kg'
                                 : 'No data available',
                             style: GoogleFonts.manrope(
@@ -458,8 +474,17 @@ class _DashboardTabState extends State<DashboardTab> {
                             ),
                           ),
                           Text(
-                            lastEntryDate != null
-                                ? DateFormat('yyyy MMMM d').format(lastEntryDate) // '${lastEntryDate.day}-${lastEntryDate.month}-${lastEntryDate.year}'
+                            (goalWeight != null &&
+                                    goalWeight > 0 &&
+                                    currentWeight != null &&
+                                    currentWeight > 0)
+                                ? goalWeight - currentWeight > 0
+                                      ? 'Difference : ${goalWeight - currentWeight} Kg'
+                                      : 'Difference : ${currentWeight - goalWeight} Kg'
+                                : lastEntryDate != null
+                                ? DateFormat('yyyy MMMM d').format(
+                                    lastEntryDate,
+                                  )
                                 : '',
                             style: GoogleFonts.inter(
                               fontSize: 12.sp,

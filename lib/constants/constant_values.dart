@@ -11,4 +11,6 @@ class ConstantValues {
   static final String loginStatusCache = "loginStatus";
   static final String gainOrLossStatusCache = "isGain";
 
+  static const String supabaseUrl = "https://qovnqcxzijwqkqgzsuoc.supabase.co";
+  static const String supabaseAnonKey = "sb_publishable_kxxXIKmr4M749Zl0IO5ksA_asXHDmGs";
 }

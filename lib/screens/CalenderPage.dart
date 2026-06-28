@@ -83,6 +83,10 @@ class _CalendarPageState extends State<CalendarPage> {
     _email = user?["usermail"] ?? "";
   }
 
+  void _openProfile() {
+    _scaffoldKey.currentState?.openEndDrawer();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Stack(
@@ -95,6 +99,10 @@ class _CalendarPageState extends State<CalendarPage> {
         Scaffold(
           key: _scaffoldKey,
           backgroundColor: CommonUI().surface,
+          endDrawer: Drawer(
+            width: MediaQuery.of(context).size.width,
+            child: ProfileTab(userName: _userName, email: _email),
+          ),
           body: IndexedStack(
             index: _selectedIndex,
             children: [
@@ -102,21 +110,21 @@ class _CalendarPageState extends State<CalendarPage> {
                 userName: _userName,
                 weightStorage: _weightStorage,
                 onSwitchTab: _onSwitchTab,
+                onOpenProfile: _openProfile,
               ),
               LogsTab(
                 userName: _userName,
                 weightStorage: _weightStorage,
                 calculator: _calculator,
-                onOpenProfile: () => _onSwitchTab(4),
+                onOpenProfile: _openProfile,
               ),
-              ActivityTab(onOpenProfile: () => _onSwitchTab(4)),
+              ActivityTab(onOpenProfile: _openProfile),
               TrendsTab(
                 userName: _userName,
                 weightStorage: _weightStorage,
-                onOpenProfile: () => _onSwitchTab(4),
+                onOpenProfile: _openProfile,
                 calculator: _calculator,
               ),
-              ProfileTab(userName: _userName, email: _email),
             ],
           ),
           bottomNavigationBar: _buildBottomNav(),
@@ -166,11 +174,6 @@ class _CalendarPageState extends State<CalendarPage> {
               icon: Icon(Icons.insights_outlined),
               activeIcon: Icon(Icons.insights),
               label: 'TRENDS',
-            ),
-            BottomNavigationBarItem(
-              icon: Icon(Icons.person_outline),
-              activeIcon: Icon(Icons.person),
-              label: 'PROFILE',
             ),
           ],
         ),

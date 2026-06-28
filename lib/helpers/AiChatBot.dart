@@ -17,7 +17,7 @@ class _ChatAlertDialogState extends State<ChatAlertDialog> {
 
   Future<String> getAIResponse(String userMessage) async {
     // final response = await model.generateContent([Content.text(userMessage)]);
-    return "AI says: I received '";//${response.text}'";
+    return "AI says: I received '";
   }
 
   void _sendMessage() async {

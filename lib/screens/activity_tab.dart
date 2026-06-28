@@ -6,6 +6,7 @@ import '../storage/exercise_storage.dart';
 import '../storage/food_storage.dart';
 import 'exercise_page.dart';
 import 'food_summary_page.dart';
+import 'food_summary_page1.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class ActivityTab extends StatefulWidget {

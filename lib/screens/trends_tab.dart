@@ -71,7 +71,7 @@ class TrendsTab extends StatelessWidget {
         if (firstEntryWeight - w >= 5.0) {
           hasLost5kg = true;
           first5kgDate =
-              "${sortedKeys[i].day}/${sortedKeys[i].month}/${sortedKeys[i].year}";
+          "${sortedKeys[i].day}/${sortedKeys[i].month}/${sortedKeys[i].year}";
           break;
         }
       }
@@ -84,7 +84,7 @@ class TrendsTab extends StatelessWidget {
       if (thisMonthKeys.length >= 2) {
         monthlyDiff =
             weightStorage.weights[thisMonthKeys.first]! -
-            weightStorage.weights[thisMonthKeys.last]!;
+                weightStorage.weights[thisMonthKeys.last]!;
       }
     }
 
@@ -224,83 +224,83 @@ class TrendsTab extends StatelessWidget {
                       ),
                       child: (spotList.isEmpty)
                           ? Center(
-                              child: Column(
-                                children: [
-                                  SizedBox(height: 10.h),
-                                  Icon(
-                                    Icons.show_chart,
-                                    size: 55.sp,
-                                    color: uiVariables.primary,
-                                  ),
-                                  SizedBox(height: 10.h),
-                                  Text(
-                                    'No data available',
-                                    style: GoogleFonts.inter(
-                                      fontWeight: FontWeight.w600,
-                                      fontSize: 15.sp,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            )
-                          : LineChart(
-                              LineChartData(
-                                gridData: FlGridData(show: false),
-                                borderData: FlBorderData(show: false),
-                                titlesData: FlTitlesData(
-                                  topTitles: AxisTitles(
-                                    sideTitles: SideTitles(showTitles: false),
-                                  ),
-                                  rightTitles: AxisTitles(
-                                    sideTitles: SideTitles(showTitles: false),
-                                  ),
-
-                                  leftTitles: AxisTitles(
-                                    sideTitles: SideTitles(
-                                      showTitles: true,
-                                      reservedSize: 40,
-                                      interval: 3,
-                                      getTitlesWidget: (value, meta) {
-                                        return Text(
-                                          value.toStringAsFixed(0),
-                                          style: TextStyle(fontSize: 12.sp),
-                                        );
-                                      },
-                                    ),
-                                  ),
-
-                                  bottomTitles: AxisTitles(
-                                    sideTitles: SideTitles(
-                                      showTitles: true,
-                                      interval: 5,
-                                      getTitlesWidget: (value, meta) {
-                                        return Padding(
-                                          padding: EdgeInsets.only(
-                                            top: 8.h,
-                                          ),
-                                          child: Text(
-                                            '${value.toInt()}',
-                                            style: TextStyle(
-                                              fontSize: 12.sp,
-                                            ),
-                                          ),
-                                        );
-                                      },
-                                    ),
-                                  ),
-                                ),
-                                lineBarsData: [
-                                  LineChartBarData(
-                                    isCurved: true,
-                                    color: Colors.teal,
-                                    barWidth: 3,
-                                    dotData: FlDotData(show: true),
-
-                                    spots: spotList,
-                                  ),
-                                ],
+                        child: Column(
+                          children: [
+                            SizedBox(height: 10.h),
+                            Icon(
+                              Icons.show_chart,
+                              size: 55.sp,
+                              color: uiVariables.primary,
+                            ),
+                            SizedBox(height: 10.h),
+                            Text(
+                              'No data available',
+                              style: GoogleFonts.inter(
+                                fontWeight: FontWeight.w600,
+                                fontSize: 15.sp,
                               ),
                             ),
+                          ],
+                        ),
+                      )
+                          : LineChart(
+                        LineChartData(
+                          gridData: FlGridData(show: false),
+                          borderData: FlBorderData(show: false),
+                          titlesData: FlTitlesData(
+                            topTitles: AxisTitles(
+                              sideTitles: SideTitles(showTitles: false),
+                            ),
+                            rightTitles: AxisTitles(
+                              sideTitles: SideTitles(showTitles: false),
+                            ),
+
+                            leftTitles: AxisTitles(
+                              sideTitles: SideTitles(
+                                showTitles: true,
+                                reservedSize: 40,
+                                interval: 3,
+                                getTitlesWidget: (value, meta) {
+                                  return Text(
+                                    value.toStringAsFixed(0),
+                                    style: TextStyle(fontSize: 12.sp),
+                                  );
+                                },
+                              ),
+                            ),
+
+                            bottomTitles: AxisTitles(
+                              sideTitles: SideTitles(
+                                showTitles: true,
+                                interval: 5,
+                                getTitlesWidget: (value, meta) {
+                                  return Padding(
+                                    padding: EdgeInsets.only(
+                                      top: 8.h,
+                                    ),
+                                    child: Text(
+                                      '${value.toInt()}',
+                                      style: TextStyle(
+                                        fontSize: 12.sp,
+                                      ),
+                                    ),
+                                  );
+                                },
+                              ),
+                            ),
+                          ),
+                          lineBarsData: [
+                            LineChartBarData(
+                              isCurved: true,
+                              color: Colors.teal,
+                              barWidth: 3,
+                              dotData: FlDotData(show: true),
+
+                              spots: spotList,
+                            ),
+                          ],
+                        ),
+                      ),
                     ),
                   ],
                 ),
@@ -577,7 +577,7 @@ class TrendsTab extends StatelessWidget {
                             context: context,
                             builder: (_) => AlertDialog(
                               backgroundColor:
-                                  uiVariables.scaffoldBackgroundColor,
+                              uiVariables.scaffoldBackgroundColor,
                               title: Text('Prediction Result'),
                               content: Text(
                                 predicted == null
